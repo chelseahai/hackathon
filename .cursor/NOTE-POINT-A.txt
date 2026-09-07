@@ -1,0 +1,12 @@
+NOTE POINT A
+============
+
+Inserted Friday 4 September 2026, 10:41 AM (UTC-4).
+
+This chat: agent transcript
+4aef7ed6-098b-4ddb-929b-9ad1d2c09e18
+
+When the user asks for personal development notes as a PDF, start at this
+message (seam naming + continuous-curve export) and go to the end of the
+new chats. Do not go back to 26 August 2026. Do not write the PDF into
+the repo; they keep notes elsewhere.

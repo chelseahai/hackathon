@@ -1,0 +1,13 @@
+---
+description: Reuse the shared pattern-page visual design for any new or edited web pattern viewer.
+globs: web/**
+alwaysApply: false
+---
+
+# Pattern web pages
+
+When adding or restyling a pattern page, follow `web/DESIGN.md` and reuse `web/styles.css`. Do not invent a new look.
+
+Pattern pages are `web/BasicBlock-*.html` and `web/GarmentDesign-*.html`.
+
+Keep: dark `#111` sheet, Poppins 400 uppercase with `0.08rem` tracking, no bold, 280px sidebar, Measurements / Derived / Display bands, text-only Reset (right-aligned) and Display toggles (grey off, white on, all off by default), dashed stitch + solid seam + grain line at `0.8px`.

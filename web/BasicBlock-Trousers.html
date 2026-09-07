@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Women's basic trouser block</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Women's basic trouser block</h1>
+  </header>
+
+  <div class="layout">
+    <div class="stage">
+      <div class="sheet" id="sheet">
+        <svg id="drawing" role="img" aria-label="Trouser block drawing, back and front"></svg>
+        <div class="error" id="error" hidden></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <section class="block">
+        <h2>Measurements</h2>
+        <div class="control">
+          <label for="hip">Hip</label>
+          <span class="value" id="hipOut"></span>
+          <input id="hip" type="range" min="82" max="118" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="waist">Waist</label>
+          <span class="value" id="waistOut"></span>
+          <input id="waist" type="range" min="58" max="88" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="trouserLength">Trouser length</label>
+          <span class="value" id="trouserLengthOut"></span>
+          <input id="trouserLength" type="range" min="85" max="115" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="rise">Rise</label>
+          <span class="value" id="riseOut"></span>
+          <input id="rise" type="range" min="22" max="32" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="hem">Hem</label>
+          <span class="value" id="hemOut"></span>
+          <input id="hem" type="range" min="14" max="26" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="seamAllowance">Seam allowance</label>
+          <span class="value" id="seamAllowanceOut"></span>
+          <input id="seamAllowance" type="range" min="0" max="2.5" step="0.1" />
+        </div>
+        <div class="actions">
+          <button type="button" id="reset">Reset</button>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Derived</h2>
+        <div class="stats" id="stats"></div>
+        <p class="notes" id="notes" hidden></p>
+      </section>
+
+      <section class="block">
+        <h2>Display</h2>
+        <div class="toggles">
+          <button type="button" class="toggle" id="showLabels" aria-pressed="false">Labels</button>
+          <button type="button" class="toggle" id="showGrid" aria-pressed="false">1 cm grid</button>
+          <button type="button" class="toggle" id="showConstruction" aria-pressed="false">Construction Lines</button>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script src="shared.js?v=5"></script>
+  <script src="BasicBlock-Trousers.js?v=10"></script>
+  <script src="BasicBlock-Trousers-app.js?v=12"></script>
+</body>
+</html>

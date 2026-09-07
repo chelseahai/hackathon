@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Princess line dress</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=4" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>Princess line dress</h1>
+  </header>
+
+  <div class="layout">
+    <div class="stage">
+      <div class="sheet" id="sheet">
+        <svg id="drawing" role="img" aria-label="Princess line dress drawing"></svg>
+        <div class="error" id="error" hidden></div>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <section class="block">
+        <h2>Measurements</h2>
+        <div class="control">
+          <label for="bust">Bust</label>
+          <span class="value" id="bustOut"></span>
+          <input id="bust" type="range" min="76" max="104" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="backLength">Back length</label>
+          <span class="value" id="backLengthOut"></span>
+          <input id="backLength" type="range" min="34" max="44" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="waist">Waist</label>
+          <span class="value" id="waistOut"></span>
+          <input id="waist" type="range" min="58" max="88" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="hip">Hip</label>
+          <span class="value" id="hipOut"></span>
+          <input id="hip" type="range" min="82" max="118" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="dressLength">Dress length</label>
+          <span class="value" id="dressLengthOut"></span>
+          <input id="dressLength" type="range" min="40" max="80" step="0.5" />
+        </div>
+        <div class="control">
+          <label for="seamAllowance">Seam allowance</label>
+          <span class="value" id="seamAllowanceOut"></span>
+          <input id="seamAllowance" type="range" min="0" max="2.5" step="0.1" />
+        </div>
+        <div class="actions actions-split">
+          <button type="button" id="exportDxf">Export DXF</button>
+          <button type="button" id="reset">Reset</button>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Derived</h2>
+        <div class="stats" id="stats"></div>
+        <p class="notes" id="notes" hidden></p>
+      </section>
+
+      <section class="block">
+        <h2>Display</h2>
+        <div class="toggles">
+          <button type="button" class="toggle" id="showLabels" aria-pressed="false">Labels</button>
+          <button type="button" class="toggle" id="showGrid" aria-pressed="false">1 cm grid</button>
+          <button type="button" class="toggle" id="showConstruction" aria-pressed="false">Construction Lines</button>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <script src="shared.js?v=5"></script>
+  <script src="Export-DXF/dxf.js?v=6"></script>
+  <script src="BasicBlock-Bodice.js?v=14"></script>
+  <script src="BasicBlock-Skirt.js?v=8"></script>
+  <script src="GarmentDesign-PrincessLineDress.js?v=51"></script>
+  <script src="GarmentDesign-PrincessLineDress-app.js?v=15"></script>
+</body>
+</html>

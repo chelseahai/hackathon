@@ -1,0 +1,97 @@
+DXF export
+==========
+
+This folder is the cuttable-pattern exporter. Drafts stay in centimetres with
++X right (toward centre front) and +Y up. The DXF file reports millimetres so
+CAD and plotters open it at true size.
+
+  1 cm in the draft  =  10 mm in the file  (MM = 10)
+  $INSUNITS = 4      millimetres
+  $MEASUREMENT = 1   metric
+  $ACADVER = AC1015  AutoCAD 2000 (SPLINE, LWPOLYLINE)
+  $HANDSEED          next unused handle (required for AC1015)
+  $DWGCODEPAGE       ANSI_1252
+
+The file is a real AutoCAD 2000 drawing, not an R12 skeleton with a
+2000 version tag. AutoCAD rejects that mix as "invalid or incomplete
+DXF input". Required parts:
+
+  handles (group 5) on every table, record, block, entity, and object
+  CLASSES            empty but present
+  TABLES             VPORT, LTYPE (BYBLOCK/BYLAYER/CONTINUOUS), LAYER
+                     (including 0), STYLE STANDARD, VIEW, UCS, APPID ACAD,
+                     DIMSTYLE STANDARD (handle is group 105), BLOCK_RECORD
+                     *MODEL_SPACE / *PAPER_SPACE
+  BLOCKS             empty *MODEL_SPACE and *PAPER_SPACE
+  OBJECTS            root DICTIONARY pointing at ACAD_GROUP
+
+Python and JavaScript write the same entities. Edit dxf.py and dxf.js
+together. The hyphen in this folder name means Python cannot `import
+Export-DXF`; callers load dxf.py with importlib (same pattern as the
+hyphenated block folders).
+
+
+What goes in the file
+---------------------
+
+Only cuttable geometry. No construction lines, overlays, labels-as-points,
+or the 1 cm screen grid.
+
+Named seams are one CAD object each. The layer name is the seam id
+(SEAM-CF-CENTER, SEAM-CF-PRINCESSSEAM, ...).
+
+  LINE         straight seams (folds, short shoulders, straight hems)
+  SPLINE       cubic seams — one spline per named curve, from the same
+               interpolating knots used to draft the piece (not a chain
+               of separate LINE entities)
+  LWPOLYLINE   circular arcs (bulge) and the closed CUT loop
+  GRAIN        line — vertical grain, inset from the piece top and bottom
+  NOTCH        short lines at match points, pointing out through the seam
+  NAME         one TEXT per piece, at the outline midpoint, uppercase
+
+CUT is still one closed loop (stitch line offset by seam allowance).
+
+Each piece is a small dict / object:
+
+  name      string
+  outline   stitch-line points (joined seams, for offset / grain / display)
+  seams     list of {name, kind, knots, spans, points, center}
+            kind is line, curve, or arc. spans is used when one seam is
+            several cubics joined (princess at the waist, side with
+            straight then curve).
+  cut       cut-line points, or empty if seam allowance is 0
+  grain     two endpoints (Python: ((x,y),(x,y)); JS: {a, b})
+  notches   list of endpoint pairs (Python: tuples; JS: {a, b})
+
+
+Who calls it
+------------
+
+Princess line dress, command line
+  GarmentDesign-PrincessLineDress/render.py builds the piece list from the
+  laid-out panels, then write_pattern_dxf(...) writes
+  output/GarmentDesign-PrincessLineDress.dxf.
+
+Princess line dress, live page
+  Export DXF on the dress page. GarmentDesign-PrincessLineDress-app.js
+  calls PatternDxf.piecesFromLaid(...) then PatternDxf.fromPieces(...)
+  and downloads princess-line-dress.dxf.
+
+Live pages are served from web/ (`python -m http.server` in that folder).
+That server cannot reach this directory, so a copy of dxf.js also lives at
+web/Export-DXF/dxf.js. After you change dxf.js here, copy it there and bump
+the `?v=` on the script tag in the dress HTML.
+
+
+Adding another pattern later
+----------------------------
+
+Do not put garment math in this folder. The garment names its seams and
+builds a piece list, then:
+
+  Python   write_pattern_dxf(pieces, path)
+  JS       PatternDxf.fromPieces(pieces)  and  PatternDxf.download(name, text)
+
+Grain and notches can be built with grainline_on_piece / grainlineOnPiece
+and notch_segment / notchSegment if the piece already has an outline and
+an offset_closed helper.
