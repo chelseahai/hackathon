@@ -1,4 +1,6 @@
-/* Served copy of ../../Export-DXF/dxf.js — edit Export-DXF/dxf.js, then copy here. See HOW-IT-WORKS.txt. */
+/* ASCII DXF (AutoCAD 2000) for cuttable pattern pieces. Geometry is cm; file units are mm.
+   Canonical file. The live page (server in web/) also needs web/Export-DXF/dxf.js
+   kept the same. See Export-DXF/HOW-IT-WORKS.txt. */
 
 (function (global) {
   "use strict";
@@ -125,7 +127,7 @@
         [
           a,
           { x: a.x + (b.x - a.x) / 3, y: a.y + (b.y - a.y) / 3 },
-          { x: a.x + (2 * (b.x - a.x)) / 3, y: a.y + (2 * (b.y - a.y) / 3 },
+          { x: a.x + (2 * (b.x - a.x)) / 3, y: a.y + (2 * (b.y - a.y)) / 3 },
           b,
         ],
       ];

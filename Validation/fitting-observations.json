@@ -1,0 +1,19 @@
+{
+  "status": "pending_physical_trial",
+  "baseline_commit": "1e0bde401cae73df7357d378b131be0dbdef3537",
+  "validation_run_utc": null,
+  "reference_cm": {"bust":84,"waist":68,"hip":90,"back_length":38,"dress_length":50,"seam_allowance":1},
+  "cad_application": null,
+  "cad_square_mm": {"width":null,"height":null},
+  "cad_cb_shoulder_mm": null,
+  "physical_square_mm": {"width":null,"height":null},
+  "actual_person_or_form_cm": {"bust":null,"waist":null,"hip":null,"back_length":null},
+  "fabric_and_stretch": null,
+  "centre_back_cut_method": null,
+  "centre_front_cut_method": null,
+  "closure_and_cut_quantities": null,
+  "seam_ease_decisions": [],
+  "observations": [],
+  "adjustments_mm": [],
+  "fit_approved": false
+}

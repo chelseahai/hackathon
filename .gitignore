@@ -5,3 +5,4 @@ __pycache__/
 venv/
 output/
 .DS_Store
+.venv-validation/

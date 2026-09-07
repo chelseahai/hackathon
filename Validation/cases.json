@@ -1,0 +1,17 @@
+[
+  {"id":"reference","params":{}},
+  {"id":"small","params":{"bust":76,"waist":58,"hip":82,"back_length":34,"dress_length":40}},
+  {"id":"large","params":{"bust":104,"waist":88,"hip":118,"back_length":44,"dress_length":80}},
+  {"id":"bust_only","params":{"bust":104}},
+  {"id":"waist_only","params":{"waist":58}},
+  {"id":"hip_only","params":{"hip":118}},
+  {"id":"long_torso","params":{"back_length":44}},
+  {"id":"short_torso","params":{"back_length":34}},
+  {"id":"long_skirt","params":{"dress_length":80}},
+  {"id":"zero_allowance","params":{"seam_allowance":0}},
+  {"id":"maximum_allowance","params":{"seam_allowance":2.5}},
+  {"id":"small_waist_large_hip","params":{"waist":58,"hip":118}},
+  {"id":"near_equal_waist_hip","params":{"waist":81.5,"hip":82}},
+  {"id":"invalid_waist_hip","params":{"waist":88,"hip":82},"expect_error":true},
+  {"id":"invalid_length","params":{"dress_length":18},"expect_error":true}
+]

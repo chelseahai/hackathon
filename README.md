@@ -32,3 +32,5 @@ The live pages are under `web/`:
 - [BasicBlock-Skirt.html](web/BasicBlock-Skirt.html)
 - [BasicBlock-Trousers.html](web/BasicBlock-Trousers.html)
 - [GarmentDesign-PrincessLineDress.html](web/GarmentDesign-PrincessLineDress.html)
+
+Validation and the reference toile workflow live in [Validation/README.md](Validation/README.md). The preserved drafting baseline is commit 1e0bde4. Run the validation report before treating a measurement set as ready to cut.

@@ -1,0 +1,12 @@
+{
+  "baseline_commit": "1e0bde401cae73df7357d378b131be0dbdef3537",
+  "numeric_tolerance_cm": 0.0000001,
+  "seam_review_threshold_cm": 0.1,
+  "sampling_review_threshold_cm": 0.01,
+  "dxf_coordinate_tolerance_mm": 0.00011,
+  "ease": {
+    "back_princess": {"target_cm": null, "note": "No approved segment-specific sewing ease in the history. Difference is not automatically ease."},
+    "front_princess": {"target_cm": null, "note": "Bust shaping exists, but no numerical sewing ease or distribution was approved."},
+    "side": {"target_cm": 0.0, "note": "Dart intake is derived to match total sides. Zero is the intended matching target; historical residuals are not approved ease."}
+  }
+}
