@@ -25,7 +25,7 @@ function selectFitting(index){fittingGroups.querySelectorAll('button').forEach((
 fittingGroups.querySelectorAll('button').forEach((button,i)=>['pointerenter','focus','click'].forEach(event=>button.addEventListener(event,()=>selectFitting(i))));selectFitting(0);
 
 // Illustrative positions only. Replace with real body/profile × design coordinates later.
-const positions=[{x:15,y:36,body:'A',design:'01'},{x:35,y:52,body:'B',design:'02'},{x:55,y:24,body:'A',design:'03'},{x:75,y:65,body:'C',design:'04'},{x:85,y:42,body:'B',design:'05'}];
+const positions=[{x:15,y:28,body:'A',design:'01'},{x:35,y:38,body:'B',design:'02'},{x:55,y:14,body:'A',design:'03'},{x:75,y:45,body:'C',design:'04'},{x:85,y:30,body:'B',design:'05'}];
 const cast=document.querySelector('#matrix-cast');
 cast.innerHTML=positions.map((p,i)=>`<button class="matrix-model" style="--home:${10+i*20}%;--target-x:${p.x}%;--target-y:${p.y}%" aria-label="Locate model ${i+1}: body ${p.body}, design ${p.design}" aria-pressed="false">${model(i)}<span>0${i+1}</span></button>`).join('');
 // Keep the location marker in the figure's coordinate space, directly at its feet.

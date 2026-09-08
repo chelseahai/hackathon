@@ -6,8 +6,18 @@
   <meta name="description" content="A spatial study of the body, pattern and possibility. Math Dress project presentation prototype.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="presentation.css?v=2">
-  <script src="presentation.js?v=2" defer></script>
+  <link rel="stylesheet" href="presentation.css?v=5">
+  <script src="../BasicBlock-Bodice.js" defer></script>
+  <script src="../BasicBlock-Skirt.js" defer></script>
+  <script src="../GarmentDesign-PrincessLineDress.js?v=53" defer></script>
+  <script src="bodice-excerpts.js?v=2" defer></script>
+  <script src="../BasicBlock-Bodice.js" defer></script>
+  <script src="../BasicBlock-Skirt.js" defer></script>
+  <script src="../GarmentDesign-PrincessLineDress.js?v=53" defer></script>
+  <script src="bodice-excerpts.js?v=2" defer></script>
+  <script src="presentation.js?v=4" defer></script>
+  <script src="project-live.js?v=2" defer></script>
+  <script src="project-live.js?v=2" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to project</a>
@@ -32,22 +42,19 @@
   </section>
   <section id="blocks" class="chapter blocks" aria-labelledby="blocks-heading">
     <div class="section-heading"><p class="micro">04 / Rules made visible</p><h2 id="blocks-heading">From instruction to geometry.</h2></div>
-    <div class="draft-columns"><div><p class="column-label">01 / Drafting rules</p><ol class="rules"><li><h3>Establish the frame</h3><p>Locate the reference axes and the body's principal levels.</p></li><li><h3>Place the landmarks</h3><p>Translate measured proportions into points.</p></li><li><h3>Construct the curves</h3><p>Connect the points through a defined sequence.</p></li><li><h3>Resolve the block</h3><p>Bring the lines together as a pattern.</p></li></ol></div><div class="code-column"><p class="column-label">02 / Python translation</p><pre><code><span># Illustrative code placeholder</span>
-body = measurements()
-
-frame = reference_axes(body)
-points = place_landmarks(frame)
-
-for rule in drafting_rules:
-    points = rule.apply(points)
-
-curves = connect(points)
-block = construct(curves)
-
-<span># A rule becomes a line.</span></code></pre><span class="micro">The logic behind the drawing</span></div><div><p class="column-label">03 / Graphic construction</p><div class="block-drawing" data-pattern="0"></div><p class="caption">Basic block / diagram placeholder</p></div></div>
+    <div class="draft-columns">
+      <div><p class="column-label">01 / Drafting rules</p><div class="block-steps" role="group" aria-label="Bodice construction stages">
+        <button data-step="0" aria-pressed="false"><span>01—06 / Frame</span><strong>Establish the reference lines</strong><small>Back length; B/2 + 5 width; B/6 + 7 scye depth; back and chest widths.</small></button>
+        <button data-step="1" aria-pressed="false"><span>07—10 / Neck & shoulder</span><strong>Locate the upper landmarks</strong><small>Neck unit B/12; front neck corrections; front shoulder 1.8 cm shorter.</small></button>
+        <button data-step="2" aria-pressed="false"><span>11—12 / Armhole</span><strong>Connect the construction points</strong><small>Half-depth and bisector points guide the back and front armhole curves.</small></button>
+        <button data-step="3" aria-pressed="true"><span>13—16 / Resolve</span><strong>Complete the basic block</strong><small>Shift the side waist 2 cm back; locate BP; extend the front hem; place notches.</small></button>
+      </div><p class="caption">Textbook pp. 108–110 · reference body B 84 / back length 38 cm.</p><a class="text-link" href="../BasicBlock-Bodice.html" target="_blank" rel="noopener">Open original bodice tool ↗</a></div>
+      <div class="code-column"><p class="column-label">02 / Python implementation</p><pre><code id="bodice-code"></code></pre><p id="bodice-source" class="caption"></p><p class="caption implementation-note">The code samples curves through the construction points. Its sleeve notch convention is half the drafted armhole arc plus 3 cm toward the underarm; this is an implementation choice, not a literal vertical offset.</p></div>
+      <div><p class="column-label">03 / Graphic construction</p><div class="block-drawing" id="live-bodice"></div><p class="caption" id="bodice-caption" aria-live="polite"></p></div>
+    </div>
   </section>
   <section id="conversion" class="chapter transformation" aria-labelledby="conversion-heading">
-    <div class="conversion-intro"><p class="micro">05 / Block → princess line</p><h2 id="conversion-heading">A new seam.<br>A different reading of the body.</h2><p class="body-copy centered">Space for the conversion story: how the block is divided, how shaping is transferred, and how separate lines become continuous panels.</p></div>
+    <div class="conversion-intro"><p class="micro">05 / Block → princess line</p><h2 id="conversion-heading">A new seam. <br>A different reading of the body.</h2><p class="body-copy centered">Space for the conversion story: how the block is divided, how shaping is transferred, and how separate lines become continuous panels.</p></div>
     <div class="photo-strip" data-photo-strip="Block study|Shaping transfer|Princess line"></div>
     <div class="pattern-strip" data-pattern-strip="Original block|Transferred shaping|Continuous panels"></div>
   </section>
@@ -64,7 +71,7 @@ block = construct(curves)
   </section>
   <section id="parameters" class="chapter parameters" aria-labelledby="parameters-heading">
     <div class="section-heading"><p class="micro">08 / A variable expression</p><h2 id="parameters-heading">Body × design.</h2></div>
-    <div class="parameter-layout"><div class="parameter-canvas"><div data-pattern="1"></div><p class="micro">Pattern visualization placeholder</p></div><div class="parameter-settings"><h3>The body</h3><p class="caption">Measurement variations</p><div class="mock-control"><span>Bust</span><span>— cm</span><i></i></div><div class="mock-control"><span>Waist</span><span>— cm</span><i></i></div><div class="mock-control"><span>Hip</span><span>— cm</span><i></i></div><h3>The design</h3><p class="caption">Silhouette variations</p><div class="mock-control"><span>Length</span><span>— cm</span><i></i></div><div class="mock-control"><span>Ease</span><span>— cm</span><i></i></div><div class="mock-control"><span>Hem fullness</span><span>— cm</span><i></i></div><p class="caption">Layout study · controls will be connected later.</p></div></div>
+    <div class="parameter-layout"><div class="parameter-canvas"><div id="live-dress"></div><p class="micro">Live drafting / centimetres / stitch outlines</p><p id="dress-error" class="live-error" role="alert" hidden></p></div><div class="parameter-settings"><h3>The body</h3><div class="live-control"><label for="live-bust">Bust</label><output for="live-bust" id="out-bust">84 cm</output><input id="live-bust" data-dress-param="bust" type="range" min="76" max="104" step="0.5" value="84"></div><div class="live-control"><label for="live-backLength">Back length</label><output for="live-backLength" id="out-backLength">38 cm</output><input id="live-backLength" data-dress-param="backLength" type="range" min="34" max="44" step="0.5" value="38"></div><div class="live-control"><label for="live-waist">Waist</label><output for="live-waist" id="out-waist">68 cm</output><input id="live-waist" data-dress-param="waist" type="range" min="58" max="88" step="0.5" value="68"></div><div class="live-control"><label for="live-hip">Hip</label><output for="live-hip" id="out-hip">90 cm</output><input id="live-hip" data-dress-param="hip" type="range" min="82" max="118" step="0.5" value="90"></div><h3>The design</h3><div class="live-control"><label for="live-dressLength">Waist-to-hem length</label><output for="live-dressLength" id="out-dressLength">50 cm</output><input id="live-dressLength" data-dress-param="dressLength" type="range" min="40" max="80" step="0.5" value="50"></div><div class="live-control"><label for="live-waistEase">Waist ease</label><output for="live-waistEase" id="out-waistEase">3 cm</output><input id="live-waistEase" data-dress-param="waistEase" type="range" min="0" max="12" step="0.5" value="3"></div><div class="live-control"><label for="live-hipEase">Hip ease</label><output for="live-hipEase" id="out-hipEase">4 cm</output><input id="live-hipEase" data-dress-param="hipEase" type="range" min="0" max="12" step="0.5" value="4"></div><div class="live-control"><label for="live-hemFullness">Hem fullness</label><output for="live-hemFullness" id="out-hemFullness">32 cm</output><input id="live-hemFullness" data-dress-param="hemFullness" type="range" min="0" max="80" step="1" value="32"></div><div class="distribution-control"><label for="live-distribution">Fullness distribution</label><select id="live-distribution"><option value="reference">Reference balance</option><option value="princess">Princess seams only</option><option value="side">Side seams only</option><option value="equal">Equal group shares</option></select></div><div class="live-actions"><button id="live-reset" type="button">Reset reference ↺</button><a href="../GarmentDesign-PrincessLineDress.html" target="_blank" rel="noopener">Open full drafting tool ↗</a></div><p class="caption" id="dress-summary" aria-live="polite"></p><p class="caption">Ease is added to the full circumference; fullness adds horizontal hem width. This live study uses the existing dress engine. Physical fit and paired-seam ease remain unverified. These controls do not overwrite your saved measurements.</p></div></div>
   </section>
   <section id="runway" class="chapter runway dark" aria-labelledby="runway-heading"><p class="micro section-tag">09 / A family of forms</p><h2 id="runway-heading">A system in motion.</h2><div class="runway-scene"><div class="runway-ring"></div><div class="runway-cast" data-models="6"></div></div><div class="chapter-foot"><span>Circular runway / film placeholder</span><span>Different bodies. Related forms.</span></div></section>
   <section id="outcomes" class="chapter outcomes" aria-labelledby="outcomes-heading"><div class="section-heading"><p class="micro">10 / Exploring the family</p><h2 id="outcomes-heading">Select a form. Trace its possibilities.</h2></div><div class="outcome-layout"><div><p class="column-label">Variation field</p><div id="variation-pattern" class="overlaid-pattern" data-pattern="0"></div><p class="caption">Overlaid measurement & design studies</p></div><div><p class="column-label" id="selected-pattern-label">Pattern / Form 01</p><div id="selected-pattern" data-pattern="0"></div><p class="caption">Illustrative pattern placeholder</p></div><div><p class="column-label">Garment family</p><div id="garment-options" class="garment-options"></div><p class="caption">Hover, focus or select a garment</p></div></div></section>
