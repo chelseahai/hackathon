@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Math Dress — A study in form</title>
+  <meta name="description" content="A spatial study of the body, pattern and possibility. Math Dress project presentation prototype.">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="presentation.css">
+  <script src="presentation.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to project</a>
+<header class="masthead"><a class="wordmark" href="#hero">MATH DRESS</a><span class="header-note">An ongoing study / 01</span><button id="menu-toggle" aria-expanded="false" aria-controls="chapter-menu">Index <span>＋</span></button></header>
+<nav id="chapter-menu" hidden aria-label="Project chapters"></nav>
+<main id="main">
+  <section id="hero" class="chapter hero dark" aria-labelledby="hero-title">
+    <div class="hero-models" data-models="5" aria-hidden="true"></div>
+    <div class="hero-top micro">The body. The rule. The possibility.</div>
+    <div class="hero-heading"><p class="micro">A project in computational garment making</p><h1 id="hero-title">A study<br>in form.</h1></div>
+    <div class="chapter-foot"><span>01 / Moving image placeholder</span><a href="#title">Scroll to discover ↓</a></div>
+  </section>
+  <section id="title" class="chapter title-page" aria-labelledby="title-heading">
+    <p class="micro section-tag">02 / The project</p>
+    <p class="intro-copy">From a measured body to a field of possibilities.<br>A garment takes shape through a sequence of rules.<br>This project asks what those rules can become.</p>
+    <div class="pipeline" aria-label="Body to outcomes pipeline"><div><span>◯</span>Body</div><i>→</i><div><span>⌗</span>Measure</div><i>→</i><div><span>⌘</span>Translate</div><i>→</i><div><span>⋈</span>Construct</div><i>→</i><div><span>✳</span>Vary</div></div>
+    <div class="project-title"><p class="micro">Body × mathematics × making</p><h2 id="title-heading">MATH<br><span>DRESS</span><sup>↗</sup></h2><p class="micro">One system. Many expressions.</p></div>
+  </section>
+  <section id="body" class="chapter background" aria-labelledby="body-heading">
+    <div class="section-heading"><p class="micro">03 / A measured beginning</p><h2 id="body-heading">The body comes first.</h2></div>
+    <div class="background-grid"><div><p class="body-copy">A line on paper begins with a dimension of the body. Circumference, proportion and length become the coordinates of a garment.</p><div class="measurement-grid" aria-label="Measurement table placeholder"><span>BODY / INPUT</span><span>01</span><span>02</span><span>03</span><span>Bust</span><span>—</span><span>—</span><span>—</span><span>Waist</span><span>—</span><span>—</span><span>—</span><span>Hip</span><span>—</span><span>—</span><span>—</span><span>Back length</span><span>—</span><span>—</span><span>—</span><span>Proportion</span><span>—</span><span>—</span><span>—</span></div><p class="caption">Measurement definitions & source material / placeholder</p></div><div><div class="body-diagrams" data-models="3" aria-hidden="true"></div><h3>Every measurement has a meaning.</h3><p class="body-copy">Space for the measurement method: where a dimension is taken, why it matters, and how it enters the mathematical description of a pattern.</p><p class="formula">body → coordinates → form</p></div></div>
+  </section>
+  <section id="blocks" class="chapter blocks" aria-labelledby="blocks-heading">
+    <div class="section-heading"><p class="micro">04 / Rules made visible</p><h2 id="blocks-heading">From instruction to geometry.</h2></div>
+    <div class="draft-columns"><div><p class="column-label">01 / Drafting rules</p><ol class="rules"><li><h3>Establish the frame</h3><p>Locate the reference axes and the body's principal levels.</p></li><li><h3>Place the landmarks</h3><p>Translate measured proportions into points.</p></li><li><h3>Construct the curves</h3><p>Connect the points through a defined sequence.</p></li><li><h3>Resolve the block</h3><p>Bring the lines together as a pattern.</p></li></ol></div><div class="code-column"><p class="column-label">02 / Python translation</p><pre><code><span># Illustrative code placeholder</span>
+body = measurements()
+
+frame = reference_axes(body)
+points = place_landmarks(frame)
+
+for rule in drafting_rules:
+    points = rule.apply(points)
+
+curves = connect(points)
+block = construct(curves)
+
+<span># A rule becomes a line.</span></code></pre><span class="micro">The logic behind the drawing</span></div><div><p class="column-label">03 / Graphic construction</p><div class="block-drawing" data-pattern="0"></div><p class="caption">Basic block / diagram placeholder</p></div></div>
+  </section>
+  <section id="conversion" class="chapter transformation" aria-labelledby="conversion-heading">
+    <p class="micro">05 / Block → princess line</p><h2 id="conversion-heading">A new seam.<br>A different reading of the body.</h2><p class="body-copy centered">Space for the conversion story: how the block is divided, how shaping is transferred, and how separate lines become continuous panels.</p>
+    <div class="photo-strip" data-photo-strip="Block study|Shaping transfer|Princess line"></div>
+    <div class="pattern-strip" data-pattern-strip="Original block|Transferred shaping|Continuous panels"></div>
+  </section>
+  <section id="reuse" class="chapter reuse dark" aria-labelledby="reuse-heading">
+    <p class="micro section-tag">06 / An open system</p><h2 id="reuse-heading">The next form<br>is already in the rules.</h2>
+    <div class="reuse-composition"><div class="reuse-origin" data-pattern="0"></div><div class="branch branch-one">↗</div><div class="branch branch-two">→</div><div class="branch branch-three">↘</div><div class="reuse-form form-one" data-pattern="1"></div><div class="reuse-form form-two" data-pattern="2"></div><div class="reuse-form form-three" data-pattern="3"></div></div>
+    <div class="chapter-foot"><span>Shared logic / changing expressions</span><span>Art direction placeholder</span></div>
+  </section>
+  <section id="style" class="chapter transformation reverse" aria-labelledby="style-heading">
+    <p class="micro">07 / Princess line → style</p><h2 id="style-heading">One pattern. Different intentions.</h2>
+    <div class="pattern-strip" data-pattern-strip="Length|Volume|Distribution"></div>
+    <div class="photo-strip" data-photo-strip="Silhouette A|Silhouette B|Silhouette C"></div>
+    <p class="body-copy centered">A change in proportion reshapes the expression of the garment. Here the pattern studies will meet their physical counterparts.</p>
+  </section>
+  <section id="parameters" class="chapter parameters" aria-labelledby="parameters-heading">
+    <div class="section-heading"><p class="micro">08 / A variable expression</p><h2 id="parameters-heading">Body × design.</h2></div>
+    <div class="parameter-layout"><div class="parameter-canvas"><div data-pattern="1"></div><p class="micro">Pattern visualization placeholder</p></div><div class="parameter-settings"><h3>The body</h3><p class="caption">Measurement variations</p><div class="mock-control"><span>Bust</span><span>— cm</span><i></i></div><div class="mock-control"><span>Waist</span><span>— cm</span><i></i></div><div class="mock-control"><span>Hip</span><span>— cm</span><i></i></div><h3>The design</h3><p class="caption">Silhouette variations</p><div class="mock-control"><span>Length</span><span>— cm</span><i></i></div><div class="mock-control"><span>Ease</span><span>— cm</span><i></i></div><div class="mock-control"><span>Hem fullness</span><span>— cm</span><i></i></div><p class="caption">Layout study · controls will be connected later.</p></div></div>
+  </section>
+  <section id="runway" class="chapter runway dark" aria-labelledby="runway-heading"><p class="micro section-tag">09 / A family of forms</p><h2 id="runway-heading">A system in motion.</h2><div class="runway-scene"><div class="runway-ring"></div><div class="runway-cast" data-models="6"></div></div><div class="chapter-foot"><span>Circular runway / film placeholder</span><span>Different bodies. Related forms.</span></div></section>
+  <section id="outcomes" class="chapter outcomes" aria-labelledby="outcomes-heading"><div class="section-heading"><p class="micro">10 / Exploring the family</p><h2 id="outcomes-heading">Select a form. Trace its possibilities.</h2></div><div class="outcome-layout"><div><p class="column-label">Variation field</p><div id="variation-pattern" class="overlaid-pattern" data-pattern="0"></div><p class="caption">Overlaid measurement & design studies</p></div><div><p class="column-label" id="selected-pattern-label">Pattern / Form 01</p><div id="selected-pattern" data-pattern="0"></div><p class="caption">Illustrative pattern placeholder</p></div><div><p class="column-label">Garment family</p><div id="garment-options" class="garment-options"></div><p class="caption">Hover, focus or select a garment</p></div></div></section>
+  <section id="fitting" class="chapter fitting" aria-labelledby="fitting-heading"><div class="section-heading"><p class="micro">11 / Making meets the body</p><h2 id="fitting-heading">The evidence is in the making.</h2></div><div class="fitting-layout"><div id="fitting-groups" class="fitting-groups"></div><div class="fitting-detail"><div class="detail-pair"><div class="media detail" id="fitting-detail-a"><span>Seam detail / Study 01</span></div><div class="media detail second" id="fitting-detail-b"><span>Movement detail / Study 01</span></div></div><p id="fitting-caption" class="caption" aria-live="polite">Study 01 / Fitting photographs and observations to be added.</p><p class="body-copy">A place for the small observations: a seam finding its position, a shift in balance, the way a garment moves with someone.</p></div></div><p class="caption">All imagery is placeholder material. Physical test results are not presented yet.</p></section>
+  <section id="matrix" class="chapter matrix" aria-labelledby="matrix-heading"><p class="micro">12 / The field of possibilities</p><div class="matrix-heading"><h2 id="matrix-heading">Every dress<br>has a coordinate.</h2><p class="body-copy">Select a figure to locate its place in the body × design matrix.</p></div><div class="matrix-scene"><div class="matrix-floor"><div class="floor-grid"></div><span class="axis axis-design">Design variations →</span><span class="axis axis-body">Measurement variations →</span><div id="matrix-point"></div></div><div id="matrix-cast" class="matrix-cast"></div></div><div class="matrix-footer"><p id="matrix-caption" aria-live="polite">Select a model / explore the matrix</p><p class="caption">Illustrative coordinates · model and movement placeholders</p><button id="matrix-reset">Return to the line ↗</button></div></section>
+  <section id="credits" class="chapter credits" aria-labelledby="credits-heading"><p class="micro">13 / In progress</p><h2 id="credits-heading">A garment is an outcome.<br>The project is a system.</h2><div class="credits-grid"><div><h3>To be continued</h3><p class="body-copy">Space for the project's conclusion, its discoveries and the questions that remain open.</p><a href="#title" class="text-link">Return to the beginning ↗</a></div><div><h3>Project & collaborators</h3><p class="caption">Concept & research — to be added<br>Pattern development — to be added<br>Photography & film — to be added<br>Models & making — to be added</p></div><div><h3>Further information</h3><p class="caption">Research references<br>Process documentation<br>Acknowledgements<br>Contact</p></div></div><div class="credits-bottom micro"><span>Math Dress / An ongoing study</span><span>Structure prototype · Media & copy provisional</span></div></section>
+  <section id="closing" class="chapter closing dark" aria-labelledby="closing-heading"><p class="micro section-tag">14 / Beyond the pattern</p><div class="closing-art" aria-hidden="true"><div data-pattern="1"></div><div data-pattern="2"></div><div data-pattern="3"></div></div><h2 id="closing-heading">Still becoming.</h2><div class="chapter-foot"><span>Final artistic image / placeholder</span><a href="#hero">Back to top ↑</a></div></section>
+</main>
+</body></html>
