@@ -16,6 +16,7 @@ const xy = p => [p.x,p.y];
 const seam = s => ({name:s.name, kind:s.kind, points:s.points.map(xy),
   knots:(s.knots||[]).map(xy), spans:(s.spans||[]).map(a=>a.map(xy)), center:s.center?xy(s.center):null});
 const panel = p => ({name:p.name, outline:p.outline.map(xy), notches:p.notches.map(xy),
+  notch_ids:p.notchIds,
   marks:p.marks.map(m=>({label:m.label,pt:xy(m.pt)})), seams:p.seams.map(seam)});
 const metricKeys = ['backWaist','frontWaist','backHip','frontHip','backDart','frontDart',
   'backSideLen','frontSideLen','sideDart','dressLength'];

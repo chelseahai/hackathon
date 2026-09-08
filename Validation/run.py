@@ -54,6 +54,7 @@ def seam_data(s):
 
 def panel_data(p):
     return dict(name=p.name, outline=list(map(xy,p.outline)), notches=list(map(xy,p.notches)),
+                notch_ids=p.notch_ids,
                 marks=[dict(label=m.label,pt=xy(m.pt)) for m in p.marks],
                 seams=list(map(seam_data,p.seams)))
 
@@ -123,24 +124,25 @@ def seam_rows(d,policy):
     for pair,left,right,suffix in pairs:
         a=top_down(seams[f'SEAM-{left}-{suffix}'])
         b=top_down(seams[f'SEAM-{right}-{suffix}'])
-        labels=['shoulder','bust-line notch','waist notch','hip notch','hem']
+        labels=['shoulder','upper reference notch','waist notch','hip notch','hem']
+        levels=['upper','waist','hip']
         if pair=='side':
-            labels=['underarm','waist reference (unnotched)','hip reference / SF zipper notch','hem']
-            sa=[0,height_distance(a,0),height_distance(a,-d.params.hip_depth),a.length]
-            sb=[0,height_distance(b,0),height_distance(b,-d.params.hip_depth),b.length]
-        else:
-            pa=next(p for p in d.panels if any(s.name==f'SEAM-{left}-{suffix}' for s in p.seams))
-            pb=next(p for p in d.panels if any(s.name==f'SEAM-{right}-{suffix}' for s in p.seams))
-            sa=[0]; sb=[0]
-            # First three notches are princess marks in the current panel contract.
-            if len(pa.notches)<3 or len(pb.notches)<3: raise ValueError('Missing princess notches')
-            for na,nb in zip(pa.notches[:3],pb.notches[:3]):
-                for line,n in [(a,na),(b,nb)]:
-                    if line.distance(Point(xy(n)))>1e-6:
-                        issues.append(f'{pair}: notch not on exported stitch seam')
-                sa.append(a.project(Point(xy(na))))
-                sb.append(b.project(Point(xy(nb))))
-            sa.append(a.length); sb.append(b.length)
+            labels=['underarm','waist notch','hip notch / zipper reference','hem']
+            levels=['waist','hip']
+        pa=next(p for p in d.panels if any(s.name==f'SEAM-{left}-{suffix}' for s in p.seams))
+        pb=next(p for p in d.panels if any(s.name==f'SEAM-{right}-{suffix}' for s in p.seams))
+        sa=[0]; sb=[0]
+        for panel,line,distances in [(pa,a,sa),(pb,b,sb)]:
+            if len(panel.notch_ids)!=len(panel.notches) or len(set(panel.notch_ids))!=len(panel.notch_ids):
+                raise ValueError(panel.name+': missing or duplicate notch IDs')
+            marks=dict(zip(panel.notch_ids,panel.notches))
+            for level in levels:
+                key=pair+'.'+level
+                if key not in marks: raise ValueError(panel.name+': missing '+key)
+                pt=Point(xy(marks[key]))
+                if line.distance(pt)>1e-6: issues.append(f'{pair}: notch not on exported stitch seam')
+                distances.append(line.project(pt))
+            distances.append(line.length)
         if any(y<=x for ss in [sa,sb] for x,y in zip(ss,ss[1:])):
             raise ValueError(pair+': landmarks are not ordered along the seam')
         for i in range(len(labels)-1):
@@ -285,14 +287,14 @@ def report_html(report):
       'table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}td,th{text-align:left;padding:8px;border-bottom:1px solid #444;font-weight:400}'
       '.scroll{overflow:auto}pre{white-space:pre-wrap;font-size:12px}a{color:inherit}</style>'
       '<h1>Princess-line dress: validation baseline</h1>'
-      f'<p><strong>{esc(overview)}</strong> Expand the affected case below for details. '
+      f'<p><strong>{esc(overview)}</strong> Expand individual cases below for details. '
       'Even passing cases require sewing-ease and physical checks.</p>'
       f'<p>Generated {esc(report["generated_utc"])}. Baseline {esc(report["baseline_commit"][:7])}. '
       'Reference: bust 84, waist 68, hip 90, back length 38, waist-to-hem 50 cm; allowance 1 cm.</p>'
       '<p><strong>Physical scale and fit remain unverified.</strong> The current pattern is an inspection export, '
       'not a sewing-approved release. A small numerical difference is not proof of fit. Unspecified ease needs a fitting decision.</p>'
       '<p>Review gate: absolute interval difference above 0.1 cm (1 mm); this is a diagnostic setting, not an industry standard. '
-      'Side references are not paired exported notches. Front princess upper notches use back BL height, not front BP.</p>'
+      'Side waist/hip notches are paired. Front princess upper notches use back BL height, not front BP.</p>'
       '<p><a href="reference-python.dxf">Reference DXF</a> · <a href="calibration-100mm.dxf">100 mm calibration DXF</a> · '
       '<a href="report.json">Full JSON</a> · <a href="seams.csv">Seam measurements CSV</a></p>'+''.join(blocks)+'</html>')
 

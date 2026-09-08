@@ -126,3 +126,5 @@ The preserved baseline is an accepted implementation, not a fit-approved pattern
 Validation findings do not authorize inventing new ease, shifting landmarks, or
 silently smoothing away a drafting problem. Keep measurements, tolerances, unresolved
 findings and physical observations attached to each future fitting iteration.
+
+For changes after this historical baseline, see [STABILIZATION.md](STABILIZATION.md).

@@ -8,7 +8,7 @@ back length 38, waist-to-hem length 50 cm, allowance 1 cm; hip depth 18 cm.
 
 1. Read `output/validation/report.html`. Resolve or explicitly record the reference
    seam differences before claiming sewing approval. The extreme waist58/hip118
-   scenario has invalid back cutting outlines; it is not the reference toile.
+   scenario's offset crossings were repaired on 8 September; stitch shapes are unchanged.
 2. Open `calibration-100mm.dxf` in the CAD/plotting program. Measure both sides:
    expected width 100.00 mm and height 100.00 mm. Units must be mm.
 3. Open `reference-python.dxf` in the same program. It has 20 named seam entities
@@ -25,7 +25,7 @@ back length 38, waist-to-hem length 50 cm, allowance 1 cm; hip depth 18 cm.
    The current single allowance setting does not supply these decisions automatically.
 6. Mark waist, hip, BP and grain on the toile from the construction/reference data.
    Keep the upper front princess notch separate from BP; they are not the same mark.
-   Side waist and back side hip need transferred reference marks for this trial.
+   Side waist and hip now have corresponding exported marks on SB and SF.
 
 ## Assembly and fitting
 

@@ -34,3 +34,5 @@ The live pages are under `web/`:
 - [GarmentDesign-PrincessLineDress.html](web/GarmentDesign-PrincessLineDress.html)
 
 Validation and the reference toile workflow live in [Validation/README.md](Validation/README.md). The preserved drafting baseline is commit 1e0bde4. Run the validation report before treating a measurement set as ready to cut.
+
+Current build order: [CHECKLIST.md](CHECKLIST.md). Next design controls: [DESIGN-PARAMETERS.md](DESIGN-PARAMETERS.md). Cutting-outline and notch changes: [Validation/STABILIZATION.md](Validation/STABILIZATION.md).

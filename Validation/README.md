@@ -2,7 +2,9 @@
 
 The drafting baseline is preserved in Git commit `1e0bde4`. Read `BASELINE.md`
 for final rules and their provenance, and `FITTING.md` for the physical trial.
-This folder adds diagnostics; it does not alter garment geometry.
+This folder adds diagnostics. The 8 September stabilization repairs allowance loops
+and adds paired side marks; stitch curves remain at the original baseline.
+See `STABILIZATION.md` for the current status and `../CHECKLIST.md` for the build order.
 
 ## Run
 
@@ -25,18 +27,21 @@ Outputs: `report.html`, `report.json`, `seams.csv`, reference Python/browser DXF
 `calibration-100mm.dxf`. Open the HTML report locally; it has no network dependencies.
 
 Exit code 1 means an engineering failure (including self-intersecting cut outlines).
-`--strict` also fails for open seam review flags. An expected failure in the current
-baseline is an honest finding, not a broken validation harness; do not loosen the
-checks to make the report green. Unit tests exercise the checking machinery separately.
+`--strict` also fails for open seam review flags. All current geometry scenarios
+pass after the cutting-outline repair, but sewing-ease review remains open.
+Do not loosen checks to make the report green. Unit tests exercise the checking
+machinery separately.
 
 ## What is checked
 
-- Fifteen scenarios: reference; small/large sets within slider ranges; individual
+- Seventeen scenarios: reference; small/large sets within slider ranges; individual
   bust/waist/hip/torso/length changes; 0 and 2.5 cm allowance; extreme and nearly
-  equal waist/hip combinations; two explicitly invalid inputs.
+  equal waist/hip combinations; extreme takeout with minimum/maximum allowances;
+  two explicitly invalid inputs.
 - Named stitch seams measured top-to-bottom, with distances projected onto their
-  actual exported notch points. Back and front princess pairs use the three stored
-  princess notches. Side seams use waist/hip intersections, explicitly unpaired references.
+  actual exported notch points. Matching uses stable notch IDs, not list positions.
+  Back and front princess pairs each have three marks; side seams now have paired
+  waist/hip marks. The SF hip mark retains its zipper-reference role.
 - Differences are second piece minus first (SB−CB, SF−CF, SF−SB), including
   segment and total lengths. A 0.1 cm diagnostic threshold prompts review; it is
   not an industry tolerance. Princess ease is unspecified, not automatically equal

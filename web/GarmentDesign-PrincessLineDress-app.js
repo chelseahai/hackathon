@@ -391,11 +391,26 @@
       return;
     }
     errorEl.hidden = true;
-    renderDraft(draft);
-    renderStats(draft);
+    try {
+      renderDraft(draft);
+      renderStats(draft);
+      document.getElementById("exportDxf").disabled = false;
+    } catch (error) {
+      showGeometryError(error);
+    }
+  }
+
+  function showGeometryError(error) {
+    drawing.replaceChildren();
+    statsEl.replaceChildren();
+    notesEl.hidden = true;
+    errorEl.hidden = false;
+    errorEl.textContent = error.message || "Unable to construct this cutting outline.";
+    document.getElementById("exportDxf").disabled = true;
   }
 
   function exportDxf() {
+    try {
     var draft = PrincessDress.draftPrincessDress(currentParams());
     if (draft.error) return;
     var seam = Number(fields.seamAllowance.value) || 0;
@@ -407,6 +422,9 @@
       PrincessDress.closeRing
     );
     PatternDxf.download("princess-line-dress.dxf", PatternDxf.fromPieces(pieces));
+    } catch (error) {
+      showGeometryError(error);
+    }
   }
 
   document.getElementById("exportDxf").addEventListener("click", exportDxf);

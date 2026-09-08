@@ -47,6 +47,56 @@ class ValidationTests(unittest.TestCase):
     def test_reference_outlines_are_valid(self):
         self.assertTrue(all(r['pass'] for r in validation.outline_checks(self.pieces)))
 
+    def test_waist_crossing_repair_preserves_stitch_and_reference_allowance(self):
+        from shapely.geometry import Polygon
+        for p in self.d.panels:
+            raw=self.draft._raw_offset_closed(p.outline,1)
+            fixed=self.draft.offset_closed(p.outline,1)
+            self.assertEqual(raw,fixed, 'Reference cutting contour should not change')
+        extreme=self.draft.draft_princess_dress(self.draft.DressParams(waist=58,hip=118))
+        for p in extreme.panels:
+            original=list(p.outline)
+            for allowance in [.1,1,2.5]:
+                for pts in [p.outline,list(reversed(p.outline)),
+                            [self.draft.Vec2(-v.x+123,v.y-51) for v in p.outline]]:
+                    cut=self.draft.offset_closed(pts,allowance)
+                    cp=Polygon(list(map(validation.xy,cut)))
+                    self.assertTrue(cp.is_valid, (p.name,allowance))
+                    self.assertTrue(cp.covers(Polygon(list(map(validation.xy,pts)))))
+            self.assertEqual(original,p.outline)
+
+    def test_named_notches_pair_regardless_of_storage_order(self):
+        altered=copy.deepcopy(self.d)
+        reference,_=validation.seam_rows(altered,self.policy)
+        for p in altered.panels:
+            p.notches.reverse(); p.notch_ids.reverse()
+        actual,issues=validation.seam_rows(altered,self.policy)
+        self.assertFalse(issues)
+        self.assertEqual(reference,actual)
+        p=altered.panels[1]
+        del p.notches[p.notch_ids.index('side.waist')]
+        p.notch_ids.remove('side.waist')
+        with self.assertRaises(ValueError): validation.seam_rows(altered,self.policy)
+
+    def test_side_marks_are_shared_at_waist_and_hip(self):
+        for p in self.d.panels[1:3]:
+            marks=dict(zip(p.notch_ids,p.notches))
+            self.assertAlmostEqual(marks['side.waist'].y,0)
+            self.assertAlmostEqual(marks['side.hip'].y,-18)
+        self.assertEqual(sum(len(p.notches) for p in self.d.panels),16)
+
+    def test_nested_loop_check_detects_edges_crossing_a_concavity(self):
+        v=self.draft.Vec2
+        outer=[v(x,y) for x,y in [(0,0),(10,0),(10,10),(8,10),(8,3),(7,3),(7,10),(0,10)]]
+        # Endpoints and midpoint of the top edge are inside, but x=7..8 is outside.
+        inner=[v(1,1),v(9,1),v(9,9),v(1,9)]
+        self.assertFalse(self.draft._nested_ring(inner,outer))
+
+    def test_disconnected_positive_lobes_are_not_silently_discarded(self):
+        ring=[self.draft.Vec2(x,y) for x,y in
+              [(0,0),(1,0),(1,1),(0,1),(0,0),(-1,0),(-1,-1),(0,-1)]]
+        with self.assertRaises(ValueError): self.draft._trim_offset_loops(ring)
+
     def test_self_intersection_is_detected(self):
         p=copy.deepcopy(self.pieces[0])
         p['cut']=[self.draft.Vec2(x,y) for x,y in [(0,0),(2,2),(0,2),(2,0),(0,0)]]

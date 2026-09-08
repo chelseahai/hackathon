@@ -11,6 +11,8 @@
   {"id":"zero_allowance","params":{"seam_allowance":0}},
   {"id":"maximum_allowance","params":{"seam_allowance":2.5}},
   {"id":"small_waist_large_hip","params":{"waist":58,"hip":118}},
+  {"id":"small_waist_large_hip_max_allowance","params":{"waist":58,"hip":118,"seam_allowance":2.5}},
+  {"id":"small_waist_large_hip_min_allowance","params":{"waist":58,"hip":118,"seam_allowance":0.1}},
   {"id":"near_equal_waist_hip","params":{"waist":81.5,"hip":82}},
   {"id":"invalid_waist_hip","params":{"waist":88,"hip":82},"expect_error":true},
   {"id":"invalid_length","params":{"dress_length":18},"expect_error":true}

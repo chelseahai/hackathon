@@ -42,7 +42,7 @@ interpolate = _bodice.interpolate
 arc_horizontal_at_start = _bodice.arc_horizontal_at_start
 polyline_length = _bodice.polyline_length
 point_along = _bodice.point_along
-offset_closed = _bodice.offset_closed
+_raw_offset_closed = _bodice.offset_closed
 close_ring = _bodice.close_ring
 _dedupe_closed = _bodice._dedupe_closed
 _same_point = _bodice._same_point
@@ -50,6 +50,109 @@ _signed_area = _bodice._signed_area
 lerp = _bodice.lerp
 
 PIECE_GAP = 4.0
+
+
+def _inside_ring(point: Vec2, ring: list[Vec2]) -> bool:
+    """Nonzero winding containment, including the boundary."""
+    winding = 0
+    for a, b in zip(ring, ring[1:] + ring[:1]):
+        dx, dy = b.x - a.x, b.y - a.y
+        cross = dx * (point.y - a.y) - dy * (point.x - a.x)
+        if (abs(cross) <= 1e-9 * max(1.0, hypot(dx, dy))
+                and min(a.x, b.x)-1e-9 <= point.x <= max(a.x, b.x)+1e-9
+                and min(a.y, b.y)-1e-9 <= point.y <= max(a.y, b.y)+1e-9):
+            return True
+        if a.y <= point.y < b.y and cross > 0:
+            winding += 1
+        elif b.y <= point.y < a.y and cross < 0:
+            winding -= 1
+    return winding != 0
+
+
+def _nested_ring(inner: list[Vec2], outer: list[Vec2]) -> bool:
+    # Split each inner edge at every outer crossing. Testing all resulting open
+    # intervals also catches an edge leaving/re-entering a concave outer ring.
+    for a, b in zip(inner, inner[1:] + inner[:1]):
+        if not _inside_ring(a, outer):
+            return False
+        rx, ry = b.x-a.x, b.y-a.y
+        cuts = [0.0, 1.0]
+        for c, d in zip(outer, outer[1:] + outer[:1]):
+            sx, sy = d.x-c.x, d.y-c.y
+            den = rx*sy-ry*sx
+            if abs(den) < 1e-12:
+                continue
+            qx, qy = c.x-a.x, c.y-a.y
+            t, u = (qx*sy-qy*sx)/den, (qx*ry-qy*rx)/den
+            if 0 <= t <= 1 and 0 <= u <= 1:
+                cuts.append(t)
+        cuts.sort()
+        for start, end in zip(cuts, cuts[1:]):
+            if end-start > 1e-12 and not _inside_ring(lerp(a,b,(start+end)/2),outer):
+                return False
+    return True
+
+
+def _trim_offset_loops(points: list[Vec2]) -> list[Vec2]:
+    """Trim reverse-winding loops where offset edges cross at a concave join.
+
+    Keep the exterior walk, meeting at the exact segment intersection. Do not
+    round corners, move stitch knots or pick a largest component arbitrarily.
+    Nested loops are redundant. Disconnected same-winding lobes are ambiguous
+    and must not be silently discarded.
+    """
+    ring = _dedupe_closed(points)
+    orientation = 1 if _signed_area(ring) > 0 else -1
+    for _ in range(len(ring)):
+        found = False
+        n = len(ring)
+        for i in range(n):
+            a, b = ring[i], ring[(i + 1) % n]
+            for j in range(i + 2, n):
+                if i == 0 and j == n - 1:
+                    continue
+                c, d = ring[j], ring[(j + 1) % n]
+                if (max(a.x, b.x) < min(c.x, d.x) or max(c.x, d.x) < min(a.x, b.x)
+                        or max(a.y, b.y) < min(c.y, d.y) or max(c.y, d.y) < min(a.y, b.y)):
+                    continue
+                rx, ry = b.x - a.x, b.y - a.y
+                sx, sy = d.x - c.x, d.y - c.y
+                denominator = rx * sy - ry * sx
+                if abs(denominator) < 1e-12:
+                    continue
+                qx, qy = c.x - a.x, c.y - a.y
+                t = (qx * sy - qy * sx) / denominator
+                u = (qx * ry - qy * rx) / denominator
+                if not (0 <= t <= 1 and 0 <= u <= 1):
+                    continue
+                hit = Vec2(a.x + t * rx, a.y + t * ry)
+                first = _dedupe_closed([hit, *ring[i + 1:j + 1]])
+                second = _dedupe_closed([*ring[:i + 1], hit, *ring[j + 1:]])
+                first_area = _signed_area(first) * orientation
+                second_area = _signed_area(second) * orientation
+                if first_area <= 1e-10 < second_area:
+                    ring = second
+                elif second_area <= 1e-10 < first_area:
+                    ring = first
+                elif first_area < second_area and _nested_ring(first, second):
+                    ring = second
+                elif second_area < first_area and _nested_ring(second, first):
+                    ring = first
+                else:
+                    raise ValueError("Seam allowance has ambiguous overlapping regions")
+                found = True
+                break
+            if found:
+                break
+        if not found:
+            return ring
+    raise ValueError("Seam allowance intersections could not be resolved")
+
+
+def offset_closed(points: list[Vec2], dist: float) -> list[Vec2]:
+    """Dress allowance: original miter offset with local crossing loops trimmed."""
+    raw = _raw_offset_closed(points, dist)
+    return _trim_offset_loops(raw) if dist else raw
 
 
 @dataclass
@@ -113,6 +216,7 @@ class Panel:
     overlays: list[list[Vec2]] = field(default_factory=list)
     pre_rotation: list[list[Vec2]] = field(default_factory=list)
     seams: list["Seam"] = field(default_factory=list)
+    notch_ids: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -331,6 +435,7 @@ def laid_out_panels(draft: DressDraft, seam: float = 0.0, gap: float = PIECE_GAP
                 overlays=[translate(poly, dx) for poly in panel.overlays],
                 pre_rotation=[translate(poly, dx) for poly in panel.pre_rotation],
                 seams=translate_seams(panel.seams, dx),
+                notch_ids=list(panel.notch_ids),
             )
         )
     return out
@@ -975,10 +1080,7 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     notch_ys = [bl_y, wl_y, hl_y]
     cb_notches = princess_notches(back_pr_cb, back_axis, notch_ys)
     sb_notches = princess_notches(back_pr_sb, back_axis, notch_ys)
-    zip_hit = nearest_hit(hits_at_y(front_side_r, hl_y), front_hip_pt)
     sf_notches = princess_notches(front_pr_sf, bp.x, notch_ys)
-    if zip_hit is not None:
-        sf_notches.append(zip_hit)
     cf_notches = princess_notches(front_pr_cf, bp.x, notch_ys)
 
     sf_construction = [
@@ -1099,6 +1201,23 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     for panel in panels:
         if len(panel.outline) < 4:
             raise ValueError(f"{panel.name} did not form a closed panel")
+        pair = "back_princess" if panel.name in ("Centre back", "Side back") else "front_princess"
+        if len(panel.notches) != 3:
+            raise ValueError(f"{panel.name} is missing a princess sewing mark")
+        panel.notch_ids = [f"{pair}.{level}" for level in ("upper", "waist", "hip")]
+        side = next((s for s in panel.seams if s.name.endswith("-Side")), None)
+        if side:
+            for level, y in (("waist", wl_y), ("hip", hl_y)):
+                hits = hits_at_y(side.points, y)
+                # Consecutive segments can both return the same knot.
+                unique = []
+                for hit in hits:
+                    if not any(_same_point(hit, old) for old in unique):
+                        unique.append(hit)
+                if len(unique) != 1:
+                    raise ValueError(f"{panel.name} has no unique {level} side mark")
+                panel.notches.append(unique[0])
+                panel.notch_ids.append(f"side.{level}")
 
     front_side_len = polyline_length(front_side_r)
     if abs(rot_ang) > 1e-6:

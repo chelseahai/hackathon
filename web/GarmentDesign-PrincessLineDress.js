@@ -237,7 +237,82 @@
       if (Math.abs(miter) > limit) miter = miter < 0 ? -limit : limit;
       out.push(add(curr, V((n1.x + n2.x) * miter, (n1.y + n2.y) * miter)));
     }
-    return out;
+    return trimOffsetLoops(out);
+  }
+
+  function insideRing(point,ring) {
+    var winding=0;
+    for(var i=0;i<ring.length;i++) {
+      var a=ring[i],b=ring[(i+1)%ring.length];
+      var dx=b.x-a.x,dy=b.y-a.y;
+      var cross=dx*(point.y-a.y)-dy*(point.x-a.x);
+      if(Math.abs(cross)<=1e-9*Math.max(1,Math.hypot(dx,dy)) &&
+         point.x>=Math.min(a.x,b.x)-1e-9 && point.x<=Math.max(a.x,b.x)+1e-9 &&
+         point.y>=Math.min(a.y,b.y)-1e-9 && point.y<=Math.max(a.y,b.y)+1e-9) return true;
+      if(a.y<=point.y && point.y<b.y && cross>0) winding++;
+      else if(b.y<=point.y && point.y<a.y && cross<0) winding--;
+    }
+    return winding!==0;
+  }
+
+  function nestedRing(inner,outer) {
+    for(var i=0;i<inner.length;i++) {
+      var a=inner[i],b=inner[(i+1)%inner.length];
+      if(!insideRing(a,outer)) return false;
+      var rx=b.x-a.x,ry=b.y-a.y,cuts=[0,1];
+      for(var j=0;j<outer.length;j++) {
+        var c=outer[j],d=outer[(j+1)%outer.length];
+        var sx=d.x-c.x,sy=d.y-c.y,den=rx*sy-ry*sx;
+        if(Math.abs(den)<1e-12) continue;
+        var qx=c.x-a.x,qy=c.y-a.y;
+        var t=(qx*sy-qy*sx)/den,u=(qx*ry-qy*rx)/den;
+        if(t>=0 && t<=1 && u>=0 && u<=1) cuts.push(t);
+      }
+      cuts.sort(function(x,y){return x-y;});
+      for(var k=0;k<cuts.length-1;k++) {
+        if(cuts[k+1]-cuts[k]>1e-12 && !insideRing(lerp(a,b,(cuts[k]+cuts[k+1])/2),outer)) return false;
+      }
+    }
+    return true;
+  }
+
+  function trimOffsetLoops(points) {
+    // Exact local crossing trim; no rounding and no changes to stitch geometry.
+    var ring = dedupeClosed(points);
+    var orientation = signedArea(ring) > 0 ? 1 : -1;
+    var limit = ring.length;
+    for (var pass = 0; pass < limit; pass++) {
+      var found = false;
+      var n = ring.length;
+      for (var i = 0; i < n && !found; i++) {
+        var a = ring[i], b = ring[(i + 1) % n];
+        for (var j = i + 2; j < n; j++) {
+          if (i === 0 && j === n - 1) continue;
+          var c = ring[j], d = ring[(j + 1) % n];
+          if (Math.max(a.x,b.x) < Math.min(c.x,d.x) || Math.max(c.x,d.x) < Math.min(a.x,b.x) ||
+              Math.max(a.y,b.y) < Math.min(c.y,d.y) || Math.max(c.y,d.y) < Math.min(a.y,b.y)) continue;
+          var rx = b.x-a.x, ry = b.y-a.y, sx = d.x-c.x, sy = d.y-c.y;
+          var den = rx*sy-ry*sx;
+          if (Math.abs(den) < 1e-12) continue;
+          var qx = c.x-a.x, qy = c.y-a.y;
+          var t = (qx*sy-qy*sx)/den, u = (qx*ry-qy*rx)/den;
+          if (!(t >= 0 && t <= 1 && u >= 0 && u <= 1)) continue;
+          var hit = V(a.x+t*rx,a.y+t*ry);
+          var first = dedupeClosed([hit].concat(ring.slice(i+1,j+1)));
+          var second = dedupeClosed(ring.slice(0,i+1).concat([hit],ring.slice(j+1)));
+          var area1 = signedArea(first)*orientation, area2 = signedArea(second)*orientation;
+          if (area1 <= 1e-10 && area2 > 1e-10) ring = second;
+          else if (area2 <= 1e-10 && area1 > 1e-10) ring = first;
+          else if (area1 < area2 && nestedRing(first,second)) ring = second;
+          else if (area2 < area1 && nestedRing(second,first)) ring = first;
+          else throw new Error("Seam allowance has ambiguous overlapping regions");
+          found = true;
+          break;
+        }
+      }
+      if (!found) return ring;
+    }
+    throw new Error("Seam allowance intersections could not be resolved");
   }
 
   function polylineLength(points) {
@@ -508,6 +583,7 @@
         name: panel.name,
         outline: translate(panel.outline, shifts[i]),
         notches: translate(panel.notches, shifts[i]),
+        notchIds: (panel.notchIds || []).slice(),
         marks: translateMarks(panel.marks || [], shifts[i]),
         construction: (panel.construction || []).map(function (poly) {
           return translate(poly, shifts[i]);
@@ -1022,9 +1098,7 @@
     var notchYs = [blY, wlY, hlY];
     var cbNotches = princessNotches(backPrCb, backAxis, notchYs);
     var sbNotches = princessNotches(backPrSb, backAxis, notchYs);
-    var zipHit = nearestHit(hitsAtY(frontSideR, hlY), frontHipPt);
     var sfNotches = princessNotches(frontPrSf, bp.x, notchYs);
-    if (zipHit) sfNotches.push(zipHit);
     var cfNotches = princessNotches(frontPrCf, bp.x, notchYs);
 
     var sfConstruction = [
@@ -1144,6 +1218,24 @@
     for (var k = 0; k < panels.length; k++) {
       if (panels[k].outline.length < 4) {
         return { error: panels[k].name + " did not form a closed panel." };
+      }
+      var panel = panels[k];
+      var pair = panel.name === "Centre back" || panel.name === "Side back" ? "back_princess" : "front_princess";
+      if (panel.notches.length !== 3) return {error: panel.name + " is missing a princess sewing mark"};
+      panel.notchIds = [pair+".upper",pair+".waist",pair+".hip"];
+      var side = panel.seams.find(function(s) { return s.name.endsWith("-Side"); });
+      if (side) {
+        var sideLevels = [["waist",wlY],["hip",hlY]];
+        for (var levelIndex = 0; levelIndex < sideLevels.length; levelIndex++) {
+          var level = sideLevels[levelIndex];
+          var unique = [];
+          hitsAtY(side.points,level[1]).forEach(function(hit) {
+            if (!unique.some(function(old) { return samePoint(hit,old); })) unique.push(hit);
+          });
+          if (unique.length !== 1) return {error: panel.name + " has no unique " + level[0] + " side mark"};
+          panel.notches.push(unique[0]);
+          panel.notchIds.push("side."+level[0]);
+        }
       }
     }
 
