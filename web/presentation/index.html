@@ -6,18 +6,18 @@
   <meta name="description" content="A spatial study of the body, pattern and possibility. Math Dress project presentation prototype.">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="presentation.css?v=5">
+  <link rel="stylesheet" href="presentation.css?v=6">
   <script src="../BasicBlock-Bodice.js" defer></script>
   <script src="../BasicBlock-Skirt.js" defer></script>
   <script src="../GarmentDesign-PrincessLineDress.js?v=53" defer></script>
-  <script src="bodice-excerpts.js?v=2" defer></script>
-  <script src="../BasicBlock-Bodice.js" defer></script>
-  <script src="../BasicBlock-Skirt.js" defer></script>
-  <script src="../GarmentDesign-PrincessLineDress.js?v=53" defer></script>
-  <script src="bodice-excerpts.js?v=2" defer></script>
+  <script src="../BasicBlock-Sleeve.js" defer></script>
+  <script src="../BasicBlock-Trousers.js" defer></script>
+  <script src="basic-sequences.js?v=1" defer></script>
+  <script src="sequence-source.js?v=3" defer></script>
   <script src="presentation.js?v=4" defer></script>
-  <script src="project-live.js?v=2" defer></script>
-  <script src="project-live.js?v=2" defer></script>
+  <script src="project-live.js?v=3" defer></script>
+  <link rel="stylesheet" href="drafting-film.css?v=4">
+  <script src="drafting-film.js?v=5" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to project</a>
@@ -40,23 +40,46 @@
     <div class="section-heading"><p class="micro">03 / A measured beginning</p><h2 id="body-heading">The body comes first.</h2></div>
     <div class="background-grid"><div><p class="body-copy">A line on paper begins with a dimension of the body. Circumference, proportion and length become the coordinates of a garment.</p><div class="measurement-grid" aria-label="Measurement table placeholder"><span>BODY / INPUT</span><span>01</span><span>02</span><span>03</span><span>Bust</span><span>—</span><span>—</span><span>—</span><span>Waist</span><span>—</span><span>—</span><span>—</span><span>Hip</span><span>—</span><span>—</span><span>—</span><span>Back length</span><span>—</span><span>—</span><span>—</span><span>Proportion</span><span>—</span><span>—</span><span>—</span></div><p class="caption">Measurement definitions & source material / placeholder</p></div><div><div class="body-diagrams" data-models="3" aria-hidden="true"></div><h3>Every measurement has a meaning.</h3><p class="body-copy">Space for the measurement method: where a dimension is taken, why it matters, and how it enters the mathematical description of a pattern.</p><p class="formula">body → coordinates → form</p></div></div>
   </section>
-  <section id="blocks" class="chapter blocks" aria-labelledby="blocks-heading">
-    <div class="section-heading"><p class="micro">04 / Rules made visible</p><h2 id="blocks-heading">From instruction to geometry.</h2></div>
-    <div class="draft-columns">
-      <div><p class="column-label">01 / Drafting rules</p><div class="block-steps" role="group" aria-label="Bodice construction stages">
-        <button data-step="0" aria-pressed="false"><span>01—06 / Frame</span><strong>Establish the reference lines</strong><small>Back length; B/2 + 5 width; B/6 + 7 scye depth; back and chest widths.</small></button>
-        <button data-step="1" aria-pressed="false"><span>07—10 / Neck & shoulder</span><strong>Locate the upper landmarks</strong><small>Neck unit B/12; front neck corrections; front shoulder 1.8 cm shorter.</small></button>
-        <button data-step="2" aria-pressed="false"><span>11—12 / Armhole</span><strong>Connect the construction points</strong><small>Half-depth and bisector points guide the back and front armhole curves.</small></button>
-        <button data-step="3" aria-pressed="true"><span>13—16 / Resolve</span><strong>Complete the basic block</strong><small>Shift the side waist 2 cm back; locate BP; extend the front hem; place notches.</small></button>
-      </div><p class="caption">Textbook pp. 108–110 · reference body B 84 / back length 38 cm.</p><a class="text-link" href="../BasicBlock-Bodice.html" target="_blank" rel="noopener">Open original bodice tool ↗</a></div>
-      <div class="code-column"><p class="column-label">02 / Python implementation</p><pre><code id="bodice-code"></code></pre><p id="bodice-source" class="caption"></p><p class="caption implementation-note">The code samples curves through the construction points. Its sleeve notch convention is half the drafted armhole arc plus 3 cm toward the underarm; this is an implementation choice, not a literal vertical offset.</p></div>
-      <div><p class="column-label">03 / Graphic construction</p><div class="block-drawing" id="live-bodice"></div><p class="caption" id="bodice-caption" aria-live="polite"></p></div>
+  <section id="blocks" class="chapter drafting-film" aria-labelledby="blocks-heading">
+    <div class="film-heading"><p class="micro">04 / Rules in motion</p><h2 id="blocks-heading">A rule becomes a line.</h2><p class="caption">Four basic blocks. Read the rule, follow the calculation, watch the pattern emerge.</p></div>
+<div class="block-selector" role="group" aria-label="Basic pattern block"><button data-block="body" aria-pressed="true">Bodice</button><button data-block="skirt" aria-pressed="false">Skirt</button><button data-block="sleeve" aria-pressed="false">Sleeve</button><button data-block="trousers" aria-pressed="false">Trousers</button></div>
+    <div class="film-layout" data-sequence="body">
+      <aside class="film-story"><span class="film-number" aria-hidden="true">01</span><p class="micro film-step-label"></p><h3 class="film-step-title"></h3><p class="film-step-copy"></p><div class="film-rules" tabindex="0" role="region" aria-label="Bodice drafting rules"></div><p class="film-note"></p></aside>
+      <div class="film-code"><div class="code-heading"><span>Python / source</span><span class="code-shapes" aria-hidden="true">■ ▲ ●</span></div><div class="code-window" tabindex="0" role="region" aria-label="Bodice Python source"><pre><code></code></pre></div><p class="code-citation"></p></div>
+      <div class="film-visual"><div class="film-svg"></div><div class="film-legend"><span>― outline</span><span>┄ reference guide</span><span>● point</span><span>Blue / current step</span></div></div>
+      <div class="film-controls"><button data-action="previous" aria-label="Previous bodice step">← Previous</button><button data-action="play">Pause</button><button data-action="next" aria-label="Next bodice step">Next →</button><span class="film-counter"></span><label>Tempo <select aria-label="Bodice animation tempo"><option value="4500">Measured</option><option value="7000">Slow</option><option value="2500">Quick</option></select></label><button data-action="restart">Restart ↺</button></div>
     </div>
+    <div class="film-layout" data-sequence="skirt" hidden>
+      <aside class="film-story"><span class="film-number" aria-hidden="true">01</span><p class="micro film-step-label"></p><h3 class="film-step-title"></h3><p class="film-step-copy"></p><div class="film-rules" tabindex="0" role="region" aria-label="Skirt drafting rules"></div><p class="film-note"></p></aside>
+      <div class="film-code"><div class="code-heading"><span>Python / source</span><span class="code-shapes" aria-hidden="true">■ ▲ ●</span></div><div class="code-window" tabindex="0" role="region" aria-label="Skirt Python source"><pre><code></code></pre></div><p class="code-citation"></p></div>
+      <div class="film-visual"><div class="film-svg"></div><div class="film-legend"><span>― outline</span><span>┄ reference guide</span><span>● point</span><span>Blue / current step</span></div></div>
+      <div class="film-controls"><button data-action="previous" aria-label="Previous skirt step">← Previous</button><button data-action="play">Pause</button><button data-action="next" aria-label="Next skirt step">Next →</button><span class="film-counter"></span><label>Tempo <select aria-label="Skirt animation tempo"><option value="4500">Measured</option><option value="7000">Slow</option><option value="2500">Quick</option></select></label><button data-action="restart">Restart ↺</button></div>
+    </div>
+    <div class="film-layout" data-sequence="sleeve" hidden>
+      <aside class="film-story"><span class="film-number" aria-hidden="true">01</span><p class="micro film-step-label"></p><h3 class="film-step-title"></h3><p class="film-step-copy"></p><div class="film-rules" tabindex="0" role="region" aria-label="Sleeve drafting rules"></div><p class="film-note"></p></aside>
+      <div class="film-code"><div class="code-heading"><span>Python / source</span><span class="code-shapes" aria-hidden="true">■ ▲ ●</span></div><div class="code-window" tabindex="0" role="region" aria-label="Sleeve Python source"><pre><code></code></pre></div><p class="code-citation"></p></div>
+      <div class="film-visual"><div class="film-svg"></div><div class="film-legend"><span>― outline</span><span>┄ reference guide</span><span>● point</span><span>Blue / current step</span></div></div>
+      <div class="film-controls"><button data-action="previous" aria-label="Previous sleeve step">← Previous</button><button data-action="play">Pause</button><button data-action="next" aria-label="Next sleeve step">Next →</button><span class="film-counter"></span><label>Tempo <select aria-label="Sleeve animation tempo"><option value="4500">Measured</option><option value="7000">Slow</option><option value="2500">Quick</option></select></label><button data-action="restart">Restart ↺</button></div>
+    </div>
+    <div class="film-layout" data-sequence="trousers" hidden>
+      <aside class="film-story"><span class="film-number" aria-hidden="true">01</span><p class="micro film-step-label"></p><h3 class="film-step-title"></h3><p class="film-step-copy"></p><div class="film-rules" tabindex="0" role="region" aria-label="Trousers drafting rules"></div><p class="film-note"></p></aside>
+      <div class="film-code"><div class="code-heading"><span>Python / source</span><span class="code-shapes" aria-hidden="true">■ ▲ ●</span></div><div class="code-window" tabindex="0" role="region" aria-label="Trousers Python source"><pre><code></code></pre></div><p class="code-citation"></p></div>
+      <div class="film-visual"><div class="film-svg"></div><div class="film-legend"><span>― outline</span><span>┄ reference guide</span><span>● point</span><span>Blue / current step</span></div></div>
+      <div class="film-controls"><button data-action="previous" aria-label="Previous trousers step">← Previous</button><button data-action="play">Pause</button><button data-action="next" aria-label="Next trousers step">Next →</button><span class="film-counter"></span><label>Tempo <select aria-label="Trousers animation tempo"><option value="4500">Measured</option><option value="7000">Slow</option><option value="2500">Quick</option></select></label><button data-action="restart">Restart ↺</button></div>
+    </div>
+    <p class="caption film-source-note">Reference inputs: bust 84 · waist 68 · hip 90 · back length 38 cm. Skirt length 50 · sleeve length 52 · trouser length 98 · rise 26 · trouser hem width 19 cm. Sleeve armhole inputs are measured from this bodice. Outlines show stitch geometry, before seam allowance.</p>
+    <a class="text-link" href="../BasicBlock-Bodice.html" target="_blank" rel="noopener">Open full drafting tool ↗</a>
   </section>
-  <section id="conversion" class="chapter transformation" aria-labelledby="conversion-heading">
-    <div class="conversion-intro"><p class="micro">05 / Block → princess line</p><h2 id="conversion-heading">A new seam. <br>A different reading of the body.</h2><p class="body-copy centered">Space for the conversion story: how the block is divided, how shaping is transferred, and how separate lines become continuous panels.</p></div>
-    <div class="photo-strip" data-photo-strip="Block study|Shaping transfer|Princess line"></div>
-    <div class="pattern-strip" data-pattern-strip="Original block|Transferred shaping|Continuous panels"></div>
+  <section id="conversion" class="chapter drafting-film" aria-labelledby="conversion-heading">
+    <div class="film-heading"><p class="micro">05 / Rules in motion</p><h2 id="conversion-heading">Two blocks. One continuous dress.</h2><p class="caption">Follow the bodice and skirt into the princess-line system.</p></div>
+    <div class="film-layout" data-sequence="dress">
+      <aside class="film-story"><span class="film-number" aria-hidden="true">01</span><p class="micro film-step-label"></p><h3 class="film-step-title"></h3><p class="film-step-copy"></p><div class="film-step-nav" role="group" aria-label="Dress drafting steps"></div><p class="film-note"></p></aside>
+      <div class="film-code"><div class="code-heading"><span>Python / source</span><span class="code-shapes" aria-hidden="true">■ ▲ ●</span></div><div class="code-window" tabindex="0" role="region" aria-label="Dress Python source"><pre><code></code></pre></div><p class="code-citation"></p></div>
+      <div class="film-visual"><div class="film-svg"></div><div class="film-legend"><span>― outline</span><span>┄ reference guide</span><span>● point</span><span>Blue / current step</span></div></div>
+      <div class="film-controls"><button data-action="previous" aria-label="Previous dress step">← Previous</button><button data-action="play">Pause</button><button data-action="next" aria-label="Next dress step">Next →</button><span class="film-counter"></span><label>Tempo <select aria-label="Dress animation tempo"><option value="4500">Measured</option><option value="7000">Slow</option><option value="2500">Quick</option></select></label><button data-action="restart">Restart ↺</button></div>
+    </div>
+    <p class="caption film-source-note">Reference body · actual bodice, skirt and dress geometry. Construction layers are revealed in sequence; the presentation does not simulate cloth or claim physical fit.</p>
+    <a class="text-link" href="../GarmentDesign-PrincessLineDress.html" target="_blank" rel="noopener">Open full drafting tool ↗</a>
   </section>
   <section id="reuse" class="chapter reuse dark" aria-labelledby="reuse-heading">
     <p class="micro section-tag">06 / An open system</p><h2 id="reuse-heading">The next form<br>is already in the rules.</h2>
@@ -81,3 +104,6 @@
   <section id="closing" class="chapter closing dark" aria-labelledby="closing-heading"><p class="micro section-tag">14 / Beyond the pattern</p><div class="closing-art" aria-hidden="true"><div data-pattern="1"></div><div data-pattern="2"></div><div data-pattern="3"></div></div><h2 id="closing-heading">Still becoming.</h2><div class="chapter-foot"><span>Final artistic image / placeholder</span><a href="#hero">Back to top ↑</a></div></section>
 </main>
 </body></html>
+
+
+

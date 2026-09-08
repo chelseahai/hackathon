@@ -12,25 +12,6 @@
     labels.forEach(label=>svg.append(el('text',{x:label.x,y:-label.y,class:'live-label'},label.text)));
     host.replaceChildren(svg);
   }
-  const d=BodyBlock.draftBody({bust:84,backLength:38}),V=BodyBlock.V;
-  const stageNames=['Reference frame','Neck and shoulder landmarks','Armhole curves','Resolved bodice block'];
-  function renderBodice(stage){
-    const lines=[],add=(points,guide=false)=>lines.push({points,guide});
-    add([V(0,0),V(0,d.topY),V(d.cfX,d.topY),V(d.cfX,0),V(0,0)],true);
-    add([V(0,d.blY),V(d.cfX,d.blY)],true);
-    [d.backWidthX,d.chestWidthX,d.sideX].forEach(x=>add([V(x,0),V(x,d.topY)],true));
-    if(stage>=1){add(d.backNeck);add(d.frontNeck);add([d.backSnp,d.backShoulder]);add([d.frontSnp,d.frontShoulder]);}
-    if(stage>=2){add(d.backArmhole);add(d.frontArmhole);}
-    if(stage>=3){add(BodyBlock.closeRing(BodyBlock.backOutline(d)));add(BodyBlock.closeRing(BodyBlock.frontOutline(d)));[d.notchA,d.notchB,d.bp].forEach(p=>{add([V(p.x-.4,p.y),V(p.x+.4,p.y)]);add([V(p.x,p.y-.4),V(p.x,p.y+.4)]);});}
-    const labels=[{x:2,y:d.blY+1,text:'BL'},{x:2,y:1,text:'WL'},{x:6,y:9,text:'BACK'},{x:34,y:9,text:'FRONT'}];
-    if(stage===3)labels.push({x:d.bp.x+1,y:d.bp.y,text:'BP'});
-    drawing(document.querySelector('#live-bodice'),lines,labels);
-    const snippet=BodiceExcerpts[stage];document.querySelector('#bodice-code').textContent=snippet.code;
-    document.querySelector('#bodice-source').textContent=`${snippet.source} · line ${snippet.line} · verbatim excerpt`;
-    document.querySelector('#bodice-caption').textContent=`${stageNames[stage]} · width ${d.totalWidth.toFixed(1)} cm / scye depth ${d.armholeDepth.toFixed(1)} cm`;
-    document.querySelectorAll('[data-step]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.step)===stage)));
-  }
-  document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>renderBodice(Number(b.dataset.step))));renderBodice(3);
   const controls=[...document.querySelectorAll('[data-dress-param]')],shares={reference:[3/16,4/16,4/16,5/16],princess:[0,.5,0,.5],side:[.5,0,.5,0],equal:[.25,.25,.25,.25]};
   function renderDress(){
     const error=document.querySelector('#dress-error'),host=document.querySelector('#live-dress'),summary=document.querySelector('#dress-summary');
