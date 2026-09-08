@@ -22,16 +22,16 @@ The two later direction discussions are outside the current build scope.
 - [x] Specify body, garment-ease, design and construction responsibilities.
 - [x] Define the first five controls and default-preserving equations in
       `DESIGN-PARAMETERS.md`.
-- [ ] Implement separate configuration storage and dependent geometry calculations.
+- [x] Implement separate configuration storage and dependent geometry calculations.
 - [ ] Validate the proposed ranges and unsupported combinations.
 
 ## 3. Build design controls
 
 - [x] Waist-to-hem length exists in the current draft.
-- [ ] Waist ease and hip ease as full-circumference inputs.
-- [ ] Total hem fullness and its distribution.
-- [ ] Recompute dependent seams, marks and allowances.
-- [ ] Keep the existing page design and distinguish body from design inputs.
+- [x] Waist ease and hip ease as full-circumference inputs.
+- [x] Total hem fullness and its distribution.
+- [x] Recompute dependent seams, marks and allowances.
+- [x] Keep the existing page design and distinguish body from design inputs.
 
 ## 4. Design experiment
 

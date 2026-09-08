@@ -33,7 +33,21 @@
     return Number(n).toFixed(digits === undefined ? 2 : digits) + " cm";
   }
 
-  var OWNED = ["bust", "backLength", "waist", "hip", "dressLength", "seamAllowance"];
+  var OWNED = ["bust", "backLength", "waist", "hip"];
+  var designKeys = ["dressLength", "waistEase", "hipEase", "hemFullness"];
+  var storageKey = "princess-dress.design.v1";
+  var defaults = {dressLength:50, waistEase:3, hipEase:4, hemFullness:32, seamAllowance:1};
+  var shares = [3/16,4/16,4/16,5/16];
+  designKeys.forEach(function(k){fields[k]=document.getElementById(k); outs[k]=document.getElementById(k+"Out");});
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey)) || {}; } catch(e) {}
+  if (!saved || typeof saved !== "object" || Array.isArray(saved)) saved={};
+  if (Array.isArray(saved.hemDistribution) && saved.hemDistribution.length===4 && saved.hemDistribution.every(function(v){return Number.isFinite(v) && v>=0;}) && Math.abs(saved.hemDistribution.reduce(function(a,b){return a+b;},0)-1)<1e-9) shares=saved.hemDistribution.slice();
+  Object.keys(defaults).forEach(function(k){fields[k].value=Number.isFinite(saved[k]) ? saved[k] : defaults[k];});
+  function updateShares() {
+    shares.forEach(function(v,i){document.getElementById("share"+i).value=v*100; document.getElementById("share"+i+"Out").textContent=(v*100).toFixed(2)+"%";});
+  }
+  updateShares();
 
   function toggleOn(el) {
     return el.getAttribute("aria-pressed") === "true";
@@ -47,6 +61,10 @@
       hip: Number(fields.hip.value),
       dressLength: Number(fields.dressLength.value),
       seamAllowance: Number(fields.seamAllowance.value),
+      waistEase: Number(fields.waistEase.value),
+      hipEase: Number(fields.hipEase.value),
+      hemFullness: Number(fields.hemFullness.value),
+      hemDistribution: shares.slice(),
     };
   }
 
@@ -379,10 +397,16 @@
     outs.dressLength.textContent = fmt(fields.dressLength.value);
     outs.seamAllowance.textContent = fmt(fields.seamAllowance.value);
 
-    PatternStore.write(currentParams());
+    var params=currentParams(), body={}, design={};
+    OWNED.forEach(function(k){body[k]=params[k];});
+    designKeys.concat(["seamAllowance","hemDistribution"]).forEach(function(k){design[k]=params[k];});
+    designKeys.forEach(function(k){outs[k].textContent=fmt(params[k]);});
+    PatternStore.write(body);
+    try {localStorage.setItem(storageKey,JSON.stringify(design));} catch(e) {}
 
     var draft = PrincessDress.draftPrincessDress(currentParams());
     if (draft.error) {
+      document.getElementById("exportDxf").disabled = true;
       drawing.innerHTML = "";
       errorEl.hidden = false;
       errorEl.textContent = draft.error;
@@ -429,12 +453,31 @@
 
   document.getElementById("exportDxf").addEventListener("click", exportDxf);
 
-  PatternPage.mount({
-    fields: fields,
+  var bodyFields={};
+  OWNED.forEach(function(k){bodyFields[k]=fields[k];});
+  var page = PatternPage.mount({
+    fields: bodyFields,
     toggles: toggles,
     owned: OWNED,
     sheet: document.getElementById("sheet"),
     reset: document.getElementById("reset"),
     redraw: redraw,
+  });
+  designKeys.concat(["seamAllowance"]).forEach(function(k){fields[k].addEventListener("input",page.requestRedraw);});
+  shares.forEach(function(_,i){document.getElementById("share"+i).addEventListener("input",function(){
+    var value=Number(this.value)/100, rest=1-shares[i];
+    shares=shares.map(function(v,j){return j===i ? value : (rest>1e-12 ? v/rest : 1/3)*(1-value);});
+    updateShares(); page.requestRedraw();
+  });});
+  document.getElementById("resetDesign").addEventListener("click",function(){
+    designKeys.forEach(function(k){fields[k].value=defaults[k];}); shares=[3/16,4/16,4/16,5/16]; updateShares(); page.requestRedraw();
+  });
+  document.getElementById("saveConfig").addEventListener("click",function(){
+    var p=currentParams(), body={}, design={};
+    OWNED.forEach(function(k){body[k]=p[k];});
+    designKeys.concat(["hemDistribution"]).forEach(function(k){design[k]=p[k];});
+    var config={schemaVersion:1, ruleVersion:"princess-dress/design-v1", units:"cm", body:body, design:design, construction:{seamAllowance:p.seamAllowance}, validation:{physicalFit:"unverified", geometry:PrincessDress.draftPrincessDress(p).error || "Not independently checked; run Validation/run.py"}};
+    var url=URL.createObjectURL(new Blob([JSON.stringify(config,null,2)],{type:"application/json"}));
+    var a=document.createElement("a"); a.href=url; a.download="princess-dress-configuration.json"; a.click(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
   });
 })();

@@ -46,9 +46,10 @@
     neckWiden: 0.5,
     shoulderDrop: 0.5,
     armholeRaise: 0.5,
-    backHemFlare: 3,
-    frontHemFlare: 4,
-    princessFlareExtra: 0.5,
+    waistEase: 3,
+    hipEase: 4,
+    hemFullness: 32,
+    hemDistribution: [3/16, 4/16, 4/16, 5/16],
     sideHemRaise: 0.5,
     hemCtrlFromFold: 2 / 3,
     backDartFromSnp: 5.5,
@@ -725,6 +726,10 @@
   function draftPrincessDress(input) {
     var p = Object.assign({}, DEFAULT_PARAMS, input || {});
     var notes = [];
+    if (![p.bust,p.waist,p.hip,p.backLength,p.dressLength,p.hipDepth,p.seamAllowance,p.waistEase,p.hipEase,p.hemFullness].every(Number.isFinite)) return {error: "Measurements and design settings must be finite."};
+    if (!(p.waistEase >= 0 && p.waistEase <= 12 && p.hipEase >= 0 && p.hipEase <= 12 && p.hemFullness >= 0 && p.hemFullness <= 80)) return {error: "Ease must be 0–12 cm and hem fullness 0–80 cm."};
+    if (!Array.isArray(p.hemDistribution) || p.hemDistribution.length !== 4 || !p.hemDistribution.every(function(v){return Number.isFinite(v) && v >= 0;}) || Math.abs(p.hemDistribution.reduce(function(a,b){return a+b;},0)-1)>1e-9) return {error: "Hem distribution needs four nonnegative shares summing to one."};
+    if (!(p.backLength > 0 && p.hipDepth > 0 && p.seamAllowance >= 0)) return {error: "Lengths must be positive and seam allowance nonnegative."};
 
     if (!(p.bust > 0) || !(p.waist > 0) || !(p.hip > 0)) {
       return { error: "Bust, waist, and hip must be positive." };
@@ -825,10 +830,10 @@
     var bpFront = raiseUp(V(body.bp.x, bpY), frontLift);
     var cfNeck = raiseUp(body.cfNeck, frontLift);
 
-    var backHip = skirt.backHip;
-    var frontHip = skirt.frontHip;
-    var backWaist = p.waist / 4;
-    var frontWaist = skirt.frontWaist;
+    var backHip = (p.hip + p.hipEase) / 4 - 1;
+    var frontHip = (p.hip + p.hipEase) / 4 + 1;
+    var backWaist = (p.waist + p.waistEase) / 4 - 0.75;
+    var frontWaist = (p.waist + p.waistEase) / 4 + 0.75;
     var backTake = backHip - backWaist;
     var frontTake = frontHip - frontWaist;
     if (backTake <= 0 || frontTake <= 0) {
@@ -853,14 +858,14 @@
     var cfHem = V(cfX, hemY);
     var backHipPt = V(backHip, hlY);
     var backSideWaist = V(backHip - backSideTake, wlY);
-    var backSideHem0 = offsetOutward(V(backHip, hemY), V(0, hemY), p.backHemFlare);
+    var backSideHem0 = offsetOutward(V(backHip, hemY), V(0, hemY), p.hemFullness / 2 * p.hemDistribution[0]);
     var backHem23 = lerp(cbHem, backSideHem0, p.hemCtrlFromFold);
     var backSideHem = raiseUp(backSideHem0, p.sideHemRaise);
     var backWhHalf = lerp(backSideWaist, backHipPt, 0.5);
     var backSideHalf = lerp(backHipPt, backSideHem, 0.5);
     var frontHipPt = V(cfX - frontHip, hlY);
     var frontSideWaist = V(cfX - frontHip + frontSideTake, wlY);
-    var frontSideHem0 = offsetOutward(V(cfX - frontHip, hemY), V(cfX, hemY), p.frontHemFlare);
+    var frontSideHem0 = offsetOutward(V(cfX - frontHip, hemY), V(cfX, hemY), p.hemFullness / 2 * p.hemDistribution[2]);
     var frontHem23 = lerp(cfHem, frontSideHem0, p.hemCtrlFromFold);
     var frontSideHem = raiseUp(frontSideHem0, p.sideHemRaise);
     var frontWhHalf = lerp(frontSideWaist, frontHipPt, 0.5);
@@ -906,7 +911,7 @@
     var sbWaist = V(backAxis + backDart / 2, wlY);
     var cbHip = V(backAxis, hlY);
     var sbHip = V(backAxis, hlY);
-    var backPrFlare = p.backHemFlare / 2 + p.princessFlareExtra;
+    var backPrFlare = p.hemFullness / 4 * p.hemDistribution[1];
     var cbPrHem = offsetOutward(V(backAxis, hemY), V(0, hemY), backPrFlare);
     var sbPrHem = offsetOutward(V(backAxis, hemY), V(backHip, hemY), backPrFlare);
     var blPt = V(backAxis, blY);
@@ -987,7 +992,7 @@
     var sfPrWaist = V(bp.x - frontDart / 2, wlY);
     var cfPrHip = V(bp.x, hlY);
     var sfPrHip = V(bp.x, hlY);
-    var frontPrFlare = p.frontHemFlare / 2 + p.princessFlareExtra;
+    var frontPrFlare = p.hemFullness / 4 * p.hemDistribution[3];
     var cfPrHem = offsetOutward(V(bp.x, hemY), V(cfX, hemY), frontPrFlare);
     var sfPrHem = offsetOutward(V(bp.x, hemY), V(cfX - frontHip, hemY), frontPrFlare);
     var cfKnot4 = V(cfPrHip.x, cfPrHip.y + p.princessAboveHip);

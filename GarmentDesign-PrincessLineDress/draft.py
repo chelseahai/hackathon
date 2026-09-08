@@ -17,7 +17,7 @@ from __future__ import annotations
 import importlib.util
 import sys
 from dataclasses import dataclass, field
-from math import atan2, cos, hypot, sin, sqrt
+from math import atan2, cos, hypot, isfinite, sin, sqrt
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -174,9 +174,11 @@ class DressParams:
     neck_widen: float = 0.5
     shoulder_drop: float = 0.5
     armhole_raise: float = 0.5
-    back_hem_flare: float = 3.0
-    front_hem_flare: float = 4.0
-    princess_flare_extra: float = 0.5
+    waist_ease: float = 3.0
+    hip_ease: float = 4.0
+    hem_fullness: float = 32.0
+    # Back side, back princess, front side, front princess; full garment shares.
+    hem_distribution: tuple[float, ...] = (3/16, 4/16, 4/16, 5/16)
     side_hem_raise: float = 0.5
     hem_ctrl_from_fold: float = 2.0 / 3.0
     back_dart_from_snp: float = 5.5
@@ -664,6 +666,17 @@ def _seams_ccw(seams: list[Seam]) -> tuple[list[Seam], list[Vec2]]:
 def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     p = params or DressParams()
     notes: list[str] = []
+    if not all(isfinite(v) for v in (p.bust, p.waist, p.hip, p.back_length,
+            p.dress_length, p.hip_depth, p.seam_allowance, p.waist_ease, p.hip_ease, p.hem_fullness)):
+        raise ValueError("Measurements and design settings must be finite")
+    if not (0 <= p.waist_ease <= 12 and 0 <= p.hip_ease <= 12 and 0 <= p.hem_fullness <= 80):
+        raise ValueError("Ease must be 0–12 cm and hem fullness 0–80 cm")
+    if (len(p.hem_distribution) != 4 or
+            any(not isfinite(v) or v < 0 for v in p.hem_distribution) or
+            abs(sum(p.hem_distribution)-1) > 1e-9):
+        raise ValueError("Hem distribution needs four nonnegative shares summing to one")
+    if p.back_length <= 0 or p.hip_depth <= 0 or p.seam_allowance < 0:
+        raise ValueError("Lengths must be positive and seam allowance nonnegative")
 
     if p.bust <= 0 or p.waist <= 0 or p.hip <= 0:
         raise ValueError("bust, waist, and hip must be positive")
@@ -769,10 +782,10 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     # Actual waists: CB+SB = W/4, CF+SF = skirt front (W/4+0.5+1).
     # At the 68/90 reference the princess dart is 3 cm; other sizes keep
     # that dart:side ratio so both the princess edge and the side seam move.
-    back_hip = skirt.back_hip
-    front_hip = skirt.front_hip
-    back_waist = p.waist / 4.0
-    front_waist = skirt.front_waist
+    back_hip = (p.hip + p.hip_ease) / 4 - 1
+    front_hip = (p.hip + p.hip_ease) / 4 + 1
+    back_waist = (p.waist + p.waist_ease) / 4 - 0.75
+    front_waist = (p.waist + p.waist_ease) / 4 + 0.75
     back_take = back_hip - back_waist
     front_take = front_hip - front_waist
     if back_take <= 0 or front_take <= 0:
@@ -799,7 +812,7 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     back_side_waist = Vec2(back_hip - back_side_take, wl_y)
     # Original hem width is the hip (CB → unflared side). Add the side-seam
     # flare, then take 2/3 of that total from the fold as a hem control.
-    back_side_hem0 = _offset_outward(Vec2(back_hip, hem_y), Vec2(0.0, hem_y), p.back_hem_flare)
+    back_side_hem0 = _offset_outward(Vec2(back_hip, hem_y), Vec2(0.0, hem_y), p.hem_fullness / 2 * p.hem_distribution[0])
     back_hem_23 = lerp(cb_hem, back_side_hem0, p.hem_ctrl_from_fold)
     back_side_hem = _raise_up(back_side_hem0, p.side_hem_raise)
     back_wh_half = lerp(back_side_waist, back_hip_pt, 0.5)
@@ -807,7 +820,7 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     front_hip_pt = Vec2(cf_x - front_hip, hl_y)
     front_side_waist = Vec2(cf_x - front_hip + front_side_take, wl_y)
     front_side_hem0 = _offset_outward(
-        Vec2(cf_x - front_hip, hem_y), Vec2(cf_x, hem_y), p.front_hem_flare
+        Vec2(cf_x - front_hip, hem_y), Vec2(cf_x, hem_y), p.hem_fullness / 2 * p.hem_distribution[2]
     )
     front_hem_23 = lerp(cf_hem, front_side_hem0, p.hem_ctrl_from_fold)
     front_side_hem = _raise_up(front_side_hem0, p.side_hem_raise)
@@ -858,7 +871,7 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     sb_waist = Vec2(back_axis + back_dart / 2.0, wl_y)
     cb_hip = Vec2(back_axis, hl_y)
     sb_hip = Vec2(back_axis, hl_y)
-    back_pr_flare = p.back_hem_flare / 2.0 + p.princess_flare_extra
+    back_pr_flare = p.hem_fullness / 4 * p.hem_distribution[1]
     cb_pr_hem = _offset_outward(Vec2(back_axis, hem_y), Vec2(0.0, hem_y), back_pr_flare)
     sb_pr_hem = _offset_outward(Vec2(back_axis, hem_y), Vec2(back_hip, hem_y), back_pr_flare)
     bl_pt = Vec2(back_axis, bl_y)
@@ -935,7 +948,7 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     sf_pr_waist = Vec2(bp.x - front_dart / 2.0, wl_y)
     cf_pr_hip = Vec2(bp.x, hl_y)
     sf_pr_hip = Vec2(bp.x, hl_y)
-    front_pr_flare = p.front_hem_flare / 2.0 + p.princess_flare_extra
+    front_pr_flare = p.hem_fullness / 4 * p.hem_distribution[3]
     cf_pr_hem = _offset_outward(Vec2(bp.x, hem_y), Vec2(cf_x, hem_y), front_pr_flare)
     sf_pr_hem = _offset_outward(Vec2(bp.x, hem_y), Vec2(cf_x - front_hip, hem_y), front_pr_flare)
     cf_knot_4 = Vec2(cf_pr_hip.x, cf_pr_hip.y + p.princess_above_hip)

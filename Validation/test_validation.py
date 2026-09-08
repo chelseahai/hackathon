@@ -24,6 +24,22 @@ class ValidationTests(unittest.TestCase):
         cls.pieces=cls.render.dress_dxf_pieces(cls.d)
         cls.policy=json.loads((Path(__file__).parent/'policy.json').read_text())
 
+    def test_design_targets_preserve_body_and_full_circumference(self):
+        p=self.draft.DressParams(waist_ease=8,hip_ease=10,hem_fullness=48)
+        d=self.draft.draft_princess_dress(p)
+        self.assertAlmostEqual(2*(d.back_waist+d.front_waist),p.waist+8)
+        self.assertAlmostEqual(2*(d.back_hip+d.front_hip),p.hip+10)
+        self.assertEqual((p.bust,p.waist,p.hip),(84,68,90))
+
+    def test_invalid_design_inputs_are_rejected(self):
+        for change in ({'waist_ease':-1},{'hip_ease':13},{'hem_fullness':81},
+                       {'hem_distribution':[1,1,0,0]},{'hem_distribution':[1,0,0]},
+                       {'hem_distribution':[float('nan'),0,0,1]},
+                       {'hem_fullness':float('inf')}, {'seam_allowance':-1},
+                       {'waist':81.5,'hip':82,'waist_ease':12,'hip_ease':0}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.draft.draft_princess_dress(self.draft.DressParams(**change))
+
     def test_reference_landmarks_remain_at_baseline(self):
         fixture=json.loads((Path(__file__).parent/'reference-fixture.json').read_text())
         snap=validation.snapshot(self.d,self.draft,self.render)

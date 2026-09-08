@@ -8,7 +8,7 @@ garment ease, style inputs and construction settings. Body measurements must not
 be overwritten to simulate a style change. Garment ease is not sewing ease between
 paired seams; the latter remains a separate validation policy.
 
-## Five controls to build next
+## Implemented controls
 
 1. **Waist-to-hem length** (`dressLength`, cm). Existing default 50; initial UI
    range 40–80. Keep waist, hip depth and upper-body landmarks fixed. Recompute
@@ -69,5 +69,47 @@ shares; it cannot also be enforced independently for every new distribution.
 - Every output includes the body, design settings, construction/rule version and
   validation status so it can become a reproducible matrix entry.
 
-This document defines the next build. The new ease/fullness controls are not yet
-connected to drafting or exposed as sliders. Only dressLength already exists.
+The controls below are implemented in both drafting engines and the dress page.
+The full acceptance list remains the target for the expanding matrix experiment.
+
+## Using design version 1
+
+The dress page now has Body measurements, Design settings and Construction
+groups. Body values use the existing shared measurement store; dress design and
+allowance use a separate `princess-dress.design.v1` store. Reset body and Reset
+design act independently. Reset design preserves the construction allowance.
+The new design store starts with reference defaults rather than inheriting old
+shared dress length/allowance values.
+
+The four distribution sliders preserve the total by rescaling the other shares
+proportionally. If the changed share was 100%, the newly available remainder is
+split equally among the other three. Exact shares are retained in configuration;
+displayed percentages are rounded and can add to 100.01%.
+
+Save configuration downloads a versioned JSON containing body, design,
+construction, units, rule version and an explicit unverified fit status. Browser
+settings restore on reload. Saved JSON can be loaded by the Python CLI:
+
+```powershell
+python GarmentDesign-PrincessLineDress --config princess-dress-configuration.json --out output/my-design
+python GarmentDesign-PrincessLineDress --waist-ease 8 --hip-ease 8 --hem-fullness 48 --length 65 --out output/relaxed
+```
+
+The CLI writes `princess-dress-configuration.json` beside the SVG, HTML and DXF,
+and reuses it on the next run for that output directory. Explicit flags override
+loaded settings. Body-only values are written back to shared measurements.
+Distribution CLI order is back side, back princess, front side, front princess;
+pass four fractions summing to one to `--hem-distribution`.
+
+The former internal `back_hem_flare`, `front_hem_flare` and
+`princess_flare_extra` constants are replaced by fullness and distribution.
+Reference allocations reproduce their previous geometry. New lower-body
+settings can change the dependent side-dart rotation in the upper draft.
+
+Validation now includes relaxed, straight, full, princess-only and side-only
+designs on the reference body, plus invalid ease and distribution inputs. All
+24 cases pass engineering expectations (including four expected rejections),
+and 17 unit tests pass. This is a sampled engineering check, not certification
+of every combination in the slider ranges or of physical fit. Sewing review
+flags remain in the generated report. Configuration metadata intentionally does
+not claim an independent geometry check for arbitrary interactive settings.

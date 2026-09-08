@@ -15,5 +15,12 @@
   {"id":"small_waist_large_hip_min_allowance","params":{"waist":58,"hip":118,"seam_allowance":0.1}},
   {"id":"near_equal_waist_hip","params":{"waist":81.5,"hip":82}},
   {"id":"invalid_waist_hip","params":{"waist":88,"hip":82},"expect_error":true},
-  {"id":"invalid_length","params":{"dress_length":18},"expect_error":true}
+  {"id":"invalid_length","params":{"dress_length":18},"expect_error":true},
+  {"id":"design_relaxed","params":{"waist_ease":8,"hip_ease":8,"hem_fullness":48,"dress_length":65}},
+  {"id":"design_straight","params":{"hem_fullness":0}},
+  {"id":"design_full","params":{"hem_fullness":80}},
+  {"id":"design_princess_only","params":{"hem_distribution":[0,0.5,0,0.5]}},
+  {"id":"design_side_only","params":{"hem_distribution":[0.5,0,0.5,0]}},
+  {"id":"invalid_distribution","params":{"hem_distribution":[1,1,0,0]},"expect_error":true},
+  {"id":"invalid_ease","params":{"waist_ease":-1},"expect_error":true}
 ]
