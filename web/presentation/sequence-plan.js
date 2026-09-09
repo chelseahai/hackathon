@@ -33,6 +33,7 @@ window.DraftingSequencePlan = (() => {
     const known=new Map(layer.lines.map(l=>[l.id,l]));
     const operations=specs.map((spec,i)=>({...spec,lines:(spec.lines||links[kind]?.[index]?.[i]||[]).filter(id=>{
       const line=known.get(id);if(!line)return false;
+      if(spec.rotation&&line.rotation)return true;
       if(line.guide)return line.points.length===2;
       return spec.points&&((same(spec.points[0],line.points[0])&&same(spec.points.at(-1),line.points.at(-1)))||(same(spec.points.at(-1),line.points[0])&&same(spec.points[0],line.points.at(-1))));
     }),pointIds:[]}));

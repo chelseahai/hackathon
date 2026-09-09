@@ -971,6 +971,15 @@
       if (frontSideR.length < 2) frontSideR = frontSide.slice();
     }
 
+    // Preserve the rigid dart transfer before later shoulder/BP refinements.
+    var upperBefore = [bp, f0, frontShoulder].concat(frontArmhole.slice(0, -1).reverse(), [dartU, bp]);
+    var dartTransfer = {
+      pivot: bp, angle: rotAng, upperBefore: upperBefore,
+      upperAfter: rotatePoly(upperBefore, bp, rotAng),
+      lowerSide: [bp, dartL, frontSideWaist].concat(frontBelow.slice(1)),
+      dartUpper: dartU, dartLower: dartL, shoulder: f0
+    };
+
     var f0Cf = alongSegment(
       frontSnp,
       frontShoulder,
@@ -1264,6 +1273,7 @@
       sideDart: Math.max(sideDart, 0),
       dressLength: p.dressLength,
       notes: notes,
+      dartTransfer: dartTransfer,
     };
   }
 

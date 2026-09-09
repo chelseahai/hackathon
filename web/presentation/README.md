@@ -41,21 +41,27 @@ have been introduced in the presentation renderer.
 
 Page 4 presents bodice, skirt, sleeve and trousers with a selector, written
 English rules, red calculations, continuously scrolling Python and animated
-engine geometry. Page 5 presents eight princess-dress conversion stages.
+engine geometry. Page 5 presents 21 princess-dress conversion stages.
 `basic-sequences.js` defines the additional block layers and explanatory copy;
 `drafting-film.js` controls the shared players. Python excerpts retain their
 source line numbers; regenerate them with `update-sequence-source.py` when
 source changes, then review the highlight ranges in both JavaScript files.
-Page copy describes the engine method only. Stitch outlines are solid and
-construction references dashed. Full drafting tools remain linked separately.
+Page copy describes the engine method only. All lines are continuous: grey
+references, blue current construction, black completed outlines. Full drafting
+tools remain linked separately.
 
 Later integration may connect the outcome gallery and matrix to actual datasets.
 
-Page 5 now uses `dress-sequence.js` for 15 conversion rules and the shared
-measurement-first player. It covers registration, shaping, dart transfer,
-princess controls, fullness, final seams and paired sewing marks. The final
-panels are engine output. The transfer stage shows recorded construction and
-pre-transfer geometry; it does not simulate fabric or claim verified fit.
+Page 5 uses `dress-sequence.js` for 21 conversion rules and the shared
+measurement-first player. Complete the back (steps 1–9), then the front
+(10–20), then separate the four panels (21). The introductory source comparison
+has been removed. Source highlights select the relevant back/front expressions.
+Step 16 establishes the shoulder opening and stationary lower side front; step
+17 rigidly rotates the upper region about BP using the engine's unrefined
+`dartTransfer` geometry. Shoulder and BP refinements follow in step 18.
+The rotation aligns dart-leg directions without stretching unequal leg lengths.
+This is a geometric construction, not a cloth simulation or verified fitting.
+The engine's panel geometry is unchanged; transfer metadata is additive.
 
 Page 4 measurement notation lives in `drafting-notations.js`: 108 operations
 across the four blocks, with offset dimensions, division ticks, angle arcs and

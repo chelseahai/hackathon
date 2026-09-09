@@ -66,28 +66,70 @@ window.DressSequence=(()=>{
   );});
   d.panels.forEach((panel,i)=>panel.notches.forEach((q,j)=>{mark(12,'sewing-'+i+'-'+j,q,panel.notchIds[j]);measure(12,q,q,`${panel.name} · ${panel.notchIds[j].replaceAll('_',' ').replaceAll('.',' / ')}`);}));
   PrincessDress.laidOutPanels(d,0).forEach((panel,i)=>{trace(13,'cut-panel-'+i,PrincessDress.closeRing(panel.outline),panel.name+' · complete stitch outline');panel.notches.forEach((q,j)=>{mark(13,'final-notch-'+i+'-'+j,q,'');measure(13,q,q,`${panel.name} · ${d.panels[i].notchIds[j].replaceAll('_',' ').replaceAll('.',' / ')} mark`);});});
-  const steps=[
-    ['Begin with two blocks','Use the reference bodice and skirt: bust 84, waist 68, hip 90 and back length 38 cm. The skirt is displayed beside the bodice so their starting geometry can be read separately.',688,705],
-    ['Register waist and length','Keep the waist at y = 0. Lift the front bodice by [6.8 / 2 = 3.4 cm] to align its dropped waist. Set hip depth to 18 cm and waist-to-hem length to 50 cm.',766,780],
-    ['Open the neck and lower the shoulders','Widen both necklines by 0.5 cm and lower the shoulder tips by 0.5 cm. These settings establish the upper landmarks before the panels are resolved.',725,739],
-    ['Reshape the armhole','Inset the back and chest width guides by 0.4 cm. Raise the underarm 0.5 cm, then move it 1 cm inward on each side. Refine the sampled armhole midpoint inward by 0.2 cm.',715,764],
-    ['Allocate waist and hip shaping',`Add 3 cm ease to the full waist and 4 cm to the full hip. Back/front waist targets are [(68 + 3) / 4 ∓ 0.75 = ${fmt(d.backWaist)} / ${fmt(d.frontWaist)} cm]; hip targets are [(90 + 4) / 4 ∓ 1 = ${fmt(d.backHip)} / ${fmt(d.frontHip)} cm]. Divide each hip-to-waist difference between the princess intake and side shaping. Reference princess intake is ${fmt(d.backDart)} cm at the back and ${fmt(d.frontDart)} cm at the front.`,785,807],
-    ['Locate the back princess line','Begin the back shoulder dart 5.5 cm from the side-neck point, with a 1.5 cm opening. Use the midpoint of the inset back width as the back princess axis, then place its waist and hip landmarks.',865,884],
-    ['Balance the front side seam',`Compare front and back side lengths. Their positive difference sets the side-dart intake: [front side − back side = ${fmt(d.sideDart)} cm]. Locate its legs on the front side through the bust-level balance point.`,839,863],
-    ['Transfer the dart toward the shoulder','Use BP as the rotation centre. Measure the angle between the side-dart legs, then use it to transfer the opening to the shoulder. The grey pre-transfer contour and the resulting shoulder guide show the recorded construction; the resolved panel contours follow below.',906,929],
-    ['Refine the princess controls','Shape the side-front BP by 0.3 cm. The front shoulder refinement uses 1 cm toward the opening and a 0.7 cm tip trim; the side-front shoulder point moves 0.7 cm toward centre front. Place its upper control 7 cm along the shoulder-to-BP guide. Use 0.2 cm back and 0.3 cm front midpoint shaping, plus controls 4 cm above the hip.',930,1008],
-    ['Draft the back panels','Connect the established back landmarks into the centre-back and side-back panels. Interpolate the princess seam through its upper and lower controls, then resolve neck, shoulder, armhole, side and centre edges. Each contour is revealed separately.',1009,1080],
-    ['Draft the front panels','Use the transferred shoulder opening and refined BP controls to resolve centre-front and side-front contours. Preserve the shaped waist and hip while joining the continuous princess seams.',1081,1111],
-    ['Distribute fullness and finish the hem','Total horizontal hem fullness is 32 cm. Allocate it to back side, back princess, front side and front princess groups in [3 : 4 : 4 : 5] shares. Split each princess allocation across its two edges. Raise the side hems 0.5 cm and use the [⅔] hem control to blend the side-panel curves.',951,981],
-    ['Place the sewing marks','Mark corresponding upper-princess, waist and hip locations on each paired seam. Side panels also carry side-waist and side-hip marks. These are sewing correspondences; the presentation does not assert that physical fit has been verified.',1112,1255],
-    ['Separate the four panels','Lay out centre back, side back, side front and centre front with their sewing marks. These are the actual engine stitch outlines, before seam allowance.',1112,1131]
+  // Assemble pedagogical phases explicitly: every back dependency is resolved
+  // before introducing the front. Source-block comparison is intentionally omitted.
+  const ordered=[],notes=[],steps=[];
+  function phase(title,copy,start,end,selections){
+    const layer={lines:[],points:[]},ns=[];
+    for(const [source,indices,pointIds=[]] of selections){
+      const chosen=indices.map(i=>notations[source][i]);ns.push(...chosen);
+      const ids=new Set(chosen.flatMap(n=>n.lines||[]));
+      layer.lines.push(...sets[source].lines.filter(l=>ids.has(l.id)));
+      layer.points.push(...sets[source].points.filter(q=>pointIds.includes(q.id)));
+    }
+    ordered.push(layer);notes.push(ns);steps.push([title,copy,start,end]);return ordered.length-1;
+  }
+  const all=i=>notations[i].map((_,j)=>j);
+  phase('Back · align waist and length','Keep the back waist at y = 0. Align the back skirt with the bodice; locate the hip [18 cm] below the waist and the hem [50 cm] below it.',766,780,[[1,[0,3,5,6,7]]]);
+  // The shared level guides stop at the back side; no front geometry appears yet.
+  ordered[0].lines=ordered[0].lines.map(l=>l.id.startsWith('dress-level')?{...l,points:[l.points[0],V(b.sideX,l.points[0].y)]}:l);
+  phase('Back · neck and shoulder','Widen the back neck by [0.5 cm]. Lower the shoulder tip by [0.5 cm] to establish its new slope.',725,739,[[2,[0,2],['neck-0']]]);
+  phase('Back · armhole landmarks','Inset the back-width guide [0.4 cm]. Raise the underarm [0.5 cm], then move it [1 cm] toward centre back. The armhole midpoint receives a further [0.2 cm] inward refinement.',715,764,[[3,[0,2,3],['back-UA']]]);
+  phase('Back · waist and hip',`Set the waist to [(68 + 3) / 4 − 0.75 = ${fmt(d.backWaist)} cm] and hip to [(90 + 4) / 4 − 1 = ${fmt(d.backHip)} cm]. Allocate [${fmt(d.backDart)} cm] to the princess intake; the remaining reduction shapes the side.`,785,807,[[4,[0,2,4]]]);
+  phase('Back · shoulder dart and princess axis','Measure [5.5 cm] along the shoulder from the widened neck; open a [1.5 cm] shoulder dart. Locate the princess axis through the midpoint of the inset back width, then establish its waist and hip points.',865,884,[[5,all(5),sets[5].points.map(q=>q.id)]]);
+  phase('Back · princess controls','Locate each upper control by travelling [6 cm] toward the shoulder along its provisional princess seam, starting at the BP-height intersection. Shape the bust-to-waist midpoint inward [0.2 cm] on each edge and locate the lower controls [4 cm] above the hip.',930,1008,[[8,[0,1],['back-control-0','back-control-1']]]);
+  phase('Back · hem endpoints','Of the [32 cm] total fullness, allocate [32 × 3 / 16 = 6 cm] to the back side and [32 × 4 / 16 = 8 cm] across all back princess edges of the full garment. On this half-pattern the side flare is [3 cm] and each princess edge adds [2 cm]. Raise the side hem [0.5 cm] and locate its curve control at [⅔] of the fold-to-side span.',809,828,[]);
+  notes.at(-1).push(...[0,1,4,5,6].map(i=>hemNotes[i]));
+  phase('Back · resolve both panels','Join the established landmarks to draw centre-back and side-back neck, shoulder, armhole, side and princess contours. Each edge is drawn separately after its notation.',1009,1080,[[9,all(9)]]);
+  phase('Back · close hems and mark seams','Close the two back hems using their established endpoints. Add corresponding princess, waist and hip marks; the side back also receives side-seam balance marks.',1112,1255,[[11,[0,1]],[12,all(12).slice(0,d.panels[0].notches.length+d.panels[1].notches.length),sets[12].points.filter(q=>/^sewing-[01]-/.test(q.id)).map(q=>q.id)]]);
+  phase('Front · align the waist','Lift the front bodice [6.8 / 2 = 3.4 cm] to bring its dropped waist to y = 0. Align the front skirt to the same waist, hip and hem levels as the completed back.',766,780,[[1,[1,2,4]]]);
+  phase('Front · neck and shoulder','Widen the front neck [0.5 cm] toward the shoulder and lower the shoulder tip [0.5 cm], measured from the lifted front block.',725,739,[[2,[1,3],['neck-1']]]);
+  phase('Front · armhole landmarks','Inset the chest-width guide [0.4 cm]. From the lifted underarm, rise [0.5 cm] and move [1 cm] toward centre front. Refine the armhole midpoint inward [0.2 cm].',715,764,[[3,[1,4],['front-UA']]]);
+  notes.at(-1).splice(1,0,{points:[V(b.underarm.x,b.underarm.y+lift),V(b.underarm.x,fu.y)],label:'Front underarm rise · 0.5 cm',lines:[]});
+  phase('Front · waist and hip',`Set the waist to [(68 + 3) / 4 + 0.75 = ${fmt(d.frontWaist)} cm] and hip to [(90 + 4) / 4 + 1 = ${fmt(d.frontHip)} cm]. Allocate [${fmt(d.frontDart)} cm] to the princess intake.`,785,807,[[4,[1,3,5]]]);
+  phase('Front · hem endpoints','Allocate [32 × 4 / 16 = 8 cm] to the front side and [32 × 5 / 16 = 10 cm] across all front princess edges of the full garment. On this half-pattern the side flare is [4 cm] and each princess edge adds [2.5 cm]. Raise the side hem [0.5 cm] and locate its [⅔] curve control.',809,828,[]);
+  notes.at(-1).push(...[2,3,7,8,9].map(i=>hemNotes[i]));
+  phase('Front · balance against the back',`Compare the front side with the established back side. The excess [front side − back side = ${fmt(d.sideDart)} cm] forms the side dart. Locate BP and both dart legs before opening the shoulder.`,839,863,[[6,all(6),['bust-point']]]);
+  const transfer=d.dartTransfer;
+  const prep=phase('Front · prepare the shoulder opening','Locate the shoulder opening [5.5 cm] from the front side-neck point. Join it to BP. The upper side-front region can now turn about BP while the lower region stays fixed.',906,916,[]);
+  const add=(id,ps,label,guide=true)=>{ordered.at(-1).lines.push({id,points:ps,label,guide});notes.at(-1).push({points:ps,label,lines:[id],curve:ps.length>2});};
+  notes.at(-1).push({points:[frontSnp,transfer.shoulder],label:'Front shoulder opening · 5.5 cm',lines:[]});
+  add('transfer-upper-start',transfer.upperBefore,'Outline the upper side-front region');
+  add('transfer-lower-fixed',transfer.lowerSide,'Keep the lower side front stationary');
+  const turn=phase('Front · rotate around BP',`Keep BP fixed. Turn the upper side front through [${fmt(Math.abs(transfer.angle)*180/Math.PI)}°] to align the side-dart directions and transfer the opening to the shoulder. The upper region moves as one rigid piece; the lower side stays in place.`,917,929,[]);
+  ordered[prep].hideAfter=turn;
+  // Keep the grey starting contour and fixed lower side as reference while the
+  // blue upper piece rotates; remove these temporary guides after transfer.
+  const rotation={pivot:transfer.pivot,angle:transfer.angle,from:transfer.upperBefore};
+  ordered[turn].lines.push({id:'side-front-upper-rotation',points:transfer.upperAfter,guide:false,rotation});
+  notes[turn].push({angle:{o:bp,start:Math.atan2(transfer.dartUpper.y-bp.y,transfer.dartUpper.x-bp.x),delta:transfer.angle},label:`Rotate upper side front around BP · ${fmt(Math.abs(transfer.angle)*180/Math.PI)}°`,lines:['side-front-upper-rotation'],rotation:true});
+  ordered[turn].hideAfter=turn;
+  ordered[turn].points.push({id:'rotation-pivot',p:bp,label:'BP · fixed'});
+  phase('Front · refine transferred controls','After transfer, shape BP [0.3 cm] toward the side. Refine the centre-front shoulder opening [1 cm] toward the dart, trim the side-front tip [0.7 cm], and move its princess shoulder point [0.7 cm] toward centre front. Set the upper control [7 cm] along the shoulder-to-BP guide and midpoint shaping [0.3 cm].',930,1008,[[8,[2,3],['front-control-2','front-control-3','front-waist-2','front-waist-3']]]);
+  phase('Front · resolve both panels','Draw the centre-front and side-front contours through the transferred and refined landmarks. Connect their waist and hip shaping into continuous princess seams; reveal each edge separately.',1081,1111,[[10,all(10)]]);
+  phase('Front · close hems and mark seams','Close the front hems through their established fullness endpoints. Add the paired princess, waist and hip marks, plus the side-front balance marks.',1112,1255,[[11,[2,3]],[12,all(12).slice(d.panels[0].notches.length+d.panels[1].notches.length),sets[12].points.filter(q=>/^sewing-[23]-/.test(q.id)).map(q=>q.id)]]);
+  phase('Separate the four panels','Lay out centre back, side back, side front and centre front with their sewing marks. These are the actual engine stitch outlines, before seam allowance.',1112,1131,[[13,all(13),sets[13].points.map(q=>q.id)]]);
+  // Highlight only the relevant back/front expressions, even where the engine
+  // calculates the two sides together in the same source function.
+  const ranges=[
+    [[707,709]], [[725,728]], [[716,716],[718,720],[741,741],[745,750],[755,757]],
+    [[785,785],[787,787],[789,789],[802,804],[806,806]], [[865,884]], [[879,902]],
+    [[809,819],[874,876]], [[1023,1052]], [[1028,1028],[1045,1045],[1085,1095],[1214,1237]],
+    [[766,780]], [[730,739],[770,774]], [[717,717],[721,723],[742,744],[746,746],[751,754],[758,764],[775,778]],
+    [[786,786],[788,788],[790,790],[803,803],[805,805],[807,807]], [[820,828],[951,966]],
+    [[839,863]], [[906,916]], [[917,929]], [[930,998]], [[1053,1083]],
+    [[1063,1063],[1075,1075],[1085,1093],[1096,1097],[1214,1237]], [[1112,1212]]
   ];
-  // Locate the hem endpoints before drawing any princess or side contour that
-  // depends on them. The actual hem curves are closed after those contours.
-  sets.splice(9,0,{lines:[],points:[]});
-  notations.splice(9,0,hemNotes);
-  steps.splice(9,0,['Locate the hem fullness','Set total horizontal fullness to 32 cm. Distribute it in [3 : 4 : 4 : 5] group shares, then split each princess allocation between its two panel edges. Locate these endpoints before drafting the long princess contours. Side hems rise 0.5 cm and their curve control lies at [⅔] of the fold-to-side hem span.',809,828]);
-  steps[12][0]='Close the hem contours';
-  steps[12][1]='Use the established fullness endpoints to close the four panel hems. Centre panels join their fold endpoints; side panels blend through the [⅔] control to the side hem raised by 0.5 cm.';
-  return {sets,steps,notations};
+  steps.forEach((step,i)=>step[4]=ranges[i]);
+  return {sets:ordered,steps,notations:notes};
 })();

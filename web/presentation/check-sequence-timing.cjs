@@ -31,7 +31,14 @@ for(const [kind,sets] of Object.entries(layers))for(const [index,layer] of sets.
  raf(0);
  for(let op=0;op<plan.length;op++)for(const phase of [.05,.3,.6,.7,.95]){
    clock=(op+phase)*slot;raf(clock);frames++;
-   for(const e of lines){const owner=Number(e.dataset.revealOperation),expected=clock>(owner+.65)*slot;assert((e.style.visibility==='visible')===expected,`Early/unrelated line ${kind}/${index}/${e.dataset.id} op ${op}`);assert(!/NaN|undefined|Infinity/.test(e.getAttribute('points')),'Invalid geometry');}
+   for(const e of lines){const owner=Number(e.dataset.revealOperation),expected=clock>(owner+.65)*slot;assert((e.style.visibility==='visible')===expected,`Early/unrelated line ${kind}/${index}/${e.dataset.id} op ${op}`);assert(!/NaN|undefined|Infinity/.test(e.getAttribute('points')),'Invalid geometry');
+     const rotation=layer.lines.find(l=>l.id===e.dataset.id).rotation;
+     if(rotation){const ps=e.getAttribute('points').split(' ').map(s=>{const [x,y]=s.split(',').map(Number);return {x,y:-y};});
+       const radial=p=>Math.hypot(p.x-rotation.pivot.x,p.y-rotation.pivot.y);
+       assert(ps.every((p,j)=>Math.abs(radial(p)-radial(rotation.from[j]))<1e-8),'Rotation stretched the upper piece');
+       assert(radial(ps[0])<1e-8,'BP pivot moved');
+       if(phase===.95&&owner===op)assert(ps.every((p,j)=>Math.hypot(p.x-layer.lines.find(l=>l.id===e.dataset.id).points[j].x,p.y-layer.lines.find(l=>l.id===e.dataset.id).points[j].y)<1e-8),'Rotation missed its final geometry');
+     }}
    for(const e of points){const owner=Number(e.dataset.revealOperation);assert((e.style.visibility==='visible')===(clock>=(owner+.9)*slot),'Early point');}
  }
  raf(player.duration);assert(lines.every(e=>e.style.visibility==='visible'),'Incomplete ending');
@@ -39,3 +46,12 @@ for(const [kind,sets] of Object.entries(layers))for(const [index,layer] of sets.
 }
 console.log(JSON.stringify({steps:Object.values(layers).reduce((n,s)=>n+s.length,0),operations,timelineChecks:frames,passed:true}));
 
+
+// Rotating the upper leg closes its direction; unequal leg lengths are not
+// silently stretched to force endpoint coincidence.
+const transfer=PrincessDress.draftPrincessDress({}).dartTransfer;
+const upper=transfer.upperAfter.at(-2),lower=transfer.dartLower,o=transfer.pivot;
+assert(Math.abs((upper.x-o.x)*(lower.y-o.y)-(upper.y-o.y)*(lower.x-o.x))<1e-8,'Side-dart directions did not close');
+const frontStart=DressSequence.steps.findIndex(s=>s[0].startsWith('Front'));
+assert(frontStart>0&&DressSequence.steps.slice(0,frontStart).every(s=>s[0].startsWith('Back')),'Back-first order regressed');
+assert(DressSequence.sets.slice(0,frontStart).every(l=>l.lines.every(q=>!/^registered-front|^registered-skirt-1|^resolved-[23]-/.test(q.id))),'Front geometry appeared during back sequence');

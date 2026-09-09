@@ -72,7 +72,7 @@ window.DraftingNotations = (() => {
     const specs=DraftingSequencePlan.build(kind,index,data[kind][index],layer),vb=svg.viewBox.baseVal,unit=Math.max(vb.width/(svg.clientWidth||500),vb.height/(svg.clientHeight||505));
     const group=node('g',{class:'draft-notations','aria-label':'Current drafting dimensions'});svg.append(group);
     const outlines=[...svg.querySelectorAll('.film-line.current')].map(e=>({e,original:e.getAttribute('points'),points:e.getAttribute('points').split(' ').map(pair=>{const [x,y]=pair.split(',').map(Number);return V(x,-y);})}));
-    const slot=Math.max(2400,tempo/Math.max(1,data[kind][index].length)),duration=slot*specs.length;
+    const slot=Math.max(layer.lines.some(l=>l.rotation)?8000:2400,tempo/Math.max(1,data[kind][index].length)),duration=slot*specs.length;
     const points=[...svg.querySelectorAll('.film-point.current,.auxiliary-point.current')];
     const lineOperation=new Map(specs.flatMap((op,i)=>op.lines.map(id=>[id,i])));
     const pointOperation=new Map(specs.flatMap((op,i)=>op.pointIds.map(id=>[id,i])));
@@ -110,7 +110,10 @@ window.DraftingNotations = (() => {
         const owner=lineOperation.get(e.dataset.id);
         const progress=reduced?1:Math.max(0,Math.min(1,(elapsed-owner*slot-slot*.65)/(slot*.25)));
         e.style.visibility=progress>0?'visible':'hidden';e.dataset.constructionState=progress>=1?'complete':'drafting';e.dataset.revealOperation=String(owner);
-        e.setAttribute('points',trim(route,progress).map(p=>`${p.x},${-p.y}`).join(' '));
+        const rotation=layer.lines.find(l=>l.id===e.dataset.id)?.rotation;
+        const a=rotation?rotation.angle*(progress*progress*(3-2*progress)):0;
+        const shape=rotation?rotation.from.map(p=>V(rotation.pivot.x+(p.x-rotation.pivot.x)*Math.cos(a)-(p.y-rotation.pivot.y)*Math.sin(a),rotation.pivot.y+(p.x-rotation.pivot.x)*Math.sin(a)+(p.y-rotation.pivot.y)*Math.cos(a))):trim(route,progress);
+        e.setAttribute('points',shape.map(p=>`${p.x},${-p.y}`).join(' '));
       }
       for(const e of points){const owner=e.dataset.pointId?pointOperation.get(e.dataset.pointId):lineOperation.get(e.dataset.lineId);e.dataset.revealOperation=String(owner);e.style.visibility=reduced||elapsed>=(owner+.9)*slot?'visible':'hidden';}
     }
