@@ -89,7 +89,7 @@
   function sequence(root,kind){
     const basic=kind!=='dress', names={body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers',dress:'Dress'};
     const sets=kind==='body'?B:basic?BasicSequences[kind].sets:D,steps=kind==='body'?bodySteps:basic?BasicSequences[kind].steps:dressSteps,src=SequenceSource[kind];
-    let index=-1,playing=!reduced.matches,visible=false,timer=null,tempo=4500;
+    let index=-1,playing=!reduced.matches,visible=false,timer=null,tempo=4500,notation=null,stepDuration=4500,motionPaused=false;
     const host=root.querySelector('.film-svg'),svg=node('svg',{viewBox:kind==='body'?'-6 -47 61 58':'-6 -48 120 108',role:'img','aria-label':kind==='body'?'Bodice construction animation':'Princess dress construction animation'});
     if(basic){const pts=sets.flatMap(l=>[...l.lines.flatMap(s=>s.points),...l.points.map(s=>s.p)]);const xs=pts.map(p=>p.x),ys=pts.map(p=>-p.y);svg.setAttribute('viewBox',`${Math.min(...xs)-5} ${Math.min(...ys)-5} ${Math.max(...xs)-Math.min(...xs)+10} ${Math.max(...ys)-Math.min(...ys)+10}`);svg.setAttribute('aria-label',names[kind]+' construction animation');}
     host.append(svg);const shapes=node('g'),dots=node('g');svg.append(shapes,dots);
@@ -103,9 +103,9 @@
         item.append(title,text);rules.append(item);
       });
     }else steps.forEach((s,i)=>{const b=document.createElement('button');b.textContent=String(i+1).padStart(2,'0');b.setAttribute('aria-label',`Dress step ${i+1}: ${s[0]}`);b.addEventListener('click',()=>{playing=false;show(i);});nav.append(b);});
-    function schedule(){clearTimeout(timer);if(playing&&visible&&!document.hidden&&!root.hidden)timer=setTimeout(()=>show((index+1)%steps.length),tempo);}
+    function schedule(){clearTimeout(timer);if(playing&&visible&&!document.hidden&&!root.hidden)timer=setTimeout(()=>show((index+1)%steps.length),stepDuration);}
     function show(next){
-      const previous=index;index=next;const step=steps[index];
+      const previous=index;motionPaused=false;index=next;const step=steps[index];
       root.querySelector('.film-number').textContent=String(index+1).padStart(2,'0');root.querySelector('.film-step-label').textContent=`${basic?names[kind]+' rule':'Conversion'} ${index+1} / ${steps.length}`;root.querySelector('.film-step-title').textContent=step[0];root.querySelector('.film-step-copy').textContent=step[1];root.querySelector('.film-counter').textContent=`${String(index+1).padStart(2,'0')} / ${steps.length}`;
       root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',`${playing?'Pause':'Play'} ${names[kind].toLowerCase()} animation`);
       root.querySelectorAll('.film-step-nav button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
@@ -123,21 +123,24 @@
       // Also expose every corner/end of the auxiliary construction guides.
       const named=new Set(selected.flatMap(l=>l.points.map(item=>`${item.p.x.toFixed(3)},${item.p.y.toFixed(3)}`)));
       selected.forEach(l=>l.lines.filter(item=>item.guide).forEach(item=>item.points.forEach(p=>{const key=`${p.x.toFixed(3)},${p.y.toFixed(3)}`;if(named.has(key))return;named.add(key);dots.append(node('circle',{cx:p.x,cy:-p.y,r:.16,fill:'#999'}));})));
+      if(basic){notation?.cancel();notation=DraftingNotations.render(svg,kind,index,tempo,reduced.matches);stepDuration=notation.duration;}
       schedule();
     }
-    root.querySelector('[data-action=play]').addEventListener('click',()=>{playing=!playing;show(index);});
+    root.querySelector('[data-action=play]').addEventListener('click',()=>{playing=!playing;motionPaused=!playing;notation?.pause(motionPaused);root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',(playing?'Pause ':'Play ')+names[kind].toLowerCase()+' animation');schedule();});
     root.querySelector('[data-action=next]').addEventListener('click',()=>{playing=false;show((index+1)%steps.length);});
     root.querySelector('[data-action=previous]').addEventListener('click',()=>{playing=false;show((index+steps.length-1)%steps.length);});
-    root.querySelector('[data-action=restart]').addEventListener('click',()=>show(0));root.querySelector('select').addEventListener('change',e=>{tempo=Number(e.target.value);schedule();});
-    function pauseReading(){playing=false;root.querySelector('[data-action=play]').textContent='Play';root.querySelector('[data-action=play]').setAttribute('aria-label','Play '+names[kind].toLowerCase()+' animation');schedule();}
+    root.querySelector('[data-action=restart]').addEventListener('click',()=>show(0));root.querySelector('select').addEventListener('change',e=>{tempo=Number(e.target.value);show(index);});
+    function pauseReading(){playing=false;motionPaused=true;notation?.pause(true);root.querySelector('[data-action=play]').textContent='Play';root.querySelector('[data-action=play]').setAttribute('aria-label','Play '+names[kind].toLowerCase()+' animation');schedule();}
     if(rules){rules.addEventListener('wheel',pauseReading,{passive:true});rules.addEventListener('touchstart',pauseReading,{passive:true});rules.addEventListener('keydown',pauseReading);}
     windowEl.addEventListener('keydown',pauseReading);windowEl.addEventListener('touchstart',pauseReading,{passive:true});
-    windowEl.addEventListener('wheel',()=>{playing=false;root.querySelector('[data-action=play]').textContent='Play';root.querySelector('[data-action=play]').setAttribute('aria-label','Play '+kind+' animation');schedule();},{passive:true});
-    new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;schedule();},{threshold:.2}).observe(root);
-    document.addEventListener('visibilitychange',schedule);reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;show(index);}});show(0);
+    windowEl.addEventListener('wheel',()=>{playing=false;motionPaused=true;notation?.pause(true);root.querySelector('[data-action=play]').textContent='Play';root.querySelector('[data-action=play]').setAttribute('aria-label','Play '+kind+' animation');schedule();},{passive:true});
+    new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;notation?.pause(motionPaused||!visible||root.hidden||document.hidden);schedule();},{threshold:.2}).observe(root);
+    document.addEventListener('visibilitychange',()=>{notation?.pause(motionPaused||document.hidden||root.hidden||!visible);schedule();});
+    root.addEventListener('block-visibility',()=>{notation?.pause(root.hidden);if(!root.hidden&&basic)show(index);});reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;show(index);}});show(0);
   }
-  document.querySelectorAll('[data-block]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-block]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('#blocks [data-sequence]').forEach(root=>root.hidden=root.dataset.sequence!==button.dataset.block);document.querySelector('#blocks .text-link').href='../BasicBlock-'+({body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers'}[button.dataset.block])+'.html';}));
+  document.querySelectorAll('[data-block]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-block]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('#blocks [data-sequence]').forEach(root=>{root.hidden=root.dataset.sequence!==button.dataset.block;root.dispatchEvent(new Event('block-visibility'));});document.querySelector('#blocks .text-link').href='../BasicBlock-'+({body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers'}[button.dataset.block])+'.html';}));
   document.querySelectorAll('[data-sequence]').forEach(root=>sequence(root,root.dataset.sequence));
 })();
+
 
 

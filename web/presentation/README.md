@@ -51,5 +51,11 @@ construction references dashed. Full drafting tools remain linked separately.
 
 Later integration may connect the outcome gallery and matrix to actual datasets.
 
+Page 4 measurement notation lives in `drafting-notations.js`: 108 operations
+across the four blocks, with offset dimensions, division ticks, angle arcs and
+curve-distance markers. Grey references, blue current geometry and black
+completed outlines use continuous lines. The player extends dense steps to
+accommodate their annotations, then reveals the actual outline geometry.
+
 See CONSTRUCTION-REVIEW.md for the book-rule audit, implementation differences and playback behavior.
 

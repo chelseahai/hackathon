@@ -82,3 +82,25 @@ Verified at desktop 1440 × 1000 and mobile 390 × 844: all 43 basic stages have
 finite SVG coordinates, a single current rule, and nonempty source highlighting.
 No page-4 step buttons or visible book references remain. Mobile document width
 equals scroll width. Existing Validation suite: 17 tests passed.
+
+## Dimension notation update
+
+Page 4 now uses grey continuous reference lines, blue current geometry and black
+completed outlines. This supersedes the earlier dashed-guide description above;
+page 5 retains its existing styling. `drafting-notations.js` adds 108 notation
+operations across the 43 steps without changing any engine geometry.
+
+Each operation has a common moving marker, endpoint ticks, extension lines and
+an offset label. Fractions use ticks along the measured path; angle arcs are
+computed from their two directions. Curves use arc-length travel and tangent
+guides where relevant. Skirt waist fractions measure horizontal spans, while
+bodice notch fractions measure the actual armhole arcs. Short offsets use the
+same marks, with labels farther from the crowded construction.
+
+Operations within a step are staggered, then current outlines reveal as continuous
+polylines. Dense steps extend their duration to give every operation reading time.
+Pause/resume freezes the marker; hidden players suspend animation frames.
+Reduced motion displays a settled annotation and the complete current geometry.
+Written rules retain all explanations. Desktop and mobile browser checks covered
+43 valid notation states, continuous strokes, readable offset labels and no
+horizontal overflow; all 108 data operations were checked for finite coordinates.
