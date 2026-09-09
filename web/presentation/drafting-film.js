@@ -81,14 +81,15 @@
       else {svg.setAttribute('viewBox',constructionViewBox);svg.setAttribute('aria-label',names[kind]+' construction animation');}
       root.querySelector('.film-number').textContent=String(index+1).padStart(2,'0');root.querySelector('.film-step-label').textContent=`${basic?names[kind]+' rule':'Conversion'} ${index+1} / ${steps.length}`;root.querySelector('.film-step-title').textContent=step[0];root.querySelector('.film-step-copy').textContent=step[1];root.querySelector('.film-counter').textContent=`${String(index+1).padStart(2,'0')} / ${steps.length}`;
       root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',`${playing?'Pause':'Play'} ${names[kind].toLowerCase()} animation`);
-      if(final){shapes.replaceChildren();dots.replaceChildren();PatternResults.render(svg,kind);schedule();return;}
+      
       root.querySelectorAll('.film-step-nav button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
-      root.querySelector('.film-note').textContent=basic?'All dimensions in centimetres · calculations in red':'Reference geometry · construction reveal';
+      root.querySelector('.film-note').textContent=final?'Final patterns · inward marks · grainlines':basic?'All dimensions in centimetres · calculations in red':'Reference geometry · construction reveal';
       if(basic){[...rules.children].forEach((el,i)=>{el.classList.toggle('active',i===index);if(i===index)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});const item=rules.children[index];rules.scrollTo({top:Math.max(0,item.offsetTop-12),behavior:reduced.matches?'instant':'smooth'});}
-      const ranges=step[4]||[[step[2],step[3]]];
+      const sourceStep=final?steps[index-1]:step;const ranges=sourceStep[4]||[[sourceStep[2],sourceStep[3]]];
       const active=[];code.querySelectorAll('.source-line').forEach(row=>{const n=Number(row.dataset.line),on=ranges.some(([a,b])=>n>=a&&n<=b);row.classList.toggle('highlight',on);if(on)active.push(row);});
       if(active.length)windowEl.scrollTo({top:Math.max(0,active[0].offsetTop-code.offsetTop-windowEl.clientHeight*.25),behavior:reduced.matches?'instant':'smooth'});
       root.querySelector('.code-citation').textContent=`${src.path} · L${ranges[0][0]}–${ranges.at(-1)[1]}${ranges.length>1?' / selected expressions':''}`;
+      if(final){shapes.replaceChildren();dots.replaceChildren();PatternResults.render(svg,kind);schedule();return;}
       let selected=sets.slice(0,index+1);
       if(kind==='dress')selected=index===sets.length-1?[sets.at(-1)]:selected.filter(l=>l.hideAfter===undefined||index<=l.hideAfter).map(l=>({...l,lines:l.lines.filter(q=>q.hideAfter===undefined||index<=q.hideAfter)}));
       if(kind==='dress'){const pts=selected.flatMap(l=>l.lines.flatMap(s=>s.points));const xs=pts.map(p=>p.x);const ys=pts.map(p=>-p.y);svg.setAttribute('viewBox',`${Math.min(...xs)-7} ${Math.min(...ys)-7} ${Math.max(...xs)-Math.min(...xs)+14} ${Math.max(...ys)-Math.min(...ys)+14}`);}const wanted=new Set();
