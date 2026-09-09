@@ -66,7 +66,7 @@ window.DraftingNotations = (() => {
   ];
   // Waist allowance is a horizontal allocation, not the sloping seam length.
   trousers[5][0]=dim(V(t.cfWaist.x,t.sideWaist.y),t.sideWaist,'W / 4 + 2 × 2.5 = 22 cm');
-  const data={body,skirt,sleeve,trousers};
+  const data={body,skirt,sleeve,trousers,dress:DressSequence.notations};
   const node=(tag,attrs={},text)=>{const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;};
   function render(svg,kind,index,tempo,reduced,layer){
     const specs=DraftingSequencePlan.build(kind,index,data[kind][index],layer),vb=svg.viewBox.baseVal,unit=Math.max(vb.width/(svg.clientWidth||500),vb.height/(svg.clientHeight||505));

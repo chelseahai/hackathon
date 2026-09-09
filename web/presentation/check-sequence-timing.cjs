@@ -3,8 +3,9 @@ global.window=global;global.matchMedia=()=>({matches:false});
 const repo=path.resolve(__dirname,'..')+'/';
 for(const name of ['BasicBlock-Bodice','BasicBlock-Skirt','BasicBlock-Sleeve','BasicBlock-Trousers','GarmentDesign-PrincessLineDress'])vm.runInThisContext(fs.readFileSync(repo+name+'.js','utf8'));
 vm.runInThisContext(fs.readFileSync(repo+'presentation/basic-sequences.js','utf8'));
+vm.runInThisContext(fs.readFileSync(__dirname+'/dress-sequence.js','utf8'));
 global.document={querySelectorAll:()=>[]};
-let source=fs.readFileSync(__dirname+'/drafting-film.js','utf8').replace('  function sequence(root,kind){','  globalThis.layers={body:B,skirt:BasicSequences.skirt.sets,sleeve:BasicSequences.sleeve.sets,trousers:BasicSequences.trousers.sets};\n  function sequence(root,kind){');
+let source=fs.readFileSync(__dirname+'/drafting-film.js','utf8').replace('  function sequence(root,kind){','  globalThis.layers={body:B,skirt:BasicSequences.skirt.sets,sleeve:BasicSequences.sleeve.sets,trousers:BasicSequences.trousers.sets,dress:D};\n  function sequence(root,kind){');
 vm.runInThisContext(source);
 vm.runInThisContext(fs.readFileSync(__dirname+'/sequence-plan.js','utf8'));
 vm.runInThisContext(fs.readFileSync(__dirname+'/drafting-notations.js','utf8'));
@@ -36,5 +37,5 @@ for(const [kind,sets] of Object.entries(layers))for(const [index,layer] of sets.
  raf(player.duration);assert(lines.every(e=>e.style.visibility==='visible'),'Incomplete ending');
  const state=lines.map(e=>e.getAttribute('points'));player.cancel();assert(lines.every((e,i)=>e.getAttribute('points')===state[i]),'Cancellation resurrected geometry');
 }
-console.log(JSON.stringify({steps:43,operations,timelineChecks:frames,passed:true}));
+console.log(JSON.stringify({steps:Object.values(layers).reduce((n,s)=>n+s.length,0),operations,timelineChecks:frames,passed:true}));
 

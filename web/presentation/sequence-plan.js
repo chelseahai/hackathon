@@ -31,7 +31,7 @@ window.DraftingSequencePlan = (() => {
   const same=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)<.005;
   function build(kind,index,specs,layer){
     const known=new Map(layer.lines.map(l=>[l.id,l]));
-    const operations=specs.map((spec,i)=>({...spec,lines:(links[kind][index][i]||[]).filter(id=>{
+    const operations=specs.map((spec,i)=>({...spec,lines:(spec.lines||links[kind]?.[index]?.[i]||[]).filter(id=>{
       const line=known.get(id);if(!line)return false;
       if(line.guide)return line.points.length===2;
       return spec.points&&((same(spec.points[0],line.points[0])&&same(spec.points.at(-1),line.points.at(-1)))||(same(spec.points.at(-1),line.points[0])&&same(spec.points[0],line.points.at(-1))));
@@ -39,7 +39,7 @@ window.DraftingSequencePlan = (() => {
     const assigned=new Set(operations.flatMap(op=>op.lines));
     const helpers=[],outcomes=[];
     for(const line of layer.lines){if(assigned.has(line.id))continue;
-      (line.guide?helpers:outcomes).push({points:line.points,label:names[line.id]||`${line.guide?'Construct':'Draw'} ${line.id.replaceAll('-',' ')}`,lines:[line.id],pointIds:[]});
+      (line.guide?helpers:outcomes).push({points:line.points,label:line.label||names[line.id]||`${line.guide?'Construct':'Draw'} ${line.id.replaceAll('-',' ')}`,lines:[line.id],pointIds:[]});
     }
     const firstOutline=operations.findIndex(op=>op.lines.some(id=>!known.get(id).guide));
     operations.splice(firstOutline<0?operations.length:firstOutline,0,...helpers);

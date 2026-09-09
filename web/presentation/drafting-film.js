@@ -52,43 +52,10 @@
   bodySteps.forEach((step,i)=>step[1]=BasicSequences.bodyRules[i]);
   [[461,464],[451,451],[452,462],[453,453],[454,454],[465,468],[470,476],[472,489],[477,478],[479,496],[506,528],[509,531],[498,500],[502,502],[503,504],[534,537]].forEach((range,i)=>{bodySteps[i][2]=range[0];bodySteps[i][3]=range[1];});
   bodySteps[15][0]='Sleeve notches';
-  // Dress layers use exposed source outlines, construction marks and named seams.
-  const D=Array.from({length:8},layer),lift=-body.cfHem.y;
-  const move=(poly,dx=0,dy=0)=>poly.map(q=>V(q.x+dx,q.y+dy));
-  [BodyBlock.backOutline(body),BodyBlock.frontOutline(body)].forEach((poly,i)=>line(D[0],'body-'+i,BodyBlock.closeRing(poly)));
-  [SkirtBlock.backOutline(skirt),SkirtBlock.frontOutline(skirt)].forEach((poly,i)=>line(D[0],'skirt-'+i,move(SkirtBlock.closeRing(poly),60,35)));
-  point(D[0],'Bodice',V(2,-7));point(D[0],'Skirt',V(62,-20));
-  line(D[1],'registered-back',BodyBlock.closeRing(BodyBlock.backOutline(body)),true);
-  line(D[1],'registered-front',move(BodyBlock.closeRing(BodyBlock.frontOutline(body)),0,lift),true);
-  line(D[1],'skirt-back',SkirtBlock.closeRing(SkirtBlock.backOutline(skirt)),true);
-  line(D[1],'skirt-front',move(SkirtBlock.closeRing(SkirtBlock.frontOutline(skirt)),body.cfX-skirt.cfX),true);
-  [0,-18,-50].forEach((y,i)=>{line(D[1],'dress-level-'+i,[V(0,y),V(body.cfX,y)],true);point(D[1],['WL','HL','HEM'][i],V(0,y));});
-  const panels=dress.panels;
-  panels.forEach((panel,i)=>{
-    panel.seams.forEach((seam,j)=>{
-      const lower=seam.name.toLowerCase();
-      const stage=/neck|collar|shoulder|armhole/.test(lower)?2:/hem/.test(lower)?6:/princess/.test(lower)?4:3;
-      line(D[stage],`seam-${i}-${j}`,seam.points);
-      [...(seam.knots||[]),...(seam.spans||[]).flat()].forEach((p,k)=>point(D[stage],`control-${i}-${j}-${k}`,p,''));
-    });
-    (panel.marks||[]).forEach((m,j)=>{const stage=/SH|TIP|MID|45|UA/.test(m.label)?2:/HEM|⅔|¼|½/.test(m.label)?6:/BP|BL|0.2|0.3|6|7/.test(m.label)?4:3;point(D[stage],`mark-${i}-${j}`,m.pt,m.label);});
-    (panel.construction||[]).forEach((poly,j)=>line(D[5],`construction-${i}-${j}`,poly,true));
-    (panel.preRotation||[]).forEach((poly,j)=>line(D[5],`before-rotation-${i}-${j}`,poly,true));
-  });
-  PrincessDress.laidOutPanels(dress,0).forEach((panel,i)=>{line(D[7],'panel-'+i,PrincessDress.closeRing(panel.outline));panel.notches.forEach((p,j)=>point(D[7],`notch-${i}-${j}`,p,''));point(D[7],panel.name,V(panel.outline.reduce((sum,p)=>sum+p.x,0)/panel.outline.length,-54),panel.name);});
-  const dressSteps=[
-    ['Bodice + skirt','Two real source blocks. The skirt is displayed to the right for comparison.',688,705],
-    ['Register the waist','Place the skirt at WL. Lift the front bodice by its 3.4 cm hem drop. Grey outlines retain the source construction.',766,780],
-    ['Neck, shoulder, armhole','Reveal the dress’s adjusted upper contours: neck +0.5, shoulder −0.5, raised and inset underarm.',715,765],
-    ['Waist and hip shaping','Apply garment ease and divide the takeout between the princess and side seams.',785,808],
-    ['Princess paths','Connect the shoulder and bust/back landmarks through waist and hip into continuous panel paths.',865,905],
-    ['Transfer and refine','Show the recorded side-front construction and pre-rotation contour against the resolved seams. This is an overlay comparison, not a cloth simulation.',906,949],
-    ['Hem and flare','Reveal the hem controls and fullness allocations at the side and princess edges.',951,981],
-    ['Separate the panels','Lay out the four final stitch outlines and paired notches. The geometry is the same as the live dress engine.',1112,1131]
-  ];
+  const D=DressSequence.sets,dressSteps=DressSequence.steps;
   function sequence(root,kind){
-    const basic=kind!=='dress', names={body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers',dress:'Dress'};
-    const sets=kind==='body'?B:basic?BasicSequences[kind].sets:D,steps=kind==='body'?bodySteps:basic?BasicSequences[kind].steps:dressSteps,src=SequenceSource[kind];
+    const basic=true, names={body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers',dress:'Dress'};
+    const sets=kind==='dress'?D:kind==='body'?B:BasicSequences[kind].sets,steps=kind==='dress'?dressSteps:kind==='body'?bodySteps:BasicSequences[kind].steps,src=SequenceSource[kind];
     let index=-1,playing=!reduced.matches,visible=false,timer=null,tempo=4500,notation=null,stepDuration=4500,motionPaused=false;
     const host=root.querySelector('.film-svg'),svg=node('svg',{viewBox:kind==='body'?'-6 -47 61 58':'-6 -48 120 108',role:'img','aria-label':kind==='body'?'Bodice construction animation':'Princess dress construction animation'});
     if(basic){const pts=sets.flatMap(l=>[...l.lines.flatMap(s=>s.points),...l.points.map(s=>s.p)]);const xs=pts.map(p=>p.x),ys=pts.map(p=>-p.y);svg.setAttribute('viewBox',`${Math.min(...xs)-5} ${Math.min(...ys)-5} ${Math.max(...xs)-Math.min(...xs)+10} ${Math.max(...ys)-Math.min(...ys)+10}`);svg.setAttribute('aria-label',names[kind]+' construction animation');}
@@ -116,8 +83,8 @@
       if(active.length)windowEl.scrollTo({top:Math.max(0,active[0].offsetTop-code.offsetTop-windowEl.clientHeight*.25),behavior:reduced.matches?'instant':'smooth'});
       root.querySelector('.code-citation').textContent=`${src.path} · L${step[2]}–${step[3]}`;
       let selected=sets.slice(0,index+1);
-      if(kind==='dress')selected=index===0?[sets[0]]:index===7?[sets[7]]:sets.slice(1,index+1);
-      if(kind==='dress'){const pts=selected.flatMap(l=>l.lines.flatMap(s=>s.points));const xs=pts.map(p=>p.x);svg.setAttribute('viewBox',`${Math.min(...xs)-6} -48 ${Math.max(...xs)-Math.min(...xs)+12} 108`);}const wanted=new Set();
+      if(kind==='dress')selected=index===0?[sets[0]]:index===sets.length-1?[sets.at(-1)]:sets.slice(1,index+1).filter((_,i)=>!(index>7&&i+1===7));
+      if(kind==='dress'){const pts=selected.flatMap(l=>l.lines.flatMap(s=>s.points));const xs=pts.map(p=>p.x);const ys=pts.map(p=>-p.y);svg.setAttribute('viewBox',`${Math.min(...xs)-7} ${Math.min(...ys)-7} ${Math.max(...xs)-Math.min(...xs)+14} ${Math.max(...ys)-Math.min(...ys)+14}`);}const wanted=new Set();
       selected.forEach(l=>l.lines.forEach(item=>{wanted.add(item.id);let e=[...shapes.children].find(e=>e.dataset.id===item.id);if(!e){e=node('polyline',{points:item.points.map(p=>`${p.x},${-p.y}`).join(' '),pathLength:100});e.dataset.id=item.id;shapes.append(e);e.classList.add('arriving');}e.setAttribute('points',item.points.map(p=>`${p.x},${-p.y}`).join(' '));e.style.visibility='visible';e.setAttribute('class',`film-line ${item.guide?'guide':''} ${sets[index].lines.includes(item)?'current':''} ${index!==previous&&sets[index].lines.includes(item)?'arriving':''}`);}));
       [...shapes.children].forEach(e=>{if(!wanted.has(e.dataset.id))e.remove();});dots.replaceChildren();
       const used=new Set();selected.forEach(l=>l.points.forEach(item=>{const key=`${item.p.x.toFixed(3)},${item.p.y.toFixed(3)},${item.label}`;if(used.has(key))return;used.add(key);const g=node('g',{class:`film-point ${sets[index].points.includes(item)?'current':''}`});g.dataset.pointId=item.id;g.append(node('circle',{cx:item.p.x,cy:-item.p.y,r:kind==='body'?.22:.25}));if(item.label){const left=/Notch-B|B-arc/.test(item.id);const dy=/Notch-/.test(item.id)?1.4:-.55;g.append(node('text',{x:item.p.x+(left?-1:.55),y:-item.p.y+dy,'text-anchor':left?'end':'start'},item.label));}dots.append(g);}));

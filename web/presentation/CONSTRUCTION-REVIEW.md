@@ -130,3 +130,28 @@ steps and 162 planned operations at 810 timeline positions, ensuring no line or
 point precedes its owning annotation and no future operation leaks geometry.
 All final geometry is revealed and cancellation does not resurrect older lines.
 Browser checks of all 43 steps found no premature geometry or invalid SVG values.
+
+## Princess conversion in the shared player
+
+Page 5 replaces its former eight broad stages and step buttons with 15 written
+rules and the same operation-owned notation player as page 4. `dress-sequence.js`
+uses the real source blocks, actual dress parameters, recorded dart construction,
+engine marks, named seams and laid-out panels. The current engine waist ease is
+3 cm and hip ease 4 cm; presentation copy follows those settings.
+
+Sequence: source blocks, waist registration, neck/shoulder landmarks, armhole
+landmarks, waist/hip allocations, back princess axis, front side-dart balance,
+transfer construction, refinement controls, fullness endpoints, back contours,
+front contours, hem closure, sewing correspondences, final layout. Fullness
+endpoints precede every long resolved contour that needs them. Pre-transfer
+geometry is explicitly a recorded comparison, not a simulated cloth deformation.
+
+Both pages now use grey references, blue current drafting, black completed
+outlines and red calculations in the written rules. The Python excerpts are
+the existing implementation with highlighted source ranges, not standalone code.
+
+Verification: all 58 steps (43 basic + 15 conversion), 285 planned operations and
+1,425 timing checkpoints pass `check-sequence-timing.cjs`. All 15 conversion steps
+were checked in the browser for code highlighting, finite SVG coordinates and
+no premature geometry. Desktop final layout contains the four engine panels;
+mobile at 390 × 844 has no horizontal document overflow. No engine was changed.

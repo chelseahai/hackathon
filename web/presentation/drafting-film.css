@@ -14,9 +14,9 @@
 @media(max-width:600px){.film-controls{order:1}.film-visual{order:2}.film-code{order:3}}
 .block-selector{display:flex;gap:26px;margin:0 0 30px;padding-bottom:12px;border-bottom:1px solid #ddd}.block-selector button{font:inherit;font-size:12px;padding:6px 0;color:#666;border-bottom:2px solid transparent}.block-selector button[aria-pressed=true]{color:var(--blue);border-color:var(--blue)}
 .film-layout[hidden]{display:none!important}
-#blocks .film-layout{grid-template-columns:1.05fr 1fr 1.55fr;gap:0 28px}
-#blocks .film-number{font-size:38px;margin-bottom:10px}
-#blocks .film-step-title,#blocks .film-step-copy{display:none}
+:is(#blocks,#conversion) .film-layout{grid-template-columns:1.05fr 1fr 1.55fr;gap:0 28px}
+:is(#blocks,#conversion) .film-number{font-size:38px;margin-bottom:10px}
+:is(#blocks,#conversion) .film-step-title,:is(#blocks,#conversion) .film-step-copy{display:none}
 .film-rules{height:423px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;position:relative;padding:0 10px 240px 0;box-sizing:border-box;scrollbar-color:#aaa transparent}
 .film-rule{border-left:2px solid transparent;padding:10px 0 14px 12px;transition:border-color .4s,background .4s}
 .film-rule.active{border-left-color:var(--blue);background:#2347c706}
@@ -26,23 +26,23 @@
 .film-line.guide.arriving{stroke-dasharray:2 2;animation:point-arrive .9s ease both}
 .film-legend span:nth-child(2){color:#777}.film-legend span:nth-child(4){color:var(--blue)}
 [data-sequence=trousers] .film-point text{font-size:1.45px}
-@media(max-width:1050px){#blocks .film-layout{grid-template-columns:1fr 1fr;gap:22px}.film-rules{height:320px}}
-@media(max-width:600px){#blocks .film-layout{display:flex;gap:22px}.block-selector{gap:20px}.block-selector button{font-size:11px}.film-rules{height:270px;padding-bottom:160px}.film-rule p{font-size:12px}.film-rule h3{font-size:13px}.film-story .film-note{margin:10px 0 0}.film-svg:before{right:0}.film-rule{padding-bottom:18px}}
+@media(max-width:1050px){:is(#blocks,#conversion) .film-layout{grid-template-columns:1fr 1fr;gap:22px}.film-rules{height:320px}}
+@media(max-width:600px){:is(#blocks,#conversion) .film-layout{display:flex;gap:22px}.block-selector{gap:20px}.block-selector button{font-size:11px}.film-rules{height:270px;padding-bottom:160px}.film-rule p{font-size:12px}.film-rule h3{font-size:13px}.film-story .film-note{margin:10px 0 0}.film-svg:before{right:0}.film-rule{padding-bottom:18px}}
 @media(prefers-reduced-motion:reduce){.film-line.guide.arriving{animation:none}.film-rule{transition:none}}
 /* Page 4 uses color alone to distinguish construction from resolved outlines. */
-#blocks .film-line{stroke:#151515;stroke-dasharray:none}
-#blocks .film-line.current{stroke:#2347c7}
-#blocks .film-line.guide,#blocks .film-line.guide.current{stroke:#aaa;stroke-dasharray:none}
-#blocks .film-line.arriving{stroke-dasharray:none;animation:point-arrive 1s ease both}
-#blocks .film-line.current:not(.guide){animation-delay:.8s}
-#blocks .film-point.current circle{fill:#2347c7}
-#blocks .film-legend span{color:#888}#blocks .film-legend span:nth-child(2){color:#2347c7}#blocks .film-legend span:nth-child(3){color:#151515}
+:is(#blocks,#conversion) .film-line{stroke:#151515;stroke-dasharray:none}
+:is(#blocks,#conversion) .film-line.current{stroke:#2347c7}
+:is(#blocks,#conversion) .film-line.guide,:is(#blocks,#conversion) .film-line.guide.current{stroke:#aaa;stroke-dasharray:none}
+:is(#blocks,#conversion) .film-line.arriving{stroke-dasharray:none;animation:point-arrive 1s ease both}
+:is(#blocks,#conversion) .film-line.current:not(.guide){animation-delay:.8s}
+:is(#blocks,#conversion) .film-point.current circle{fill:#2347c7}
+:is(#blocks,#conversion) .film-legend span{color:#888}:is(#blocks,#conversion) .film-legend span:nth-child(2){color:#2347c7}:is(#blocks,#conversion) .film-legend span:nth-child(3){color:#151515}
 .draft-notations{pointer-events:none;color:#2347c7}
 .notation-route,.notation-tick{stroke:currentColor;stroke-width:1;vector-effect:non-scaling-stroke}
 .notation-extension{stroke:currentColor;stroke-width:.65;opacity:.45;vector-effect:non-scaling-stroke}
 .notation-tangent{stroke:#999;stroke-width:1;vector-effect:non-scaling-stroke}
 .notation-marker{fill:currentColor}
 .notation-label,.notation-fraction{fill:currentColor;font-family:Poppins,sans-serif;font-weight:500;paint-order:stroke;stroke:#f7f7f7;stroke-width:4px;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-@media(prefers-reduced-motion:reduce){#blocks .film-line.arriving{animation:none}}
-#blocks .film-line.current:not(.guide)[data-construction-state=complete]{stroke:#151515}
-#blocks .film-line.arriving{animation:none}
+@media(prefers-reduced-motion:reduce){:is(#blocks,#conversion) .film-line.arriving{animation:none}}
+:is(#blocks,#conversion) .film-line.current:not(.guide)[data-construction-state=complete]{stroke:#151515}
+:is(#blocks,#conversion) .film-line.arriving{animation:none}

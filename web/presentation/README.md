@@ -51,6 +51,12 @@ construction references dashed. Full drafting tools remain linked separately.
 
 Later integration may connect the outcome gallery and matrix to actual datasets.
 
+Page 5 now uses `dress-sequence.js` for 15 conversion rules and the shared
+measurement-first player. It covers registration, shaping, dart transfer,
+princess controls, fullness, final seams and paired sewing marks. The final
+panels are engine output. The transfer stage shows recorded construction and
+pre-transfer geometry; it does not simulate fabric or claim verified fit.
+
 Page 4 measurement notation lives in `drafting-notations.js`: 108 operations
 across the four blocks, with offset dimensions, division ticks, angle arcs and
 curve-distance markers. Grey references, blue current geometry and black
