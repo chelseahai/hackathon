@@ -44,3 +44,5 @@
 .notation-marker{fill:currentColor}
 .notation-label,.notation-fraction{fill:currentColor;font-family:Poppins,sans-serif;font-weight:500;paint-order:stroke;stroke:#f7f7f7;stroke-width:4px;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 @media(prefers-reduced-motion:reduce){#blocks .film-line.arriving{animation:none}}
+#blocks .film-line.current:not(.guide)[data-construction-state=complete]{stroke:#151515}
+#blocks .film-line.arriving{animation:none}

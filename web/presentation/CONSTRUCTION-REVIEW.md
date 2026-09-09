@@ -104,3 +104,29 @@ Reduced motion displays a settled annotation and the complete current geometry.
 Written rules retain all explanations. Desktop and mobile browser checks covered
 43 valid notation states, continuous strokes, readable offset labels and no
 horizontal overflow; all 108 data operations were checked for finite coordinates.
+
+## Drafting order correction
+
+The initial notation implementation displayed current guides/points immediately
+and drew all current outlines together after the final measurement. That could
+associate unrelated lines with a label. The corrected player builds an explicit
+operation plan (`sequence-plan.js`): explain, measure, construct, then hold.
+Each line and point has exactly one owning operation. Combined helper constructions
+receive their own labels; prerequisite boxes and diagonals precede dependent
+angles and curves. Completed operation outlines turn black within the step.
+
+Autoplay now advances from animation completion rather than a separate timer.
+Cancellation cannot restore an old animation's geometry into the next step;
+each new step rebuilds all prior lines from their canonical coordinates.
+
+The geometry review also shortened the bodice width guides to the bust line,
+restricted the underarm division to the waist-to-bust segment, and removed the
+unnecessary top extension of the BP guide. The skirt balance guide is now five
+independent offsets instead of one connected zigzag. Front/back sleeve-cap
+curves have independent reveal operations. Underlying drafting engines are unchanged.
+
+Verification: `node web/presentation/check-sequence-timing.cjs` checks all 43
+steps and 162 planned operations at 810 timeline positions, ensuring no line or
+point precedes its owning annotation and no future operation leaks geometry.
+All final geometry is revealed and cancellation does not resurrect older lines.
+Browser checks of all 43 steps found no premature geometry or invalid SVG values.

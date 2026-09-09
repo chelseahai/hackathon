@@ -15,9 +15,9 @@
   line(B[0],'back-length',[V(0,0),V(0,d.topY)],true);point(B[0],'O',V(0,0));point(B[0],'T',V(0,d.topY));
   line(B[1],'frame',box(0,0,d.cfX,d.topY),true);point(B[1],'CF',V(d.cfX,0));
   line(B[2],'bust-level',[V(0,d.blY),V(d.cfX,d.blY)],true);point(B[2],'BL',V(0,d.blY));
-  line(B[3],'back-width',[V(d.backWidthX,0),V(d.backWidthX,d.topY)],true);point(B[3],'BW',V(d.backWidthX,d.blY));
-  line(B[4],'chest-width',[V(d.chestWidthX,0),V(d.chestWidthX,d.topY)],true);point(B[4],'CW',V(d.chestWidthX,d.blY));
-  line(B[5],'side-mid',[V(d.sideX,0),V(d.sideX,d.topY)],true);point(B[5],'UA',d.underarm);
+  line(B[3],'back-width',[V(d.backWidthX,d.blY),V(d.backWidthX,d.topY)],true);point(B[3],'BW',V(d.backWidthX,d.blY));
+  line(B[4],'chest-width',[V(d.chestWidthX,d.blY),V(d.chestWidthX,d.topY)],true);point(B[4],'CW',V(d.chestWidthX,d.blY));
+  line(B[5],'side-mid',[V(d.sideX,d.blY),V(d.sideX,0)],true);point(B[5],'UA',d.underarm);
   line(B[6],'back-neck-box',box(0,d.topY,d.backNeckWidth,d.backSnp.y),true);line(B[6],'back-neck',d.backNeck);point(B[6],'B-SNP',d.backSnp);
   const nc=V(d.cfX-d.frontNeckWidth,d.topY-d.frontNeckDepth);
   line(B[7],'front-neck-box',box(nc.x,nc.y,d.cfX,d.topY),true);line(B[7],'neck-bisector',[nc,d.frontNeckOffset],true);line(B[7],'neck-width-mid',[V(nc.x+d.frontNeckWidth/2,nc.y),V(nc.x+d.frontNeckWidth/2,d.topY)],true);line(B[7],'front-neck',d.frontNeck);point(B[7],'F-SNP',d.frontSnp);point(B[7],'N45',d.frontNeckOffset);point(B[7],'F-N',d.cfNeck);
@@ -28,7 +28,7 @@
   line(B[11],'front-half-depth',[V(d.sideX,mid),V(d.chestWidthX,mid)],true);line(B[11],'front-half-width',[V((d.chestWidthX+d.sideX)/2,d.blY),V((d.chestWidthX+d.sideX)/2,mid)],true);line(B[11],'front-45',[fc,d.frontAhBisector],true);line(B[11],'front-ah',d.frontArmhole);point(B[11],'F½',d.frontAhMid);point(B[11],'F45',d.frontAhBisector);
   line(B[12],'back-fold',[d.cbWaist,d.cbNeck]);line(B[12],'back-waist',[d.cbWaist,d.sideWaist]);line(B[12],'side-seam',[d.underarm,d.sideWaist]);line(B[12],'side-waist-shift',[V(d.sideX,0),d.sideWaist],true);point(B[12],'SW',d.sideWaist);
   const chestMid=(d.chestWidthX+d.cfX)/2;
-  line(B[13],'bp-projection',[V(chestMid,d.blY),V(d.bp.x,d.blY),d.bp],true);line(B[13],'bp-vertical',[V(d.bp.x,d.topY),V(d.bp.x,-4)],true);point(B[13],'BP',d.bp);
+  line(B[13],'bp-projection',[V(chestMid,d.blY),V(d.bp.x,d.blY),d.bp],true);line(B[13],'bp-vertical',[V(d.bp.x,d.blY),V(d.bp.x,d.cfHem.y)],true);point(B[13],'BP',d.bp);
   line(B[14],'hem-drop',[V(d.cfX,0),d.cfHem],true);line(B[14],'front-hem',d.hem);line(B[14],'front-fold',[d.cfNeck,d.cfHem]);point(B[14],'F-HEM',d.cfHem);point(B[14],'BP-HEM',d.hemAtBp);
   point(B[15],'Notch-B',d.notchB);point(B[15],'Notch-A',d.notchA);point(B[15],'B-arc½',d.backAhHalf);point(B[15],'F-arc½',d.frontAhHalf);
   const bodySteps=[
@@ -103,8 +103,9 @@
         item.append(title,text);rules.append(item);
       });
     }else steps.forEach((s,i)=>{const b=document.createElement('button');b.textContent=String(i+1).padStart(2,'0');b.setAttribute('aria-label',`Dress step ${i+1}: ${s[0]}`);b.addEventListener('click',()=>{playing=false;show(i);});nav.append(b);});
-    function schedule(){clearTimeout(timer);if(playing&&visible&&!document.hidden&&!root.hidden)timer=setTimeout(()=>show((index+1)%steps.length),stepDuration);}
+    function schedule(){clearTimeout(timer);if(playing&&visible&&!document.hidden&&!root.hidden){if(basic){notation?.onComplete(()=>show((index+1)%steps.length));}else timer=setTimeout(()=>show((index+1)%steps.length),stepDuration);}else if(basic)notation?.onComplete(null);}
     function show(next){
+      notation?.cancel();notation=null;
       const previous=index;motionPaused=false;index=next;const step=steps[index];
       root.querySelector('.film-number').textContent=String(index+1).padStart(2,'0');root.querySelector('.film-step-label').textContent=`${basic?names[kind]+' rule':'Conversion'} ${index+1} / ${steps.length}`;root.querySelector('.film-step-title').textContent=step[0];root.querySelector('.film-step-copy').textContent=step[1];root.querySelector('.film-counter').textContent=`${String(index+1).padStart(2,'0')} / ${steps.length}`;
       root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',`${playing?'Pause':'Play'} ${names[kind].toLowerCase()} animation`);
@@ -117,13 +118,14 @@
       let selected=sets.slice(0,index+1);
       if(kind==='dress')selected=index===0?[sets[0]]:index===7?[sets[7]]:sets.slice(1,index+1);
       if(kind==='dress'){const pts=selected.flatMap(l=>l.lines.flatMap(s=>s.points));const xs=pts.map(p=>p.x);svg.setAttribute('viewBox',`${Math.min(...xs)-6} -48 ${Math.max(...xs)-Math.min(...xs)+12} 108`);}const wanted=new Set();
-      selected.forEach(l=>l.lines.forEach(item=>{wanted.add(item.id);let e=[...shapes.children].find(e=>e.dataset.id===item.id);if(!e){e=node('polyline',{points:item.points.map(p=>`${p.x},${-p.y}`).join(' '),pathLength:100});e.dataset.id=item.id;shapes.append(e);e.classList.add('arriving');}e.setAttribute('class',`film-line ${item.guide?'guide':''} ${sets[index].lines.includes(item)?'current':''} ${index!==previous&&sets[index].lines.includes(item)?'arriving':''}`);}));
+      selected.forEach(l=>l.lines.forEach(item=>{wanted.add(item.id);let e=[...shapes.children].find(e=>e.dataset.id===item.id);if(!e){e=node('polyline',{points:item.points.map(p=>`${p.x},${-p.y}`).join(' '),pathLength:100});e.dataset.id=item.id;shapes.append(e);e.classList.add('arriving');}e.setAttribute('points',item.points.map(p=>`${p.x},${-p.y}`).join(' '));e.style.visibility='visible';e.setAttribute('class',`film-line ${item.guide?'guide':''} ${sets[index].lines.includes(item)?'current':''} ${index!==previous&&sets[index].lines.includes(item)?'arriving':''}`);}));
       [...shapes.children].forEach(e=>{if(!wanted.has(e.dataset.id))e.remove();});dots.replaceChildren();
-      const used=new Set();selected.forEach(l=>l.points.forEach(item=>{const key=`${item.p.x.toFixed(3)},${item.p.y.toFixed(3)},${item.label}`;if(used.has(key))return;used.add(key);const g=node('g',{class:`film-point ${sets[index].points.includes(item)?'current':''}`});g.append(node('circle',{cx:item.p.x,cy:-item.p.y,r:kind==='body'?.22:.25}));if(item.label){const left=/Notch-B|B-arc/.test(item.id);const dy=/Notch-/.test(item.id)?1.4:-.55;g.append(node('text',{x:item.p.x+(left?-1:.55),y:-item.p.y+dy,'text-anchor':left?'end':'start'},item.label));}dots.append(g);}));
+      const used=new Set();selected.forEach(l=>l.points.forEach(item=>{const key=`${item.p.x.toFixed(3)},${item.p.y.toFixed(3)},${item.label}`;if(used.has(key))return;used.add(key);const g=node('g',{class:`film-point ${sets[index].points.includes(item)?'current':''}`});g.dataset.pointId=item.id;g.append(node('circle',{cx:item.p.x,cy:-item.p.y,r:kind==='body'?.22:.25}));if(item.label){const left=/Notch-B|B-arc/.test(item.id);const dy=/Notch-/.test(item.id)?1.4:-.55;g.append(node('text',{x:item.p.x+(left?-1:.55),y:-item.p.y+dy,'text-anchor':left?'end':'start'},item.label));}dots.append(g);}));
       // Also expose every corner/end of the auxiliary construction guides.
       const named=new Set(selected.flatMap(l=>l.points.map(item=>`${item.p.x.toFixed(3)},${item.p.y.toFixed(3)}`)));
-      selected.forEach(l=>l.lines.filter(item=>item.guide).forEach(item=>item.points.forEach(p=>{const key=`${p.x.toFixed(3)},${p.y.toFixed(3)}`;if(named.has(key))return;named.add(key);dots.append(node('circle',{cx:p.x,cy:-p.y,r:.16,fill:'#999'}));})));
-      if(basic){notation?.cancel();notation=DraftingNotations.render(svg,kind,index,tempo,reduced.matches);stepDuration=notation.duration;}
+      selected.forEach(l=>l.lines.filter(item=>item.guide).forEach(item=>item.points.forEach(p=>{const key=`${p.x.toFixed(3)},${p.y.toFixed(3)}`;if(named.has(key))return;named.add(key);dots.append(node('circle',{cx:p.x,cy:-p.y,r:.16,fill:'#999',class:sets[index].lines.includes(item)?'current auxiliary-point':'auxiliary-point','data-line-id':item.id}));})));
+      if(basic){notation=DraftingNotations.render(svg,kind,index,tempo,reduced.matches,sets[index]);stepDuration=notation.duration;}
+      notation?.pause(motionPaused||root.hidden||document.hidden||!visible);
       schedule();
     }
     root.querySelector('[data-action=play]').addEventListener('click',()=>{playing=!playing;motionPaused=!playing;notation?.pause(motionPaused);root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',(playing?'Pause ':'Play ')+names[kind].toLowerCase()+' animation');schedule();});
@@ -141,6 +143,3 @@
   document.querySelectorAll('[data-block]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-block]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('#blocks [data-sequence]').forEach(root=>{root.hidden=root.dataset.sequence!==button.dataset.block;root.dispatchEvent(new Event('block-visibility'));});document.querySelector('#blocks .text-link').href='../BasicBlock-'+({body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers'}[button.dataset.block])+'.html';}));
   document.querySelectorAll('[data-sequence]').forEach(root=>sequence(root,root.dataset.sequence));
 })();
-
-
-

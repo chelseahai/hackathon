@@ -68,11 +68,17 @@ window.DraftingNotations = (() => {
   trousers[5][0]=dim(V(t.cfWaist.x,t.sideWaist.y),t.sideWaist,'W / 4 + 2 × 2.5 = 22 cm');
   const data={body,skirt,sleeve,trousers};
   const node=(tag,attrs={},text)=>{const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;};
-  function render(svg,kind,index,tempo,reduced){
-    const specs=data[kind][index],vb=svg.viewBox.baseVal,unit=Math.max(vb.width/(svg.clientWidth||500),vb.height/(svg.clientHeight||505));
+  function render(svg,kind,index,tempo,reduced,layer){
+    const specs=DraftingSequencePlan.build(kind,index,data[kind][index],layer),vb=svg.viewBox.baseVal,unit=Math.max(vb.width/(svg.clientWidth||500),vb.height/(svg.clientHeight||505));
     const group=node('g',{class:'draft-notations','aria-label':'Current drafting dimensions'});svg.append(group);
-    const outlines=[...svg.querySelectorAll('.film-line.current:not(.guide)')].map(e=>({e,original:e.getAttribute('points'),points:e.getAttribute('points').split(' ').map(pair=>{const [x,y]=pair.split(',').map(Number);return V(x,-y);})}));
-    const slot=Math.max(1700,tempo/specs.length),duration=slot*specs.length+1100;
+    const outlines=[...svg.querySelectorAll('.film-line.current')].map(e=>({e,original:e.getAttribute('points'),points:e.getAttribute('points').split(' ').map(pair=>{const [x,y]=pair.split(',').map(Number);return V(x,-y);})}));
+    const slot=Math.max(2400,tempo/Math.max(1,data[kind][index].length)),duration=slot*specs.length;
+    const points=[...svg.querySelectorAll('.film-point.current,.auxiliary-point.current')];
+    const lineOperation=new Map(specs.flatMap((op,i)=>op.lines.map(id=>[id,i])));
+    const pointOperation=new Map(specs.flatMap((op,i)=>op.pointIds.map(id=>[id,i])));
+    let completeCallback=null,completionSent=false;
+    for(const {e} of outlines)e.style.visibility='hidden';
+    for(const e of points)e.style.visibility='hidden';
     let frame,elapsed=0,last=null,paused=false,current=-1,draw;
     function setup(spec){
       group.replaceChildren();const pts=spec.angle?Array.from({length:33},(_,i)=>{const a=spec.angle.start+spec.angle.delta*i/32,r=19*unit;return V(spec.angle.o.x+Math.cos(a)*r,spec.angle.o.y+Math.sin(a)*r);}):spec.points;
@@ -92,13 +98,30 @@ window.DraftingNotations = (() => {
       const textWidth=Math.min(vb.width-12*unit,spec.label.length*5.7*unit),tx=Math.max(vb.x+textWidth/2+unit,Math.min(vb.x+vb.width-textWidth/2-unit,mid.x+nx*29*unit)),ty=Math.max(vb.y+9*unit,Math.min(vb.y+vb.height-9*unit,-mid.y-ny*29*unit));
       group.append(node('line',{class:'notation-extension',x1:at(route,.5).x,y1:-at(route,.5).y,x2:tx,y2:ty}));
       const text=node('text',{class:'notation-label',x:tx,y:ty,'text-anchor':'middle','dominant-baseline':'middle','font-size':11*unit},spec.label);group.append(text);
-      draw=progress=>{const eased=1-Math.pow(1-progress,3),part=trim(route,eased),q=part.at(-1);poly.setAttribute('points',part.map(p=>`${p.x},${-p.y}`).join(' '));dot.setAttribute('cx',q.x);dot.setAttribute('cy',-q.y);ticks.forEach(({f,tick,label})=>{tick.style.opacity=eased>=f?1:0;if(label)label.style.opacity=eased>=f?1:0;});text.style.opacity=Math.min(1,progress*4);};
+      draw=progress=>{const eased=1-Math.pow(1-progress,3),part=trim(route,eased),q=part.at(-1);poly.setAttribute('points',part.map(p=>`${p.x},${-p.y}`).join(' '));dot.setAttribute('cx',q.x);dot.setAttribute('cy',-q.y);ticks.forEach(({f,tick,label})=>{tick.style.opacity=eased>=f?1:0;if(label)label.style.opacity=eased>=f?1:0;});text.style.opacity=1;};
     }
-    function paint(){const i=Math.min(specs.length-1,Math.floor(elapsed/slot));if(i!==current){current=i;setup(specs[i]);}draw(reduced?1:Math.min(1,(elapsed-i*slot)/(slot*.6)));const progress=reduced?1:Math.max(0,Math.min(1,(elapsed-slot*specs.length)/750));outlines.forEach(({e,points})=>e.setAttribute('points',trim(points,progress).map(p=>`${p.x},${-p.y}`).join(' ')));}
-    function tick(now){if(last!==null&&!paused)elapsed+=now-last;last=now;paint();if(elapsed<duration&&!paused)frame=requestAnimationFrame(tick);}
+    function paint(){
+      const i=Math.min(specs.length-1,Math.floor(elapsed/slot));
+      if(i!==current){current=i;setup(specs[i]);group.dataset.operation=String(i);group.dataset.targets=specs[i].lines.join(' ');}
+      const local=elapsed-i*slot;
+      draw(reduced?1:Math.max(0,Math.min(1,(local-slot*.12)/(slot*.43))));
+      group.dataset.phase=local<slot*.12?'explain':local<slot*.65?'measure':'construct';
+      for(const {e,points:route} of outlines){
+        const owner=lineOperation.get(e.dataset.id);
+        const progress=reduced?1:Math.max(0,Math.min(1,(elapsed-owner*slot-slot*.65)/(slot*.25)));
+        e.style.visibility=progress>0?'visible':'hidden';e.dataset.constructionState=progress>=1?'complete':'drafting';e.dataset.revealOperation=String(owner);
+        e.setAttribute('points',trim(route,progress).map(p=>`${p.x},${-p.y}`).join(' '));
+      }
+      for(const e of points){const owner=e.dataset.pointId?pointOperation.get(e.dataset.pointId):lineOperation.get(e.dataset.lineId);e.dataset.revealOperation=String(owner);e.style.visibility=reduced||elapsed>=(owner+.9)*slot?'visible':'hidden';}
+    }
+    function finish(){if(elapsed>=duration&&!completionSent&&completeCallback){completionSent=true;queueMicrotask(()=>completeCallback?.());}}
+    function tick(now){if(last!==null&&!paused)elapsed+=now-last;last=now;paint();if(elapsed<duration&&!paused)frame=requestAnimationFrame(tick);else finish();}
     paint();if(reduced){elapsed=duration;paint();}else frame=requestAnimationFrame(tick);
-    return {duration,pause(value){if(paused===value)return;paused=value;cancelAnimationFrame(frame);last=null;if(!paused&&elapsed<duration&&!reduced)frame=requestAnimationFrame(tick);},cancel(){cancelAnimationFrame(frame);outlines.forEach(({e,original})=>e.setAttribute('points',original));group.remove();}};
+    return {duration,
+      onComplete(callback){completeCallback=callback;if(!callback)completionSent=false;else finish();},
+      pause(value){if(paused===value)return;paused=value;cancelAnimationFrame(frame);last=null;if(!paused&&elapsed<duration&&!reduced)frame=requestAnimationFrame(tick);},
+      cancel(){completeCallback=null;cancelAnimationFrame(frame);group.remove();}
+    };
   }
   return {data,render};
 })();
-

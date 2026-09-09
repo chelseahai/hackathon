@@ -28,7 +28,12 @@ window.BasicSequences = (() => {
   line(S[0],'skirt-frame',box(0,0,s.cfX,s.hemY),true);point(S[0],'CB',V(0,0));point(S[0],'CF',V(s.cfX,0));
   line(S[1],'hip-line',[V(0,s.hlY),V(s.cfX,s.hlY)],true);line(S[1],'side-axis',[V(s.sideX,0),s.sideHem],true);point(S[1],'HL',s.hip);
   line(S[2],'back-waist-measure',[V(0,0),s.backWaistMark],true);line(S[2],'front-waist-measure',[V(s.cfX,0),s.frontWaistMark],true);point(S[2],'B-W',s.backWaistMark);point(S[2],'F-W',s.frontWaistMark);
-  line(S[3],'waist-corrections',[s.cbWaist,V(0,0),V(s.sideX,0),s.backSideWaist,s.frontSideWaist],true);point(S[3],'B-SW',s.backSideWaist);point(S[3],'F-SW',s.frontSideWaist);
+  line(S[3],'cb-drop',[V(0,0),s.cbWaist],true);
+  line(S[3],'back-side-take',[V(s.sideX,0),V(s.backSideWaist.x,0)],true);
+  line(S[3],'front-side-take',[V(s.sideX,0),V(s.frontSideWaist.x,0)],true);
+  line(S[3],'back-side-rise',[V(s.backSideWaist.x,0),s.backSideWaist],true);
+  line(S[3],'front-side-rise',[V(s.frontSideWaist.x,0),s.frontSideWaist],true);
+  point(S[3],'B-SW',s.backSideWaist);point(S[3],'F-SW',s.frontSideWaist);
   line(S[4],'back-waist',s.backWaistCurve);line(S[4],'front-waist',s.frontWaistCurve);
   const hipCtrl=V(s.sideX,s.hlY+18/3);line(S[5],'side-controls',[s.backSideWaist,hipCtrl,s.frontSideWaist],true);point(S[5],'HC',hipCtrl);line(S[5],'back-side',s.backSide);line(S[5],'front-side',s.frontSide);
   line(S[6],'back-fold',[s.cbWaist,s.cbHem]);line(S[6],'front-fold',[s.cfWaist,s.cfHem]);line(S[6],'hem',[s.cbHem,s.sideHem,s.cfHem]);
@@ -50,7 +55,7 @@ window.BasicSequences = (() => {
   [[.25,sl.frontOffsetUpper],[.75,sl.frontOffsetLower]].forEach(([t,p],i)=>{line(L[3],'front-offset'+i,[lerp(sl.peak,sl.frontUnderarm,t),p],true);point(L[3],'F'+(i+1),p);});
   const lt=.5+2.5/(b.backArmholeLen+1);
   [[.25,sl.backOffsetUpper],[(lt+1)/2,sl.backOffsetLower]].forEach(([t,p],i)=>{line(L[4],'back-offset'+i,[lerp(sl.peak,sl.backUnderarm,t),p],true);point(L[4],'B'+(i+1),p);});point(L[4],'Locator',sl.backLocator);
-  line(L[5],'cap',sl.cap);line(L[6],'front-seam',sl.frontSeam);line(L[6],'back-seam',sl.backSeam);
+  line(L[5],'back-cap',sl.backCap);line(L[5],'front-cap',sl.frontCap);line(L[6],'front-seam',sl.frontSeam);line(L[6],'back-seam',sl.backSeam);
   [sl.cuffBackMid,sl.cuffCenter,sl.cuffFrontMid].forEach((p,i)=>{line(L[7],'cuff-offset'+i,[V(p.x,sl.cuffY),p],true);point(L[7],'C'+(i+1),p);});line(L[7],'cuff',sl.cuff);
   const sleeveSteps=[
     ['Armhole to cap height',`Use the bodice curve lengths: front ${fmt(b.frontArmholeLen)} cm and back ${fmt(b.backArmholeLen)} cm. [AH = front + back = ${fmt(ah)} cm]. Cap height is [AH / 3 − 1 = ${fmt(sl.capHeight)} cm]; 1 cm is the cap-height reduction.`,348,354],
