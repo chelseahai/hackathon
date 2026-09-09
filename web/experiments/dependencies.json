@@ -1,0 +1,247 @@
+{
+  "version": "dependency-map-v1",
+  "nodes": [
+    {
+      "id": "body",
+      "label": "Body measurements",
+      "kind": "INPUT",
+      "x": 20,
+      "y": 80,
+      "detail": "Bust, waist, hip and back length set the block, available intake and starting side lengths. Body remains fixed in step 4.",
+      "source": "688\u2013713, 785\u2013807"
+    },
+    {
+      "id": "waist",
+      "label": "Waist ease",
+      "kind": "INPUT",
+      "x": 20,
+      "y": 170,
+      "detail": "Adds to full waist circumference. Changes waist widths, available intake and side shaping.",
+      "source": "785\u2013807"
+    },
+    {
+      "id": "hip",
+      "label": "Hip ease",
+      "kind": "INPUT",
+      "x": 20,
+      "y": 260,
+      "detail": "Adds to full hip circumference. Changes hip widths and hip-to-waist takeout.",
+      "source": "785\u2013807"
+    },
+    {
+      "id": "length",
+      "label": "Waist-to-hem length",
+      "kind": "INPUT",
+      "x": 20,
+      "y": 350,
+      "detail": "Moves the hem level and changes lower seam slopes and lengths. Must exceed hip depth.",
+      "source": "809\u2013838"
+    },
+    {
+      "id": "fullness",
+      "label": "Hem fullness",
+      "kind": "INPUT",
+      "x": 20,
+      "y": 440,
+      "detail": "Total horizontal addition, not curved hem length. Each side edge receives F \u00d7 share / 2; each princess edge F \u00d7 share / 4.",
+      "source": "815\u2013826, 874\u2013876, 951\u2013966"
+    },
+    {
+      "id": "distribution",
+      "label": "Fullness distribution",
+      "kind": "INPUT",
+      "x": 20,
+      "y": 530,
+      "detail": "Four nonnegative shares sum to one. Redistributing a share requires compensating changes elsewhere. It does not change total F.",
+      "source": "674\u2013677, 815\u2013826, 874\u2013876, 951\u2013966"
+    },
+    {
+      "id": "intake",
+      "label": "Widths & intake",
+      "kind": "CALCULATION",
+      "x": 270,
+      "y": 140,
+      "detail": "D = hip + hip ease \u2212 waist \u2212 waist ease. Back takeout = (D \u2212 1) / 4; front = (D + 1) / 4. Both must be positive. The engine splits each reduction between princess intake and side shaping.",
+      "source": "785\u2013807"
+    },
+    {
+      "id": "lower",
+      "label": "Lower panel geometry",
+      "kind": "CALCULATION",
+      "x": 270,
+      "y": 340,
+      "detail": "Waist, hip and hem endpoints determine lower curves. Length, fullness and distribution interact: equal fullness does not imply equal flare angle or seam length.",
+      "source": "809\u2013838, 854\u2013863, 874\u2013902, 951\u2013981"
+    },
+    {
+      "id": "balance",
+      "label": "Side balance & transfer",
+      "kind": "CALCULATION",
+      "x": 520,
+      "y": 150,
+      "detail": "Side-dart intake is the unrotated front side length minus the back side length. If it exceeds 0.08 cm, the upper side front rotates around BP. This creates an indirect path from lower design changes to upper geometry.",
+      "source": "839\u2013863, 906\u2013943"
+    },
+    {
+      "id": "contours",
+      "label": "Resolved panels & marks",
+      "kind": "CALCULATION",
+      "x": 520,
+      "y": 350,
+      "detail": "The engine rebuilds seams, princess controls and corresponding height-derived notch locations. Changes in curves can alter paired interval lengths even when total lengths are close.",
+      "source": "930\u20131097, 1214\u20131237"
+    },
+    {
+      "id": "allowance",
+      "label": "Cutting outlines",
+      "kind": "CALCULATION",
+      "x": 520,
+      "y": 530,
+      "detail": "The fixed allowance is applied to changed stitch contours. Concave regions and strong flare can challenge offset validity. Outline tests assess sampled geometry and containment.",
+      "source": "Validation/run.py: outline_checks"
+    },
+    {
+      "id": "validity",
+      "label": "Geometry validity",
+      "kind": "BOUNDARY",
+      "x": 770,
+      "y": 100,
+      "detail": "Finite inputs, positive takeout, valid stitch/cut polygons, notch consistency and engine parity are engineering conditions. Existing parameter caps are implementation guards, not proven safe ranges.",
+      "source": "670\u2013686; Validation/policy.json"
+    },
+    {
+      "id": "style",
+      "label": "Design intent",
+      "kind": "PROPOSED",
+      "x": 770,
+      "y": 300,
+      "detail": "Straightness, taper and flare limits must be defined before a range can be called suitable for an intended style. A straight side seam is not automatically the largest wearable waist ease.",
+      "source": "Proposed measurement protocol"
+    },
+    {
+      "id": "sewing",
+      "label": "Seam compatibility",
+      "kind": "REVIEW",
+      "x": 770,
+      "y": 460,
+      "detail": "Measure each interval between paired marks, as well as totals. The 0.1 cm flag is diagnostic. Unknown intended ease remains unknown, including below the flag threshold.",
+      "source": "Validation/policy.json; seam_rows"
+    },
+    {
+      "id": "fit",
+      "label": "Physical wearability",
+      "kind": "UNVERIFIED",
+      "x": 770,
+      "y": 600,
+      "detail": "Fabric, movement, closure and a measured wearer or form provide evidence unavailable from flat geometry. No current map edge establishes wearable limits.",
+      "source": "Validation/FITTING.md"
+    }
+  ],
+  "edges": [
+    {
+      "from": "body",
+      "to": "intake",
+      "type": "implemented"
+    },
+    {
+      "from": "waist",
+      "to": "intake",
+      "type": "implemented"
+    },
+    {
+      "from": "hip",
+      "to": "intake",
+      "type": "implemented"
+    },
+    {
+      "from": "body",
+      "to": "balance",
+      "type": "implemented"
+    },
+    {
+      "from": "intake",
+      "to": "lower",
+      "type": "implemented"
+    },
+    {
+      "from": "length",
+      "to": "lower",
+      "type": "implemented"
+    },
+    {
+      "from": "fullness",
+      "to": "lower",
+      "type": "implemented"
+    },
+    {
+      "from": "distribution",
+      "to": "lower",
+      "type": "implemented"
+    },
+    {
+      "from": "lower",
+      "to": "balance",
+      "type": "implemented"
+    },
+    {
+      "from": "intake",
+      "to": "contours",
+      "type": "implemented"
+    },
+    {
+      "from": "lower",
+      "to": "contours",
+      "type": "implemented"
+    },
+    {
+      "from": "balance",
+      "to": "contours",
+      "type": "implemented"
+    },
+    {
+      "from": "contours",
+      "to": "allowance",
+      "type": "implemented"
+    },
+    {
+      "from": "intake",
+      "to": "validity",
+      "type": "implemented"
+    },
+    {
+      "from": "contours",
+      "to": "validity",
+      "type": "implemented"
+    },
+    {
+      "from": "allowance",
+      "to": "validity",
+      "type": "implemented"
+    },
+    {
+      "from": "lower",
+      "to": "style",
+      "type": "proposed"
+    },
+    {
+      "from": "contours",
+      "to": "style",
+      "type": "proposed"
+    },
+    {
+      "from": "contours",
+      "to": "sewing",
+      "type": "implemented"
+    },
+    {
+      "from": "style",
+      "to": "fit",
+      "type": "proposed"
+    },
+    {
+      "from": "sewing",
+      "to": "fit",
+      "type": "proposed"
+    }
+  ]
+}
