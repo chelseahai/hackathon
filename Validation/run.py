@@ -305,15 +305,18 @@ def main():
     parser.add_argument('--out',type=Path)
     parser.add_argument('--node',default='node')
     parser.add_argument('--strict',action='store_true')
+    parser.add_argument('--cases',type=Path,default=HERE/'cases.json')
+    parser.add_argument('--snapshots',action='store_true',help='Save each case geometry and DXFs')
     args=parser.parse_args()
     root=args.repo.resolve(); out=(args.out or root/'output'/'validation').resolve()
     out.mkdir(parents=True,exist_ok=True)
     policy=json.loads((HERE/'policy.json').read_text())
-    cases=json.loads((HERE/'cases.json').read_text())
+    cases_path=args.cases.resolve()
+    cases=json.loads(cases_path.read_text())
     sys.dont_write_bytecode=True
     draft=load_module('draft',root/'GarmentDesign-PrincessLineDress'/'draft.py')
     render=load_module('dress_validation_render',root/'GarmentDesign-PrincessLineDress'/'render.py')
-    js=json.loads(subprocess.run([args.node,str(HERE/'browser_snapshot.cjs'),str(root),str(HERE/'cases.json')],
+    js=json.loads(subprocess.run([args.node,str(HERE/'browser_snapshot.cjs'),str(root),str(cases_path)],
                                  capture_output=True,text=True,encoding='utf-8',check=True).stdout)
     report=dict(generated_utc=datetime.now(timezone.utc).isoformat(),baseline_commit=policy['baseline_commit'],
                 policy=policy,cases=[],source_sha256={})
@@ -336,6 +339,8 @@ def main():
             c.update(engineering_pass=False,review_count=1,error='Unexpected acceptance/rejection mismatch')
             report['cases'].append(c); continue
         snap=snapshot(d,draft,render)
+        if args.snapshots:
+            (out/(case['id']+'-snapshot.json')).write_text(json.dumps(snap,allow_nan=False),encoding='utf-8')
         c['parity']=compare(snap,web['snapshot'],policy['numeric_tolerance_cm'])
         c['seams'],c['notch_issues']=seam_rows(d,policy)
         dense=draft.draft_princess_dress(dataclasses.replace(d.params,spline_samples=128))
@@ -344,6 +349,9 @@ def main():
         pieces=render.dress_dxf_pieces(d)
         c['outlines']=outline_checks(pieces)
         py_dxf=render._dxf.pattern_dxf(pieces)
+        if args.snapshots:
+            (out/(case['id']+'-python.dxf')).write_text(py_dxf,encoding='utf-8')
+            (out/(case['id']+'-browser.dxf')).write_text(web['dxf'],encoding='utf-8')
         c['python_dxf']=dxf_check(py_dxf,pieces,policy)
         c['javascript_dxf']=dxf_check(web['dxf'],pieces,policy)
         c['engineering_pass']=all([c['parity']['pass'],c['python_dxf']['pass_'],c['javascript_dxf']['pass_'],

@@ -1,0 +1,216 @@
+[
+  {
+    "id": "reference",
+    "name": "Reference",
+    "group": "baseline",
+    "description": "The accepted design settings on the reference body.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38
+    }
+  },
+  {
+    "id": "length_40",
+    "name": "Length / 40",
+    "group": "dress_length",
+    "description": "Shorten the lower panels by 10 cm.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "dress_length": 40
+    }
+  },
+  {
+    "id": "length_75",
+    "name": "Length / 75",
+    "group": "dress_length",
+    "description": "Extend the lower panels by 25 cm.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "dress_length": 75
+    }
+  },
+  {
+    "id": "waist_0",
+    "name": "Waist ease / 0",
+    "group": "waist_ease",
+    "description": "Remove the 3 cm garment waist allowance.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "waist_ease": 0
+    }
+  },
+  {
+    "id": "waist_8",
+    "name": "Waist ease / 8",
+    "group": "waist_ease",
+    "description": "Add 5 cm more garment waist allowance.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "waist_ease": 8
+    }
+  },
+  {
+    "id": "hip_0",
+    "name": "Hip ease / 0",
+    "group": "hip_ease",
+    "description": "Remove the 4 cm garment hip allowance.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hip_ease": 0
+    }
+  },
+  {
+    "id": "hip_8",
+    "name": "Hip ease / 8",
+    "group": "hip_ease",
+    "description": "Add 4 cm more garment hip allowance.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hip_ease": 8
+    }
+  },
+  {
+    "id": "fullness_0",
+    "name": "Fullness / 0",
+    "group": "hem_fullness",
+    "description": "Remove horizontal hem flare.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hem_fullness": 0
+    }
+  },
+  {
+    "id": "fullness_64",
+    "name": "Fullness / 64",
+    "group": "hem_fullness",
+    "description": "Double total horizontal hem fullness.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hem_fullness": 64
+    }
+  },
+  {
+    "id": "princess_only",
+    "name": "Princess distribution",
+    "group": "hem_distribution",
+    "description": "Keep 32 cm fullness; send it to princess seams.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hem_distribution": [
+        0,
+        0.5,
+        0,
+        0.5
+      ]
+    }
+  },
+  {
+    "id": "side_only",
+    "name": "Side distribution",
+    "group": "hem_distribution",
+    "description": "Keep 32 cm fullness; send it to side seams.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hem_distribution": [
+        0.5,
+        0,
+        0.5,
+        0
+      ]
+    }
+  },
+  {
+    "id": "equal_groups",
+    "name": "Equal groups",
+    "group": "hem_distribution",
+    "description": "Keep 32 cm fullness; balance the four groups.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "hem_distribution": [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    }
+  },
+  {
+    "id": "column_40",
+    "name": "Short column",
+    "group": "combined",
+    "description": "Combine a shorter length and no added hem flare.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "dress_length": 40,
+      "hem_fullness": 0
+    }
+  },
+  {
+    "id": "flow_75",
+    "name": "Long flare",
+    "group": "combined",
+    "description": "Combine length and lower-panel volume.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "dress_length": 75,
+      "hem_fullness": 64
+    }
+  },
+  {
+    "id": "relaxed_65",
+    "name": "Relaxed midi",
+    "group": "combined",
+    "description": "Combine greater waist and hip allowance with moderate flare.",
+    "params": {
+      "bust": 84,
+      "waist": 68,
+      "hip": 90,
+      "back_length": 38,
+      "dress_length": 65,
+      "waist_ease": 8,
+      "hip_ease": 8,
+      "hem_fullness": 48
+    }
+  }
+]

@@ -35,9 +35,14 @@ The two later direction discussions are outside the current build scope.
 
 ## 4. Design experiment
 
-- [ ] Hold the reference body fixed and vary one design input at a time.
-- [ ] Save several named silhouette configurations.
-- [ ] Validate intentional combinations and compare the resulting patterns.
+- [x] Hold the reference body fixed and vary one design input at a time.
+- [x] Save several named silhouette configurations.
+- [x] Validate intentional combinations and compare the resulting patterns.
+
+Step 4 records 15 fixed-body configurations: reference, 11 single-control
+variations and 3 combinations. All pass engineering checks; 2–4 seam review
+flags remain per case. See `Experiments/step-04/RESULTS.md` and the separate
+`web/experiments/` journal. Physical fitting and seam-ease decisions remain open.
 
 ## 5. Measurement profiles
 
