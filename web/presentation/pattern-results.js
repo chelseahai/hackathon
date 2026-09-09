@@ -5,18 +5,8 @@ window.PatternResults=(()=>{
   const bounds=ps=>({left:Math.min(...ps.map(p=>p.x)),right:Math.max(...ps.map(p=>p.x)),top:Math.max(...ps.map(p=>p.y)),bottom:Math.min(...ps.map(p=>p.y))});
   function inside(q,outline){let yes=false;for(let i=0,j=outline.length-1;i<outline.length;j=i++){const a=outline[i],b=outline[j];if((a.y>q.y)!==(b.y>q.y)&&q.x<(b.x-a.x)*(q.y-a.y)/(b.y-a.y)+a.x)yes=!yes;}return yes;}
   function spans(outline,y){const hits=[],ring=close(outline);for(let i=1;i<ring.length;i++){const a=ring[i-1],b=ring[i];if((a.y>y)===(b.y>y))continue;hits.push(a.x+(b.x-a.x)*(y-a.y)/(b.y-a.y));}hits.sort((a,b)=>a-b);return hits.reduce((out,x,i)=>{if(i%2===0&&hits[i+1]!==undefined)out.push([x,hits[i+1]]);return out;},[]);}
-  // Search the narrowest usable cross-section. A tip of zero width cannot hold
-  // a grainline: require the entire short vertical line to remain inside.
-  function grain(outline,length,ceiling=Infinity){const box=bounds(outline);box.top=Math.min(box.top,ceiling);let best;
-    for(let i=0;i<=240;i++){const y=box.bottom+length/2+1+(box.top-box.bottom-length-2)*i/240;
-      for(const [left,right] of spans(outline,y)){const x=(left+right)/2,width=right-left;
-        if(width<2||best&&width>=best.width)continue;
-        if(Array.from({length:25},(_,j)=>V(x,y-length/2+length*j/24)).every(q=>inside(q,outline))){best={x,y,width};}
-      }
-    }
-    if(!best)throw Error('No interior grainline');
-    return [V(best.x,best.y+length/2),V(best.x,best.y-length/2)];
-  }
+  // Category placement and shared set alignment: see /GRAINLINE-RULES.md.
+  function widthCenter(outline,y){const sections=spans(outline,y);if(sections.length!==1)throw Error('Expected one pattern width at the reference level');return (sections[0][0]+sections[0][1])/2;}
   function dash(q,outline){const ring=close(outline);let edge,nearest=Infinity;
     for(let i=1;i<ring.length;i++){const a=ring[i-1],b=ring[i],dx=b.x-a.x,dy=b.y-a.y,den=dx*dx+dy*dy;if(!den)continue;const t=Math.max(0,Math.min(1,((q.x-a.x)*dx+(q.y-a.y)*dy)/den)),hit=V(a.x+dx*t,a.y+dy*t),dist=Math.hypot(q.x-hit.x,q.y-hit.y);if(dist<nearest){nearest=dist;edge={hit,dx,dy};}}
     const start=nearest<.05?edge.hit:q,base=Math.atan2(edge.dx,-edge.dy);
@@ -25,20 +15,22 @@ window.PatternResults=(()=>{
   }
   function build(kind){
     const b=BodyBlock.draftBody({bust:84,backLength:38});let pieces;
-    const piece=(name,outline,marks=[])=>({name,outline,marks});
-    if(kind==='body')pieces=[piece('Back bodice',BodyBlock.backOutline(b),[b.notchB]),piece('Front bodice',BodyBlock.frontOutline(b),[b.notchA,b.bp])];
-    if(kind==='skirt'){const s=SkirtBlock.draftSkirt({hip:90,waist:68,skirtLength:50});pieces=[piece('Back skirt',SkirtBlock.backOutline(s)),piece('Front skirt',SkirtBlock.frontOutline(s))];}
-    if(kind==='sleeve'){const s=SleeveBlock.draftSleeve({frontAh:b.frontArmholeLen,backAh:b.backArmholeLen});pieces=[piece('Sleeve',SleeveBlock.patternOutline(s),[s.peak],0)];}
-    if(kind==='trousers'){const t=TrouserBlock.draftTrouser({});pieces=[piece('Front trousers',TrouserBlock.frontOutline(t),t.darts.map(d=>d.apex),t.creaseX),piece('Back trousers',TrouserBlock.backOutline(t),t.backDarts.map(d=>TrouserBlock.mirrorX(d.apex)),-t.creaseX)];}
-    if(kind==='dress')pieces=PrincessDress.draftPrincessDress({}).panels.map(p=>piece(p.name,p.outline,p.notches));
-    const grainLength=Math.min(12,...pieces.map(p=>(bounds(p.outline).top-bounds(p.outline).bottom)*.2));
-    // Exclude neckline/armhole tips and sleeve caps: center the line in the
-    // usable body of the piece, rather than a narrow shoulder sliver.
-    const ceiling=kind==='dress'||kind==='body'?b.blY:kind==='sleeve'?0:Infinity;
-    pieces.forEach(p=>{p.grain=grain(p.outline,grainLength,ceiling);p.dashes=p.marks.map(q=>dash(q,p.outline));});
+    const piece=(name,outline,marks=[],grainX,reference=false)=>({name,outline,marks,grainX,reference});
+    if(kind==='body')pieces=[piece('Back bodice',BodyBlock.backOutline(b),[b.notchB],widthCenter(BodyBlock.backOutline(b),b.blY)),piece('Front bodice',BodyBlock.frontOutline(b),[b.notchA,b.bp],widthCenter(BodyBlock.frontOutline(b),b.blY),true)];
+    if(kind==='skirt'){const s=SkirtBlock.draftSkirt({hip:90,waist:68,skirtLength:50});pieces=[piece('Back skirt',SkirtBlock.backOutline(s),[],(s.cbWaist.x+s.backSideWaist.x)/2),piece('Front skirt',SkirtBlock.frontOutline(s),[],(s.cfWaist.x+s.frontSideWaist.x)/2,true)];}
+    if(kind==='sleeve'){const s=SleeveBlock.draftSleeve({frontAh:b.frontArmholeLen,backAh:b.backArmholeLen});pieces=[piece('Sleeve',SleeveBlock.patternOutline(s),[s.peak],(s.frontCuff.x+s.backCuff.x)/2,true)];}
+    if(kind==='trousers'){const t=TrouserBlock.draftTrouser({});pieces=[piece('Front trousers',TrouserBlock.frontOutline(t),t.darts.map(d=>d.apex),(t.hemSide.x+t.hemInseam.x)/2,true),piece('Back trousers',TrouserBlock.backOutline(t),t.backDarts.map(d=>TrouserBlock.mirrorX(d.apex)),-(t.backHemSide.x+t.backHemInseam.x)/2)];}
+    if(kind==='dress')pieces=PrincessDress.draftPrincessDress({}).panels.map((p,i)=>piece(p.name,p.outline,p.notches,widthCenter(p.outline,0),i===3));
+    const reference=pieces.find(p=>p.reference)||pieces[0],referenceBounds=bounds(reference.outline),centerY=(referenceBounds.top+referenceBounds.bottom)/2;
+    let grainLength=Math.min(12,...pieces.map(p=>(bounds(p.outline).top-bounds(p.outline).bottom)*.2));
+    const fits=length=>pieces.every(p=>Array.from({length:49},(_,i)=>V(p.grainX,centerY-length/2+length*i/48)).every(q=>inside(q,p.outline)));
+    if(!fits(0))throw Error('Category grain axis is outside the piece at the shared reference level');
+    while(!fits(grainLength)&&grainLength>.5)grainLength*=.9;
+    if(!fits(grainLength))throw Error('No usable shared grainline length');
+    pieces.forEach(p=>{p.grain=[V(p.grainX,centerY+grainLength/2),V(p.grainX,centerY-grainLength/2)];p.dashes=p.marks.map(q=>dash(q,p.outline));});
     // Separate pieces without altering scale, orientation or local geometry.
     let cursor=0;const gap=8;
-    for(const p of pieces){const box=bounds(p.outline),dx=cursor-box.left,dy=-box.top,shift=q=>V(q.x+dx,q.y+dy);p.outline=p.outline.map(shift);p.marks=p.marks.map(shift);p.grain=p.grain.map(shift);p.dashes=p.dashes.map(ps=>ps.map(shift));p.label=V(cursor+(box.right-box.left)/2,box.bottom-box.top-5);cursor+=box.right-box.left+gap;}
+    for(const p of pieces){const box=bounds(p.outline),dx=cursor-box.left,shift=q=>V(q.x+dx,q.y);p.displayShiftX=dx;p.draftedOutline=p.outline;p.outline=p.outline.map(shift);p.marks=p.marks.map(shift);p.grain=p.grain.map(shift);p.dashes=p.dashes.map(ps=>ps.map(shift));p.label=V(cursor+(box.right-box.left)/2,box.bottom-5);cursor+=box.right-box.left+gap;}
     return pieces;
   }
   function render(svg,kind){

@@ -75,9 +75,12 @@ Each player now appends a separate final result step: bodice 17, skirt 8,
 sleeve 9, trousers 13 and dress 22. `pattern-results.js` lays out the engine
 outlines at a common scale with names, existing sewing/balance marks as inward
 dashes without labels, and short vertical grainlines without arrows. Grainlines
-share one length per set (at most 12 cm), centered on the narrowest usable
-horizontal section that contains the entire line. Shoulder tips, armholes and
-sleeve caps are excluded from this placement search. The skirt engine has no
+share one length and vertical level per set (at most 12 cm), aligned to the
+centre-front piece's vertical midpoint when present. Their horizontal axes use
+pants hems, dress waists, top bustlines and sleeve cuffs. The pieces retain
+their original y coordinates and are separated horizontally only. See
+`GRAINLINE-RULES.md` at the repository root for the reusable rules and fallback
+conventions. The skirt engine has no
 sewing marks, so none are invented. Results retain the normal rule/code/graphic
 layout and frame, with a white background and solid yellow pattern fill.
 Playback holds there; Play restarts
