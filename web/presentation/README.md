@@ -71,3 +71,13 @@ accommodate their annotations, then reveals the actual outline geometry.
 
 See CONSTRUCTION-REVIEW.md for the book-rule audit, implementation differences and playback behavior.
 
+Each player now appends a separate final result step: bodice 17, skirt 8,
+sleeve 9, trousers 13 and dress 22. `pattern-results.js` lays out the engine
+outlines at a common scale with names, existing sewing/balance marks without
+labels, and double-ended vertical grainlines. Trousers use the crease axis
+(mirrored for the back), and the sleeve uses its origin axis. The skirt engine
+has no sewing marks, so none are invented. Construction guides and Python/rule
+panels are hidden on the dark result plate. Playback holds there; Play restarts
+the construction, and Previous restores the preceding drafting step.
+Run `node web/presentation/check-results.cjs` to check every result dataset.
+

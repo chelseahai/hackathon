@@ -55,10 +55,12 @@
   const D=DressSequence.sets,dressSteps=DressSequence.steps;
   function sequence(root,kind){
     const basic=true, names={body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers',dress:'Dress'};
-    const sets=kind==='dress'?D:kind==='body'?B:BasicSequences[kind].sets,steps=kind==='dress'?dressSteps:kind==='body'?bodySteps:BasicSequences[kind].steps,src=SequenceSource[kind];
+    const sets=kind==='dress'?D:kind==='body'?B:BasicSequences[kind].sets,steps=[...(kind==='dress'?dressSteps:kind==='body'?bodySteps:BasicSequences[kind].steps),['Final result','The completed patterns: outlines, marks, names and grainlines.',0,0]],src=SequenceSource[kind];
     let index=-1,playing=!reduced.matches,visible=false,timer=null,tempo=4500,notation=null,stepDuration=4500,motionPaused=false;
     const host=root.querySelector('.film-svg'),svg=node('svg',{viewBox:kind==='body'?'-6 -47 61 58':'-6 -48 120 108',role:'img','aria-label':kind==='body'?'Bodice construction animation':'Princess dress construction animation'});
     if(basic){const pts=sets.flatMap(l=>[...l.lines.flatMap(s=>s.points),...l.points.map(s=>s.p)]);const xs=pts.map(p=>p.x),ys=pts.map(p=>-p.y);svg.setAttribute('viewBox',`${Math.min(...xs)-5} ${Math.min(...ys)-5} ${Math.max(...xs)-Math.min(...xs)+10} ${Math.max(...ys)-Math.min(...ys)+10}`);svg.setAttribute('aria-label',names[kind]+' construction animation');}
+    const constructionViewBox=svg.getAttribute('viewBox');
+    const resultTitle=document.createElement('h3');resultTitle.className='result-title';resultTitle.textContent='Final result / '+names[kind];host.parentElement.insertBefore(resultTitle,host);
     host.append(svg);const shapes=node('g'),dots=node('g');svg.append(shapes,dots);
     const code=root.querySelector('code'),windowEl=root.querySelector('.code-window');
     src.lines.forEach((text,i)=>{const row=document.createElement('span');row.className='source-line';row.dataset.line=src.start+i;const n=document.createElement('i');n.textContent=src.start+i;row.append(n,document.createTextNode(text));code.append(row);});
@@ -73,9 +75,13 @@
     function schedule(){clearTimeout(timer);if(playing&&visible&&!document.hidden&&!root.hidden){if(basic){notation?.onComplete(()=>show((index+1)%steps.length));}else timer=setTimeout(()=>show((index+1)%steps.length),stepDuration);}else if(basic)notation?.onComplete(null);}
     function show(next){
       notation?.cancel();notation=null;
-      const previous=index;motionPaused=false;index=next;const step=steps[index];
+      const previous=index;motionPaused=false;index=next;const step=steps[index],final=index===sets.length;
+      root.classList.toggle('is-result',final);svg.querySelector('.result-plate')?.remove();
+      if(final)playing=false;
+      else {svg.setAttribute('viewBox',constructionViewBox);svg.setAttribute('aria-label',names[kind]+' construction animation');}
       root.querySelector('.film-number').textContent=String(index+1).padStart(2,'0');root.querySelector('.film-step-label').textContent=`${basic?names[kind]+' rule':'Conversion'} ${index+1} / ${steps.length}`;root.querySelector('.film-step-title').textContent=step[0];root.querySelector('.film-step-copy').textContent=step[1];root.querySelector('.film-counter').textContent=`${String(index+1).padStart(2,'0')} / ${steps.length}`;
       root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',`${playing?'Pause':'Play'} ${names[kind].toLowerCase()} animation`);
+      if(final){shapes.replaceChildren();dots.replaceChildren();PatternResults.render(svg,kind);schedule();return;}
       root.querySelectorAll('.film-step-nav button').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===index)));
       root.querySelector('.film-note').textContent=basic?'All dimensions in centimetres · calculations in red':'Reference geometry · construction reveal';
       if(basic){[...rules.children].forEach((el,i)=>{el.classList.toggle('active',i===index);if(i===index)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});const item=rules.children[index];rules.scrollTo({top:Math.max(0,item.offsetTop-12),behavior:reduced.matches?'instant':'smooth'});}
@@ -96,7 +102,7 @@
       notation?.pause(motionPaused||root.hidden||document.hidden||!visible);
       schedule();
     }
-    root.querySelector('[data-action=play]').addEventListener('click',()=>{playing=!playing;motionPaused=!playing;notation?.pause(motionPaused);root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',(playing?'Pause ':'Play ')+names[kind].toLowerCase()+' animation');schedule();});
+    root.querySelector('[data-action=play]').addEventListener('click',()=>{if(index===sets.length){playing=true;show(0);return;}playing=!playing;motionPaused=!playing;notation?.pause(motionPaused);root.querySelector('[data-action=play]').textContent=playing?'Pause':'Play';root.querySelector('[data-action=play]').setAttribute('aria-label',(playing?'Pause ':'Play ')+names[kind].toLowerCase()+' animation');schedule();});
     root.querySelector('[data-action=next]').addEventListener('click',()=>{playing=false;show((index+1)%steps.length);});
     root.querySelector('[data-action=previous]').addEventListener('click',()=>{playing=false;show((index+steps.length-1)%steps.length);});
     root.querySelector('[data-action=restart]').addEventListener('click',()=>show(0));root.querySelector('select').addEventListener('change',e=>{tempo=Number(e.target.value);show(index);});
