@@ -3,10 +3,11 @@
 Scope: document dependencies before implementing normalized controls. This is
 not a fitted safe-range declaration. Existing step-4 results remain unchanged.
 
-## Current dependency graph
+## Historical drafting-flow summary
 
-Machine-readable map: `web/experiments/dependencies.json`. Interactive journal:
-`web/experiments/index.html#dependencies`. Each node records its code location.
+The journal now uses the numerical relationship graph described in
+[NUMERICAL-RELATIONSHIPS.md](NUMERICAL-RELATIONSHIPS.md). The flow summary below
+records the earlier calculation sequence; the boundary protocol remains applicable.
 
 - Body, waist ease, hip ease → waist/hip widths and available intake.
 - Intake, length, fullness and distribution → lower panel geometry.

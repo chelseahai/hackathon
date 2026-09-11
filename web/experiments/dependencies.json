@@ -1,247 +1,366 @@
 {
-  "version": "dependency-map-v1",
-  "nodes": [
+  "version": "numerical-relations-v2",
+  "groups": [
     {
       "id": "body",
       "label": "Body measurements",
       "kind": "INPUT",
-      "x": 20,
-      "y": 80,
-      "detail": "Bust, waist, hip and back length set the block, available intake and starting side lengths. Body remains fixed in step 4.",
-      "source": "688\u2013713, 785\u2013807"
+      "x": 220,
+      "y": 260,
+      "color": "#171717"
+    },
+    {
+      "id": "ease",
+      "label": "Garment ease",
+      "kind": "CONTROL",
+      "x": 570,
+      "y": 150,
+      "color": "#be272b"
+    },
+    {
+      "id": "design",
+      "label": "Length & fullness",
+      "kind": "CONTROL",
+      "x": 795,
+      "y": 330,
+      "color": "#2448c8"
+    },
+    {
+      "id": "shares",
+      "label": "Fullness distribution",
+      "kind": "ALLOCATION",
+      "x": 590,
+      "y": 620,
+      "color": "#c69e00"
+    },
+    {
+      "id": "construction",
+      "label": "Construction context",
+      "kind": "FIXED",
+      "x": 230,
+      "y": 600,
+      "color": "#626262"
+    },
+    {
+      "id": "observation",
+      "label": "Measured response",
+      "kind": "EVIDENCE",
+      "x": 440,
+      "y": 390,
+      "color": "#6a7f8a"
+    }
+  ],
+  "values": [
+    {
+      "id": "bust",
+      "label": "Bust",
+      "symbol": "B",
+      "reference": 84,
+      "unit": "cm",
+      "group": "body",
+      "x": 95,
+      "y": 130
     },
     {
       "id": "waist",
-      "label": "Waist ease",
-      "kind": "INPUT",
-      "x": 20,
-      "y": 170,
-      "detail": "Adds to full waist circumference. Changes waist widths, available intake and side shaping.",
-      "source": "785\u2013807"
+      "label": "Waist",
+      "symbol": "W",
+      "reference": 68,
+      "unit": "cm",
+      "group": "body",
+      "x": 65,
+      "y": 230
     },
     {
       "id": "hip",
+      "label": "Hip",
+      "symbol": "H",
+      "reference": 90,
+      "unit": "cm",
+      "group": "body",
+      "x": 75,
+      "y": 340
+    },
+    {
+      "id": "back",
+      "label": "Back length",
+      "symbol": "BL",
+      "reference": 38,
+      "unit": "cm",
+      "group": "body",
+      "x": 175,
+      "y": 420
+    },
+    {
+      "id": "ew",
+      "label": "Waist ease",
+      "symbol": "Ew",
+      "reference": 3,
+      "unit": "cm",
+      "group": "ease",
+      "x": 465,
+      "y": 50
+    },
+    {
+      "id": "eh",
       "label": "Hip ease",
-      "kind": "INPUT",
-      "x": 20,
-      "y": 260,
-      "detail": "Adds to full hip circumference. Changes hip widths and hip-to-waist takeout.",
-      "source": "785\u2013807"
+      "symbol": "Eh",
+      "reference": 4,
+      "unit": "cm",
+      "group": "ease",
+      "x": 680,
+      "y": 65
     },
     {
       "id": "length",
       "label": "Waist-to-hem length",
-      "kind": "INPUT",
-      "x": 20,
-      "y": 350,
-      "detail": "Moves the hem level and changes lower seam slopes and lengths. Must exceed hip depth.",
-      "source": "809\u2013838"
+      "symbol": "L",
+      "reference": 50,
+      "unit": "cm",
+      "group": "design",
+      "x": 850,
+      "y": 165
     },
     {
       "id": "fullness",
       "label": "Hem fullness",
-      "kind": "INPUT",
-      "x": 20,
-      "y": 440,
-      "detail": "Total horizontal addition, not curved hem length. Each side edge receives F \u00d7 share / 2; each princess edge F \u00d7 share / 4.",
-      "source": "815\u2013826, 874\u2013876, 951\u2013966"
+      "symbol": "F",
+      "reference": 32,
+      "unit": "cm",
+      "group": "design",
+      "x": 960,
+      "y": 320
     },
     {
-      "id": "distribution",
-      "label": "Fullness distribution",
-      "kind": "INPUT",
-      "x": 20,
-      "y": 530,
-      "detail": "Four nonnegative shares sum to one. Redistributing a share requires compensating changes elsewhere. It does not change total F.",
-      "source": "674\u2013677, 815\u2013826, 874\u2013876, 951\u2013966"
+      "id": "bs",
+      "label": "Back side share",
+      "symbol": "sBS",
+      "reference": 0.1875,
+      "unit": "share",
+      "group": "shares",
+      "x": 780,
+      "y": 540
     },
     {
-      "id": "intake",
-      "label": "Widths & intake",
-      "kind": "CALCULATION",
-      "x": 270,
-      "y": 140,
-      "detail": "D = hip + hip ease \u2212 waist \u2212 waist ease. Back takeout = (D \u2212 1) / 4; front = (D + 1) / 4. Both must be positive. The engine splits each reduction between princess intake and side shaping.",
-      "source": "785\u2013807"
+      "id": "bp",
+      "label": "Back princess share",
+      "symbol": "sBP",
+      "reference": 0.25,
+      "unit": "share",
+      "group": "shares",
+      "x": 775,
+      "y": 685
     },
     {
-      "id": "lower",
-      "label": "Lower panel geometry",
-      "kind": "CALCULATION",
-      "x": 270,
-      "y": 340,
-      "detail": "Waist, hip and hem endpoints determine lower curves. Length, fullness and distribution interact: equal fullness does not imply equal flare angle or seam length.",
-      "source": "809\u2013838, 854\u2013863, 874\u2013902, 951\u2013981"
+      "id": "fs",
+      "label": "Front side share",
+      "symbol": "sFS",
+      "reference": 0.25,
+      "unit": "share",
+      "group": "shares",
+      "x": 610,
+      "y": 780
     },
     {
-      "id": "balance",
-      "label": "Side balance & transfer",
-      "kind": "CALCULATION",
-      "x": 520,
-      "y": 150,
-      "detail": "Side-dart intake is the unrotated front side length minus the back side length. If it exceeds 0.08 cm, the upper side front rotates around BP. This creates an indirect path from lower design changes to upper geometry.",
-      "source": "839\u2013863, 906\u2013943"
+      "id": "fp",
+      "label": "Front princess share",
+      "symbol": "sFP",
+      "reference": 0.3125,
+      "unit": "share",
+      "group": "shares",
+      "x": 440,
+      "y": 745
     },
     {
-      "id": "contours",
-      "label": "Resolved panels & marks",
-      "kind": "CALCULATION",
-      "x": 520,
-      "y": 350,
-      "detail": "The engine rebuilds seams, princess controls and corresponding height-derived notch locations. Changes in curves can alter paired interval lengths even when total lengths are close.",
-      "source": "930\u20131097, 1214\u20131237"
+      "id": "depth",
+      "label": "Hip depth",
+      "symbol": "D",
+      "reference": 18,
+      "unit": "cm",
+      "group": "construction",
+      "x": 70,
+      "y": 535
     },
     {
-      "id": "allowance",
-      "label": "Cutting outlines",
-      "kind": "CALCULATION",
-      "x": 520,
-      "y": 530,
-      "detail": "The fixed allowance is applied to changed stitch contours. Concave regions and strong flare can challenge offset validity. Outline tests assess sampled geometry and containment.",
-      "source": "Validation/run.py: outline_checks"
+      "id": "sa",
+      "label": "Seam allowance",
+      "symbol": "SA",
+      "reference": 1,
+      "unit": "cm",
+      "group": "construction",
+      "x": 110,
+      "y": 720
     },
     {
-      "id": "validity",
-      "label": "Geometry validity",
-      "kind": "BOUNDARY",
-      "x": 770,
-      "y": 100,
-      "detail": "Finite inputs, positive takeout, valid stitch/cut polygons, notch consistency and engine parity are engineering conditions. Existing parameter caps are implementation guards, not proven safe ranges.",
-      "source": "670\u2013686; Validation/policy.json"
-    },
-    {
-      "id": "style",
-      "label": "Design intent",
-      "kind": "PROPOSED",
-      "x": 770,
-      "y": 300,
-      "detail": "Straightness, taper and flare limits must be defined before a range can be called suitable for an intended style. A straight side seam is not automatically the largest wearable waist ease.",
-      "source": "Proposed measurement protocol"
-    },
-    {
-      "id": "sewing",
-      "label": "Seam compatibility",
-      "kind": "REVIEW",
-      "x": 770,
-      "y": 460,
-      "detail": "Measure each interval between paired marks, as well as totals. The 0.1 cm flag is diagnostic. Unknown intended ease remains unknown, including below the flag threshold.",
-      "source": "Validation/policy.json; seam_rows"
-    },
-    {
-      "id": "fit",
-      "label": "Physical wearability",
-      "kind": "UNVERIFIED",
-      "x": 770,
-      "y": 600,
-      "detail": "Fabric, movement, closure and a measured wearer or form provide evidence unavailable from flat geometry. No current map edge establishes wearable limits.",
-      "source": "Validation/FITTING.md"
+      "id": "upper_shift",
+      "label": "Upper-knot shift",
+      "symbol": "\u0394upper",
+      "reference": 0.539,
+      "unit": "cm / F 32\u219264",
+      "group": "observation",
+      "x": 370,
+      "y": 500
     }
   ],
-  "edges": [
+  "constraints": [
     {
-      "from": "body",
-      "to": "intake",
-      "type": "implemented"
+      "id": "intake",
+      "title": "Positive waist shaping",
+      "members": [
+        "waist",
+        "hip",
+        "ew",
+        "eh"
+      ],
+      "status": "established",
+      "equation": "Ew < H + Eh \u2212 W \u2212 1",
+      "detail": "The back takeout is (H + Eh \u2212 W \u2212 Ew \u2212 1) / 4. Its positivity also satisfies the front takeout condition. This is one shared constraint, not four automatic adjustments.",
+      "range_effect": "At fixed W and H, +1 cm hip ease raises the intake-only upper bound of waist ease by 1 cm. +1 cm waist lowers it by 1 cm. Conversely, Eh > W + Ew \u2212 H + 1. Other limits can be tighter.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:785\u2013807"
     },
     {
-      "from": "waist",
-      "to": "intake",
-      "type": "implemented"
+      "id": "body_guard",
+      "title": "Body proportion guard",
+      "members": [
+        "waist",
+        "hip"
+      ],
+      "status": "established",
+      "equation": "W < H",
+      "detail": "The current engine rejects waist circumference equal to or greater than hip circumference. This is an implementation restriction, not a statement about which human bodies are valid.",
+      "range_effect": "Measured body values remain unchanged; this guard determines whether the current drafting setup supports them.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:682\u2013686"
     },
     {
-      "from": "hip",
-      "to": "intake",
-      "type": "implemented"
+      "id": "length_guard",
+      "title": "Length and hip depth",
+      "members": [
+        "length",
+        "depth"
+      ],
+      "status": "established",
+      "equation": "L > D",
+      "detail": "The hem must be below the hip level. Hip depth is fixed at 18 cm in this experiment.",
+      "range_effect": "Raising fixed hip depth raises the strict geometric lower bound on length. A bound endpoint cannot be offered as a valid normalized endpoint.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:678\u2013684"
     },
     {
-      "from": "body",
-      "to": "balance",
-      "type": "implemented"
+      "id": "shares_sum",
+      "title": "One allocation budget",
+      "members": [
+        "bs",
+        "bp",
+        "fs",
+        "fp"
+      ],
+      "status": "established",
+      "equation": "sBS + sBP + sFS + sFP = 1; every share \u2265 0",
+      "detail": "The four shares allocate a single total. Increasing one requires reducing the others; a share is not independently adjustable while all three others stay fixed.",
+      "range_effect": "With three shares fixed, the fourth is fixed at their remainder. Use an allocation policy or a lower-dimensional parameterization before normalizing.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:674\u2013677"
     },
     {
-      "from": "intake",
-      "to": "lower",
-      "type": "implemented"
+      "id": "side_flare",
+      "title": "Side-edge additions and slope",
+      "members": [
+        "fullness",
+        "bs",
+        "fs",
+        "length",
+        "depth"
+      ],
+      "status": "established",
+      "equation": "aSide = F \u00d7 sSide / 2; slope = aSide / (L \u2212 0.5 \u2212 D)",
+      "detail": "The slope is the hip-to-raised-hem endpoint chord, not the entire curved side seam. It describes flare when the hem endpoint is below the hip. The current 0.5 cm side-hem rise is held fixed.",
+      "range_effect": "If a style-specific maximum slope is later chosen, it will jointly constrain F, each side share, L and D. No slope limit has been approved.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:809\u2013838"
     },
     {
-      "from": "length",
-      "to": "lower",
-      "type": "implemented"
+      "id": "princess_flare",
+      "title": "Princess-edge additions and slope",
+      "members": [
+        "fullness",
+        "bp",
+        "fp",
+        "length",
+        "depth"
+      ],
+      "status": "established",
+      "equation": "aPrincess = F \u00d7 sPrincess / 4; slope = aPrincess / (L \u2212 D)",
+      "detail": "Each princess allocation is split over its two edges in the half garment. Equal F at different lengths does not give equal flare slope. At F = 0, every distribution yields zero added flare.",
+      "range_effect": "A future edge-flare boundary constrains fullness and its corresponding share together. A zero share produces no bound from that edge addition alone.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:874\u2013888, 951\u2013981"
     },
     {
-      "from": "fullness",
-      "to": "lower",
-      "type": "implemented"
+      "id": "straightness",
+      "title": "Side shape as a design boundary",
+      "members": [
+        "waist",
+        "hip",
+        "ew",
+        "eh",
+        "length",
+        "fullness",
+        "bs",
+        "fs"
+      ],
+      "status": "to_measure",
+      "equation": "Straightness limit: not established",
+      "detail": "Waist/hip targets and side hem additions jointly shape the side. Define waist\u2192hip, hip\u2192hem and whole-side straightness separately; a straight inclined seam is not a vertical seam.",
+      "range_effect": "Measure conditional boundaries before deciding whether more fullness allows more or less waist ease. Do not infer a universal direction from one silhouette.",
+      "source": "GarmentDesign-PrincessLineDress/draft.py:785\u2013863; proposed straightness protocol"
     },
     {
-      "from": "distribution",
-      "to": "lower",
-      "type": "implemented"
+      "id": "upper_coupling",
+      "title": "Upper fit geometry and side balance",
+      "members": [
+        "bust",
+        "back",
+        "ew",
+        "eh",
+        "length",
+        "fullness",
+        "bs",
+        "fs"
+      ],
+      "status": "to_measure",
+      "equation": "F: 32 \u2192 64 cm; maximum upper-knot shift \u2248 0.539 cm",
+      "detail": "The fixed-body study measures an indirect upper-geometry response to fullness. Side length balance drives front dart transfer. Bust and back length set upper geometry; their conditional boundary effects have not been measured in this study.",
+      "range_effect": "The fullness observation establishes coupling, not a derivative, monotonic effect or range for bust/back length. Test joint settings and the 0.08 cm transfer-activation branch.",
+      "source": "Experiments/step-04/RESULTS.md; GarmentDesign-PrincessLineDress/draft.py:688\u2013780, 839\u2013943"
     },
     {
-      "from": "lower",
-      "to": "balance",
-      "type": "implemented"
+      "id": "cut_limits",
+      "title": "Cut-outline compatibility",
+      "members": [
+        "sa",
+        "ew",
+        "eh",
+        "fullness",
+        "length",
+        "bs",
+        "bp",
+        "fs",
+        "fp"
+      ],
+      "status": "to_measure",
+      "equation": "Acceptable cut region: to be mapped",
+      "detail": "Seam allowance offsets the generated contours. Geometry-changing controls may alter concavities and offset validity. The current 15 cases pass at SA = 1 cm; that does not prove every joint setting.",
+      "range_effect": "Any supported normalized range must retain allowance and other construction settings in its context and record outline failures.",
+      "source": "Validation/run.py: outline_checks; step-04 report"
     },
     {
-      "from": "intake",
-      "to": "contours",
-      "type": "implemented"
-    },
-    {
-      "from": "lower",
-      "to": "contours",
-      "type": "implemented"
-    },
-    {
-      "from": "balance",
-      "to": "contours",
-      "type": "implemented"
-    },
-    {
-      "from": "contours",
-      "to": "allowance",
-      "type": "implemented"
-    },
-    {
-      "from": "intake",
-      "to": "validity",
-      "type": "implemented"
-    },
-    {
-      "from": "contours",
-      "to": "validity",
-      "type": "implemented"
-    },
-    {
-      "from": "allowance",
-      "to": "validity",
-      "type": "implemented"
-    },
-    {
-      "from": "lower",
-      "to": "style",
-      "type": "proposed"
-    },
-    {
-      "from": "contours",
-      "to": "style",
-      "type": "proposed"
-    },
-    {
-      "from": "contours",
-      "to": "sewing",
-      "type": "implemented"
-    },
-    {
-      "from": "style",
-      "to": "fit",
-      "type": "proposed"
-    },
-    {
-      "from": "sewing",
-      "to": "fit",
-      "type": "proposed"
+      "id": "measured_fullness",
+      "title": "Measured fullness response",
+      "members": [
+        "fullness",
+        "upper_shift"
+      ],
+      "status": "measured",
+      "equation": "F: 32 \u2192 64 cm; \u0394upper \u2248 0.539 cm",
+      "detail": "This is the maximum displacement of corresponding above-waist seam knots in the fixed-body study. It is a derived observation, not an independently controlled input.",
+      "range_effect": "This result motivates a coupled boundary study. It does not establish a safe maximum F or a derivative.",
+      "source": "Experiments/step-04/RESULTS.md; web/experiments/data.json"
     }
   ]
 }
