@@ -44,6 +44,16 @@ variations and 3 combinations. All pass engineering checks; 2–4 seam review
 flags remain per case. See `Experiments/step-04/RESULTS.md` and the separate
 `web/experiments/` journal. Physical fitting and seam-ease decisions remain open.
 
+### Conditional-range study
+
+- [x] Map numerical constraints separately from the drafting sequence.
+- [x] Sample five coupled-control slices on the reference body.
+- [x] Preserve failed inputs, shaping descriptors, seam differences and refined transition brackets.
+- [ ] Resolve construction failures and approve silhouette criteria before defining normalized safe intervals.
+
+See `Experiments/conditional-ranges/RESULTS.md` and journal `#ranges`.
+Passing sample runs remain provisional; no continuous fit-safe interval is claimed.
+
 ## 5. Measurement profiles
 
 - [ ] Select a permitted real-measurement source and standardize definitions/units.
