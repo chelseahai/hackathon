@@ -21,7 +21,7 @@ function createServer({webRoot=path.resolve(__dirname,'../..'),analyzeFn=analyze
         return json(res,200,await analyzeFn(body));
       }
       if(!['GET','HEAD'].includes(req.method)){res.writeHead(405).end();return;}
-      if(pathname==='/'){res.writeHead(302,{Location:'/web/presentation-workflow/'}).end();return;}
+      if(pathname==='/'){res.writeHead(302,{Location:'/web/presentation-workflow/?v=vonage2#title'}).end();return;}
       const decoded=decodeURIComponent(pathname);
       if(!decoded.startsWith('/web/')){res.writeHead(404).end();return;}
       const relative=decoded.slice(5),segments=relative.split(/[\\/]/);
@@ -35,5 +35,5 @@ function createServer({webRoot=path.resolve(__dirname,'../..'),analyzeFn=analyze
     }catch(error){if(!res.headersSent)json(res,error.status|| (error.code==='ENOENT'?404:500),{success:false,error:error.status?error.message:'Unable to complete the request.'});else res.end();}
   });
 }
-if(require.main===module){const port=Number(process.env.PORT||8770);createServer().listen(port,'127.0.0.1',()=>console.log(`MathDress: http://127.0.0.1:${port}/web/presentation-workflow/`));}
+if(require.main===module){const port=Number(process.env.PORT||8770);createServer().listen(port,'127.0.0.1',()=>console.log(`MathDress: http://127.0.0.1:${port}/web/presentation-workflow/?v=vonage2#title`));}
 module.exports={createServer};
