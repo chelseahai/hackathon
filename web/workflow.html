@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Math Dress — AI-to-Garment Workflow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="workflow.css?v=1" />
+</head>
+<body>
+
+  <!-- Masthead Navigation -->
+  <header class="wf-masthead">
+    <div class="wf-logo">
+      <a href="index.html"><h1>Math Dress</h1></a>
+      <span class="wf-badge">/ AI-to-Garment Workflow</span>
+    </div>
+    <nav class="wf-nav">
+      <a href="#intro">00 Intro</a>
+      <a href="#step-01">01 Gemini Measure</a>
+      <a href="#step-02">02 Math Drafter</a>
+      <a href="#step-03">03 CLO 3D Toile</a>
+      <a href="#step-04">04 Gemini Try-On</a>
+      <a href="index.html">Catalog ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 00 Introduction Section -->
+    <section id="intro" class="wf-section wf-hero">
+      <div class="wf-container">
+        <div class="wf-hero-grid">
+          <div>
+            <div class="wf-step-tag">
+              <span>Overview</span>
+              <span class="wf-status-pill active">End-to-End Computational Pipeline</span>
+            </div>
+            <h2 class="wf-hero-headline">The Body.<br>The Math.<br>The Garment.</h2>
+            <p class="wf-hero-copy">
+              A unified pipeline connecting human physical form to tailored bespoke fashion.
+              From a single photograph with a reference marker, multimodal AI extracts exact anatomical coordinates.
+              Math Dress calculates parametric sewing patterns. CLO 3D drapes a virtual muslin toile for structural fit verification.
+              Finally, Gemini synthesizes a photorealistic finished garment tailored precisely to the individual.
+            </p>
+          </div>
+          <div class="wf-hero-meta-panel">
+            <div class="wf-hero-meta">
+              <div class="wf-meta-item">
+                <div class="wf-meta-label">Garment Target</div>
+                <div class="wf-meta-val">Princess Line Dress</div>
+              </div>
+              <div class="wf-meta-item">
+                <div class="wf-meta-label">Drafting Invariant</div>
+                <div class="wf-meta-val">Metric Parity (0 mm)</div>
+              </div>
+              <div class="wf-meta-item">
+                <div class="wf-meta-label">CAD Standard</div>
+                <div class="wf-meta-val">AutoCAD DXF 2000</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4-Stage Pipeline Diagram -->
+        <div class="wf-pipeline">
+          <div class="wf-pipeline-step">
+            <div>
+              <div class="wf-step-num">01 / Input</div>
+              <div class="wf-step-name">Gemini Vision AI Measurement</div>
+              <div class="wf-step-detail">Photo + calibration marker analyzed for anatomical landmark detection and metric extraction.</div>
+            </div>
+            <a href="#step-01" class="wf-meta-label">Explore Step 01 ↓</a>
+          </div>
+
+          <div class="wf-pipeline-step">
+            <div>
+              <div class="wf-step-num">02 / Geometry</div>
+              <div class="wf-step-name">Parametric Pattern Drafter</div>
+              <div class="wf-step-detail">Real Math Dress engine calculates 4-panel princess dress patterns and generates cuttable DXF.</div>
+            </div>
+            <a href="#step-02" class="wf-meta-label">Interactive Tool ↓</a>
+          </div>
+
+          <div class="wf-pipeline-step">
+            <div>
+              <div class="wf-step-num">03 / Validation</div>
+              <div class="wf-step-name">CLO 3D Toile Simulation</div>
+              <div class="wf-step-detail">Panels stitched on digital avatar in CLO 3D. Drapes a plain white muslin toile for strain & fit check.</div>
+            </div>
+            <a href="#step-03" class="wf-meta-label">Explore Step 03 ↓</a>
+          </div>
+
+          <div class="wf-pipeline-step">
+            <div>
+              <div class="wf-step-num">04 / Synthesis</div>
+              <div class="wf-step-name">Gemini Generative Try-On</div>
+              <div class="wf-step-detail">Combines 3D white toile with subject portrait and fabric prompts for photorealistic generative try-on.</div>
+            </div>
+            <a href="#step-04" class="wf-meta-label">Explore Step 04 ↓</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 01: GEMINI MEASUREMENT EXTRACTION (PLACEHOLDER & INTERACTION) -->
+    <section id="step-01" class="wf-section">
+      <div class="wf-container">
+        <div class="wf-section-header">
+          <div class="wf-step-tag">
+            <span>Step 01</span>
+            <span class="wf-status-pill">Function 1 — Under Active Development with Gemini API</span>
+          </div>
+          <h2 class="wf-section-title">01 / Photo & Reference Marker Capture</h2>
+          <p class="wf-section-desc">
+            The user uploads a single full-body photograph standing naturally next to a known reference object
+            (e.g., standard A4 paper calibration card). Gemini Vision AI identifies key anatomical landmarks
+            and calculates body dimensions calibrated to millimeter accuracy.
+          </p>
+        </div>
+
+        <div class="wf-capture-grid">
+          <!-- Upload & Landmark HUD Viewer -->
+          <div class="wf-upload-area">
+            <div class="wf-upload-stage">
+              <!-- Illustrative anatomical scan figure -->
+              <svg class="wf-scan-svg" viewBox="0 0 260 460" role="img" aria-label="Anatomical landmark detection diagram">
+                <!-- Grid background -->
+                <defs>
+                  <pattern id="scanGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#222" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="260" height="460" fill="url(#scanGrid)" />
+
+                <!-- Stylized silhouette figure -->
+                <g fill="none" stroke="#666" stroke-width="0.8">
+                  <!-- Head -->
+                  <ellipse cx="130" cy="45" rx="14" ry="20" fill="#222"/>
+                  <!-- Torso & hips contour -->
+                  <path d="M116 65 L110 95 L95 145 Q90 185 102 210 Q85 240 85 285 L95 435 L120 435 L125 310 L130 310 L135 435 L160 435 L170 285 Q170 240 153 210 Q165 185 160 145 L145 95 L140 65 Z" fill="#1c1c1c"/>
+                  <!-- Arms -->
+                  <path d="M110 95 L82 170 L72 260" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M145 95 L173 170 L183 260" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+
+                <!-- Gemini Detected Landmark Levels -->
+                <!-- Bust line -->
+                <line x1="30" y1="150" x2="220" y2="150" stroke="#fff" stroke-dasharray="3 3" stroke-width="0.8"/>
+                <circle cx="106" cy="150" r="2.5" fill="#fff"/>
+                <circle cx="150" cy="150" r="2.5" fill="#fff"/>
+
+                <!-- Waist line -->
+                <line x1="30" y1="210" x2="220" y2="210" stroke="#fff" stroke-dasharray="3 3" stroke-width="0.8"/>
+                <circle cx="102" cy="210" r="2.5" fill="#fff"/>
+                <circle cx="153" cy="210" r="2.5" fill="#fff"/>
+
+                <!-- Hip line -->
+                <line x1="30" y1="265" x2="220" y2="265" stroke="#fff" stroke-dasharray="3 3" stroke-width="0.8"/>
+                <circle cx="88" cy="265" r="2.5" fill="#fff"/>
+                <circle cx="167" cy="265" r="2.5" fill="#fff"/>
+
+                <!-- Nape to Waist dimension (Back Length) -->
+                <line x1="130" y1="65" x2="130" y2="210" stroke="#757575" stroke-width="1"/>
+                <circle cx="130" cy="65" r="2" fill="#fff"/>
+                <circle cx="130" cy="210" r="2" fill="#fff"/>
+              </svg>
+
+              <!-- Landmark HUD Labels -->
+              <div class="wf-landmark-hud">
+                <span class="wf-landmark-tag">Nape Point (C7)</span>
+                <span class="wf-landmark-tag">Bust Line (Apex)</span>
+                <span class="wf-landmark-tag">Natural Waist</span>
+                <span class="wf-landmark-tag">High Hip Line</span>
+              </div>
+
+              <!-- Detected Reference Object -->
+              <div class="wf-ref-marker">
+                <span>[REF MARKER]</span>
+                <span id="scanRefName">Standard A4 Marker (210 × 297 mm)</span>
+                <span style="color: var(--muted); font-size: 0.58rem;">Scale: 1.000 px/mm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Measurement Readout & Presets Panel -->
+          <div class="wf-scan-controls">
+            <div class="wf-card">
+              <h3>Simulate Scan Presets</h3>
+              <p class="wf-step-detail" style="margin-bottom: 16px;">
+                While the multimodal Gemini extraction endpoint is being finalized, choose a profile below to preview how detected dimensions feed directly into the pattern drafter:
+              </p>
+              <div class="wf-preset-buttons">
+                <button type="button" class="wf-btn wf-preset-btn active" data-preset="standard">Reference</button>
+                <button type="button" class="wf-btn wf-preset-btn" data-preset="petite">Petite</button>
+                <button type="button" class="wf-btn wf-preset-btn" data-preset="curvy">Curvy</button>
+              </div>
+
+              <h3>Extracted Measurements</h3>
+              <div class="wf-measurements-readout">
+                <div class="wf-measure-row">
+                  <span class="label">Bust Circumference</span>
+                  <div>
+                    <span class="val" id="scanBust">84.0 cm</span>
+                    <span class="conf" id="confBust">(99.2% conf)</span>
+                  </div>
+                </div>
+                <div class="wf-measure-row">
+                  <span class="label">Back Length (Nape to Waist)</span>
+                  <div>
+                    <span class="val" id="scanBackLength">38.0 cm</span>
+                    <span class="conf" id="confBackLength">(98.7% conf)</span>
+                  </div>
+                </div>
+                <div class="wf-measure-row">
+                  <span class="label">Natural Waist Circumference</span>
+                  <div>
+                    <span class="val" id="scanWaist">68.0 cm</span>
+                    <span class="conf" id="confWaist">(99.4% conf)</span>
+                  </div>
+                </div>
+                <div class="wf-measure-row">
+                  <span class="label">Hip Circumference</span>
+                  <div>
+                    <span class="val" id="scanHip">90.0 cm</span>
+                    <span class="conf" id="confHip">(99.1% conf)</span>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="wf-btn-primary" id="wf-send-to-drafter">
+                Apply Measurements to Pattern Drafter ↓
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 02: PARAMETRIC PRINCESS LINE PATTERN DRAFTER (LIVE ENGINE) -->
+    <section id="step-02" class="wf-section">
+      <div class="wf-container">
+        <div class="wf-section-header">
+          <div class="wf-step-tag">
+            <span>Step 02</span>
+            <span class="wf-status-pill active">Math Dress Engine — Live & Interactive</span>
+          </div>
+          <h2 class="wf-section-title">02 / Parametric Princess Line Drafting</h2>
+          <p class="wf-section-desc">
+            Inputs from Step 1 are passed directly into the Math Dress geometric engine.
+            The algorithm resolves dart transfers, curvature parity along front and back princess seams,
+            ease allowances, and seam allowances, rendering four cuttable pattern panels ready for export.
+          </p>
+          <div id="wf-drafter-transfer-notice" style="margin-top: 14px; font-size: 0.72rem; color: #fff; background: #1c1c1c; border-left: 2px solid #fff; padding: 6px 12px; display: inline-block;" hidden></div>
+        </div>
+
+        <div class="wf-drafter-workbench">
+          <!-- Drafting Canvas Stage -->
+          <div class="wf-stage-panel">
+            <div class="wf-stage-toolbar">
+              <span class="title">Calculated Cutting Patterns · SVG Preview</span>
+              <div class="wf-stage-toggles">
+                <button type="button" id="wf-toggle-labels" aria-pressed="true">Labels</button>
+                <button type="button" id="wf-toggle-grid" aria-pressed="false">Grid (5cm)</button>
+                <button type="button" id="wf-toggle-construction" aria-pressed="false">Construction</button>
+              </div>
+            </div>
+
+            <div class="wf-pattern-sheet">
+              <svg id="wf-drawing" role="img" aria-label="Princess line dress pattern drawing"></svg>
+              <div class="error" id="wf-drafter-error" hidden style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #111; color: #fff; text-align: center; padding: 24px;"></div>
+            </div>
+
+            <div class="wf-stage-footer">
+              <span class="info" id="wf-pattern-summary">Ready</span>
+              <button type="button" id="wf-reset-drafter" style="font-size: 0.68rem; color: var(--muted); cursor: pointer;">Reset to Reference ↺</button>
+            </div>
+          </div>
+
+          <!-- Interactive Controls Sidebar -->
+          <div class="wf-controls-panel">
+            <!-- Body Inputs -->
+            <div class="wf-control-group">
+              <h3>Body Dimensions (From Step 1)</h3>
+              <div class="wf-control-item">
+                <label for="wf-bust">Bust</label>
+                <span class="wf-val" id="wf-bust-out">84.0 cm</span>
+                <input id="wf-bust" type="range" min="76" max="104" step="0.5" value="84" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-backLength">Back Length</label>
+                <span class="wf-val" id="wf-backLength-out">38.0 cm</span>
+                <input id="wf-backLength" type="range" min="34" max="44" step="0.5" value="38" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-waist">Waist</label>
+                <span class="wf-val" id="wf-waist-out">68.0 cm</span>
+                <input id="wf-waist" type="range" min="58" max="88" step="0.5" value="68" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-hip">Hip</label>
+                <span class="wf-val" id="wf-hip-out">90.0 cm</span>
+                <input id="wf-hip" type="range" min="82" max="118" step="0.5" value="90" />
+              </div>
+            </div>
+
+            <!-- Design Controls -->
+            <div class="wf-control-group">
+              <h3>Design & Silhouette Controls</h3>
+              <div class="wf-control-item">
+                <label for="wf-dressLength">Waist-to-Hem Length</label>
+                <span class="wf-val" id="wf-dressLength-out">50.0 cm</span>
+                <input id="wf-dressLength" type="range" min="40" max="80" step="0.5" value="50" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-waistEase">Waist Ease</label>
+                <span class="wf-val" id="wf-waistEase-out">3.0 cm</span>
+                <input id="wf-waistEase" type="range" min="0" max="12" step="0.5" value="3" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-hipEase">Hip Ease</label>
+                <span class="wf-val" id="wf-hipEase-out">4.0 cm</span>
+                <input id="wf-hipEase" type="range" min="0" max="12" step="0.5" value="4" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-hemFullness">Hem Fullness</label>
+                <span class="wf-val" id="wf-hemFullness-out">32.0 cm</span>
+                <input id="wf-hemFullness" type="range" min="0" max="80" step="1" value="32" />
+              </div>
+              <div class="wf-control-item">
+                <label for="wf-distribution">Fullness Distribution</label>
+                <select id="wf-distribution" class="wf-select">
+                  <option value="reference">Reference Balance</option>
+                  <option value="princess">Princess Seams Only</option>
+                  <option value="side">Side Seams Only</option>
+                  <option value="equal">Equal Group Shares</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Construction & Allowance -->
+            <div class="wf-control-group">
+              <h3>Construction</h3>
+              <div class="wf-control-item">
+                <label for="wf-seamAllowance">Seam Allowance</label>
+                <span class="wf-val" id="wf-seamAllowance-out">1.0 cm</span>
+                <input id="wf-seamAllowance" type="range" min="0" max="2.5" step="0.1" value="1.0" />
+              </div>
+            </div>
+
+            <!-- Derived Metrics -->
+            <div class="wf-control-group">
+              <h3>Derived Geometry</h3>
+              <div class="wf-derived-stats">
+                <div class="wf-stat-row"><span class="k">Garment Waist</span><span class="v" id="stat-garment-waist">—</span></div>
+                <div class="wf-stat-row"><span class="k">Garment Hip</span><span class="v" id="stat-garment-hip">—</span></div>
+                <div class="wf-stat-row"><span class="k">Back Dart</span><span class="v" id="stat-back-dart">—</span></div>
+                <div class="wf-stat-row"><span class="k">Front Dart</span><span class="v" id="stat-front-dart">—</span></div>
+                <div class="wf-stat-row"><span class="k">Side Dart</span><span class="v" id="stat-side-dart">—</span></div>
+                <div class="wf-stat-row"><span class="k">Silhouette</span><span class="v" id="stat-silhouette">—</span></div>
+              </div>
+            </div>
+
+            <!-- Export Actions -->
+            <div class="wf-export-actions">
+              <button type="button" class="wf-btn" id="wf-export-dxf">
+                Export DXF (AutoCAD 2000) ⤓
+              </button>
+              <button type="button" class="wf-btn-primary" id="wf-send-to-clo">
+                Export DXF & Send to CLO 3D Simulation ↓
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 03: CLO 3D VIRTUAL TOILE SIMULATION (PLACEHOLDER & WIREFRAME) -->
+    <section id="step-03" class="wf-section">
+      <div class="wf-container">
+        <div class="wf-section-header">
+          <div class="wf-step-tag">
+            <span>Step 03</span>
+            <span class="wf-status-pill" id="clo-status-badge">CAD / 3D Simulation Integration — Wireframe</span>
+          </div>
+          <h2 class="wf-section-title">03 / CLO 3D Virtual Muslin Toile Simulation</h2>
+          <p class="wf-section-desc">
+            The cuttable DXF file exported from Step 2 is imported into CLO 3D.
+            The four pattern pieces are auto-stitched along their matching seam notches and draped
+            onto a parametric avatar matching the subject's dimensions to inspect drape, seam alignment,
+            and physical fit before cutting any fabric.
+          </p>
+        </div>
+
+        <div class="wf-clo-grid">
+          <!-- 3D Toile Viewer Mockup -->
+          <div class="wf-toile-viewer">
+            <div class="wf-toile-header">
+              <div class="wf-view-modes">
+                <button type="button" class="wf-view-btn active" data-angle="front">Front View</button>
+                <button type="button" class="wf-view-btn" data-angle="side">Side Profile</button>
+                <button type="button" class="wf-view-btn" data-angle="back">Back View</button>
+              </div>
+              <button type="button" class="wf-view-btn" id="wf-toggle-tension" aria-pressed="false">
+                Tension Map Overlay
+              </button>
+            </div>
+
+            <div class="wf-toile-canvas" id="wf-toile-stage">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="wf-toile-meta">
+              <span>Simulation Fabric: Plain Unbleached Muslin (100% Cotton, 150 gsm)</span>
+              <span>Avatar: Calibrated to Step 1 Body</span>
+            </div>
+          </div>
+
+          <!-- Simulation Diagnostic Details -->
+          <div class="wf-clo-details">
+            <div class="wf-card">
+              <h3>Fit & Seamline Diagnostics</h3>
+              <div class="wf-fit-matrix">
+                <div class="wf-matrix-row head">
+                  <span>Parameter Check</span>
+                  <span>Tolerance</span>
+                  <span>Status</span>
+                </div>
+                <div class="wf-matrix-row">
+                  <span>Front Princess Seam</span>
+                  <span>&lt; 0.05 mm</span>
+                  <span class="wf-status-ok">Matched (0.00 mm)</span>
+                </div>
+                <div class="wf-matrix-row">
+                  <span>Back Princess Seam</span>
+                  <span>&lt; 0.05 mm</span>
+                  <span class="wf-status-ok">Matched (0.00 mm)</span>
+                </div>
+                <div class="wf-matrix-row">
+                  <span>Waist Circumference Ease</span>
+                  <span>Target 3.0 cm</span>
+                  <span class="wf-status-ok">Verified (+3.0 cm)</span>
+                </div>
+                <div class="wf-matrix-row">
+                  <span>Bust Apex Ease</span>
+                  <span>Contour Balance</span>
+                  <span class="wf-status-ok">Balanced</span>
+                </div>
+                <div class="wf-matrix-row">
+                  <span>Avatar Collision</span>
+                  <span>0 mm Penetration</span>
+                  <span class="wf-status-ok">Zero Collision</span>
+                </div>
+              </div>
+
+              <p class="wf-step-detail" style="margin-top: 18px;">
+                The plain white toile isolates silhouette, ease, and seam placement without fabric pattern or color distractions.
+                This 3D render serves as the structural condition input for the generative styling model in Step 4.
+              </p>
+
+              <button type="button" class="wf-btn-primary" id="wf-send-to-gen">
+                Render White Toile for AI Styling ↓
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 04: GEMINI AI GENERATIVE DRESS TRY-ON (PLACEHOLDER & WIREFRAME) -->
+    <section id="step-04" class="wf-section">
+      <div class="wf-container">
+        <div class="wf-section-header">
+          <div class="wf-step-tag">
+            <span>Step 04</span>
+            <span class="wf-status-pill">Gemini Multimodal Try-On Pipeline — Wireframe</span>
+          </div>
+          <h2 class="wf-section-title">04 / Gemini AI Generative Try-On & Styling</h2>
+          <p class="wf-section-desc">
+            Gemini Multimodal AI combines the 3D white muslin toile from Step 3 with the subject's portrait from Step 1.
+            Using targeted material specifications, lighting conditions, and fit invariants, it renders the finished tailored dress
+            on the person with authentic fabric texture, drape, and studio lighting.
+          </p>
+        </div>
+
+        <div class="wf-gen-grid">
+          <!-- Split-screen Comparison Viewer -->
+          <div class="wf-comparison-viewer">
+            <div class="wf-comparison-split" id="wf-split-container">
+              <!-- Background Layer: Plain White 3D Toile -->
+              <div class="wf-compare-layer toile">
+                <svg viewBox="0 0 240 440" style="max-height: 400px; width: 100%;">
+                  <path d="M106 72 Q120 77 134 72 L144 88 L136 148 Q132 185 130 220 L146 390 Q120 396 94 390 L110 220 Q108 185 104 148 L96 88 Z" fill="#ffffff" stroke="#222" stroke-width="0.8"/>
+                  <path d="M96 88 L68 96 Q72 130 82 155 Q86 185 85 220 L58 388 Q76 390 94 390 L110 220 Q108 185 104 148 L96 88 Z" fill="#f0f0f0" stroke="#222" stroke-width="0.8"/>
+                  <path d="M144 88 L172 96 Q168 130 158 155 Q154 185 155 220 L182 388 Q164 390 146 390 L130 220 Q132 185 136 148 L144 88 Z" fill="#e4e4e4" stroke="#222" stroke-width="0.8"/>
+                  <path d="M112 80 Q108 135 104 148 Q98 185 110 220 L94 390" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="3 2"/>
+                  <path d="M128 80 Q132 135 136 148 Q142 185 130 220 L146 390" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="3 2"/>
+                </svg>
+              </div>
+
+              <!-- Foreground Layer: Photorealistic Styled Finished Dress -->
+              <div class="wf-compare-layer render" id="wf-render-layer">
+                <svg id="wf-ai-render-svg" viewBox="0 0 240 440" style="max-height: 400px; width: 100%;">
+                  <!-- Finished styled dress in chosen color -->
+                  <path class="dress-fill" d="M106 72 Q120 77 134 72 L144 88 L136 148 Q132 185 130 220 L146 390 Q120 396 94 390 L110 220 Q108 185 104 148 L96 88 Z" fill="#121f3d" stroke="#000" stroke-width="0.8"/>
+                  <path class="dress-fill" d="M96 88 L68 96 Q72 130 82 155 Q86 185 85 220 L58 388 Q76 390 94 390 L110 220 Q108 185 104 148 L96 88 Z" fill="#0f1931" stroke="#000" stroke-width="0.8"/>
+                  <path class="dress-fill" d="M144 88 L172 96 Q168 130 158 155 Q154 185 155 220 L182 388 Q164 390 146 390 L130 220 Q132 185 136 148 L144 88 Z" fill="#0b1326" stroke="#000" stroke-width="0.8"/>
+                  <!-- Seam Highlights -->
+                  <path d="M112 80 Q108 135 104 148 Q98 185 110 220 L94 390" fill="none" stroke="#3a4b73" stroke-width="0.8"/>
+                  <path d="M128 80 Q132 135 136 148 Q142 185 130 220 L146 390" fill="none" stroke="#3a4b73" stroke-width="0.8"/>
+                  <!-- Fabric Sheen & Texture Highlights -->
+                  <path d="M118 100 Q125 150 122 210" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.3"/>
+                  <path d="M130 240 Q138 310 142 385" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.25"/>
+                </svg>
+              </div>
+
+              <!-- Interactive Split Handle -->
+              <div class="wf-split-handle" id="wf-split-handle"></div>
+            </div>
+
+            <div class="wf-comparison-bar">
+              <span>← White Muslin Toile (CLO 3D)</span>
+              <span id="wf-active-fabric-name">Raw Silk Dupioni</span>
+              <span>Gemini Generative Render →</span>
+            </div>
+          </div>
+
+          <!-- Generative Controls & Prompt Inspection -->
+          <div class="wf-gen-options">
+            <div class="wf-card">
+              <h3>Material & Fabric Selection</h3>
+              <div class="wf-fabric-swatches">
+                <button type="button" class="wf-swatch-btn active" data-fabric="silk">
+                  Raw Silk Dupioni
+                  <span>Structured crisp drape (140 gsm)</span>
+                </button>
+                <button type="button" class="wf-swatch-btn" data-fabric="wool">
+                  Wool Crepe
+                  <span>Tailored architectural fall (280 gsm)</span>
+                </button>
+                <button type="button" class="wf-swatch-btn" data-fabric="linen">
+                  Cotton Linen
+                  <span>Natural organic texture (180 gsm)</span>
+                </button>
+                <button type="button" class="wf-swatch-btn" data-fabric="satin">
+                  Heavy Satin
+                  <span>Lustrous formal weight (320 gsm)</span>
+                </button>
+              </div>
+
+              <h3 style="margin-top: 20px;">Color Palette</h3>
+              <select id="wf-color-select" class="wf-select" style="margin-bottom: 20px;">
+                <option value="Midnight Navy">Midnight Navy</option>
+                <option value="Studio Ivory">Studio Ivory</option>
+                <option value="Crimson">Crimson</option>
+                <option value="Olive">Olive</option>
+                <option value="Noir Charcoal">Noir Charcoal</option>
+              </select>
+
+              <h3>Synthesized Gemini Multimodal Prompt</h3>
+              <div class="wf-prompt-box" id="wf-prompt-text"></div>
+
+              <a href="gemini-fitting.html" class="wf-btn-primary" style="text-align: center; margin-top: 20px; text-decoration: none;">
+                Launch Gemini Fitting Generator Tool ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="wf-footer">
+    <div class="wf-container" style="display: flex; justify-content: space-between; width: 100%;">
+      <span>Math Dress / Parametric Garment Pipeline</span>
+      <span>
+        <a href="GarmentDesign-PrincessLineDress.html">Standard Drafter ↗</a> ·
+        <a href="index.html">Pattern Hub ↗</a> ·
+        <a href="../README.md">Repository ↗</a>
+      </span>
+    </div>
+  </footer>
+
+  <!-- Drafting Scripts & Shared Libraries -->
+  <script src="shared.js?v=5"></script>
+  <script src="Export-DXF/dxf.js?v=7"></script>
+  <script src="BasicBlock-Bodice.js?v=14"></script>
+  <script src="BasicBlock-Skirt.js?v=8"></script>
+  <script src="silhouette-policy.js?v=1"></script>
+  <script src="GarmentDesign-PrincessLineDress.js?v=54"></script>
+  <script src="workflow.js?v=1"></script>
+</body>
+</html>

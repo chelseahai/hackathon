@@ -2,9 +2,9 @@
 (() => {
   'use strict';
   const NS='http://www.w3.org/2000/svg', V=(x,y)=>({x,y});
-  const body=BodyBlock.draftBody({bust:84,backLength:38});
-  const skirt=SkirtBlock.draftSkirt({hip:90,waist:68,skirtLength:50});
-  const dress=PrincessDress.draftPrincessDress({});
+  const body=BodyBlock.draftBody(MathDressMeasurements.current);
+  const skirt=SkirtBlock.draftSkirt({...MathDressMeasurements.current,skirtLength:50});
+  const dress=PrincessDress.draftPrincessDress(MathDressMeasurements.current);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   function node(tag,attrs={},text){const e=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));if(text!==undefined)e.textContent=text;return e;}
   function layer(){return {lines:[],points:[]};}
@@ -55,7 +55,7 @@
   const D=DressSequence.sets,dressSteps=DressSequence.steps;
   function sequence(root,kind){
     const basic=true, names={body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers',dress:'Dress'};
-    const sets=kind==='dress'?D:kind==='body'?B:BasicSequences[kind].sets,steps=[...(kind==='dress'?dressSteps:kind==='body'?bodySteps:BasicSequences[kind].steps),['Final result','The completed patterns: outlines, marks, names and grainlines.',0,0]],src=SequenceSource[kind];
+    let sets=kind==='dress'?D:kind==='body'?B:BasicSequences[kind].sets,steps=[...(kind==='dress'?dressSteps:kind==='body'?bodySteps:BasicSequences[kind].steps),['Final result','The completed patterns: outlines, marks, names and grainlines.',0,0]],src=SequenceSource[kind];
     let index=-1,playing=!reduced.matches,visible=false,timer=null,tempo=4500,notation=null,stepDuration=4500,motionPaused=false;
     const host=root.querySelector('.film-svg'),svg=node('svg',{viewBox:kind==='body'?'-6 -47 61 58':'-6 -48 120 108',role:'img','aria-label':kind==='body'?'Bodice construction animation':'Princess dress construction animation'});
     if(basic){const pts=sets.flatMap(l=>[...l.lines.flatMap(s=>s.points),...l.points.map(s=>s.p)]);const xs=pts.map(p=>p.x),ys=pts.map(p=>-p.y);svg.setAttribute('viewBox',`${Math.min(...xs)-5} ${Math.min(...ys)-5} ${Math.max(...xs)-Math.min(...xs)+10} ${Math.max(...ys)-Math.min(...ys)+10}`);svg.setAttribute('aria-label',names[kind]+' construction animation');}
@@ -113,6 +113,11 @@
     windowEl.addEventListener('wheel',()=>{playing=false;motionPaused=true;notation?.pause(true);root.querySelector('[data-action=play]').textContent='Play';root.querySelector('[data-action=play]').setAttribute('aria-label','Play '+kind+' animation');schedule();},{passive:true});
     new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;notation?.pause(motionPaused||!visible||root.hidden||document.hidden);schedule();},{threshold:.2}).observe(root);
     document.addEventListener('visibilitychange',()=>{notation?.pause(motionPaused||document.hidden||root.hidden||!visible);schedule();});
+    if(kind==='dress')window.addEventListener('mathdress:measurements-applied',()=>{
+      const fresh=window.DressSequence;sets=fresh.sets;steps=[...fresh.steps,['Final result','The completed patterns: outlines, marks, names and grainlines.',0,0]];
+      [...rules.children].forEach((item,i)=>{item.querySelector('h3').textContent=String(i+1).padStart(2,'0')+' / '+steps[i][0];const copy=item.querySelector('p');copy.replaceChildren();steps[i][1].split(/(\[[^\]]+\])/g).forEach(part=>{if(part.startsWith('[')){const calc=document.createElement('span');calc.className='calculation';calc.textContent=part.slice(1,-1);copy.append(calc);}else copy.append(document.createTextNode(part));});});
+      playing=false;show(0);
+    });
     root.addEventListener('block-visibility',()=>{notation?.pause(root.hidden);if(!root.hidden&&basic)show(index);});reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;show(index);}});show(0);
   }
   document.querySelectorAll('[data-block]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-block]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelectorAll('#blocks [data-sequence]').forEach(root=>{root.hidden=root.dataset.sequence!==button.dataset.block;root.dispatchEvent(new Event('block-visibility'));});document.querySelector('#blocks .text-link').href='../BasicBlock-'+({body:'Bodice',skirt:'Skirt',sleeve:'Sleeve',trousers:'Trousers'}[button.dataset.block])+'.html';}));

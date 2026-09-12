@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDG AI Event • AI Body Measurement & Fashion Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="logo-icon">✨</div>
+      <div>
+        <div class="logo-text">GDG AI Fashion Studio</div>
+        <div class="logo-sub">Anthropometry • Colorimetry • Tech Pack • Virtual Try-On</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <div class="status-badge" id="apiStatusBadge">
+        <span class="status-dot"></span>
+        <span id="apiStatusText">Demo / Simulation Mode</span>
+      </div>
+      <button class="btn btn-secondary" id="btnOpenApiKeyModal">🔑 API Key Settings</button>
+      <a href="https://github.com/saishwaryashinde-arch/GDGAIEvent" target="_blank" class="btn btn-icon" title="View GitHub Repo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Quick Testing Presets Bar -->
+    <section class="preset-banner">
+      <div class="preset-title">
+        <span>⚡ Quick Test Presets (Instant Demo):</span>
+      </div>
+      <div class="preset-buttons">
+        <button class="btn btn-preset active" data-preset="preset-autumn-hourglass">
+          <span class="dot-swatch" style="background: #C85A32;"></span>
+          Hourglass • Warm Autumn (A4 Paper)
+        </button>
+        <button class="btn btn-preset" data-preset="preset-winter-pear">
+          <span class="dot-swatch" style="background: #0047AB;"></span>
+          Pear / Triangle • Cool Winter (ID Card)
+        </button>
+        <button class="btn btn-preset" data-preset="preset-spring-rectangle">
+          <span class="dot-swatch" style="background: #FF6F61;"></span>
+          Athletic / Rectangle • Bright Spring (A4)
+        </button>
+      </div>
+    </section>
+
+    <!-- Sticky Smooth-Scroll Jump Bar -->
+    <nav class="pipeline-stepper sticky-jump-bar">
+      <a class="step-tab" href="#step-1">
+        <span class="step-num">1</span>
+        <span class="step-label">Upload & Calibration</span>
+      </a>
+      <a class="step-tab" href="#step-2">
+        <span class="step-num">2</span>
+        <span class="step-label">Body Dimensions</span>
+      </a>
+      <a class="step-tab" href="#step-3">
+        <span class="step-num">3</span>
+        <span class="step-label">Color Analysis</span>
+      </a>
+      <a class="step-tab" href="#step-4">
+        <span class="step-num">4</span>
+        <span class="step-label">Silhouette & Patterns</span>
+      </a>
+      <a class="step-tab" href="#step-5">
+        <span class="step-num">5</span>
+        <span class="step-label">Tech Pack Spec</span>
+      </a>
+      <a class="step-tab" href="#step-6">
+        <span class="step-num">6</span>
+        <span class="step-label">Virtual Try-On</span>
+      </a>
+    </nav>
+
+    <!-- STEP 1: Upload & Calibration -->
+    <section class="step-section" id="step-1">
+      <div class="section-title-banner">
+        <span class="section-step-pill">Stage 1</span>
+        <h2>Upload User Photos & Reference Object Calibration</h2>
+      </div>
+      <div class="grid grid-2">
+        
+        <!-- Left: Upload Cards -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📷 1. Upload User Photos</h3>
+            <p class="text-muted">Hold reference object flat against the chest/torso in the same depth plane.</p>
+          </div>
+          
+          <div class="upload-dropzones">
+            <!-- Front View Dropzone -->
+            <div class="dropzone" id="frontDropzone">
+              <input type="file" id="frontFileInput" accept="image/*" class="file-input">
+              <div class="dropzone-content" id="frontDropzoneContent">
+                <div class="drop-icon">🧍‍♀️</div>
+                <div class="drop-title">Front View Photo</div>
+                <div class="drop-hint">Drop file here or click to browse</div>
+              </div>
+              <img id="frontPreview" class="preview-img hidden" alt="Front Preview">
+              <button class="btn btn-sm btn-clear hidden" id="btnClearFront">✕ Remove</button>
+            </div>
+
+            <!-- Side View Dropzone -->
+            <div class="dropzone" id="sideDropzone">
+              <input type="file" id="sideFileInput" accept="image/*" class="file-input">
+              <div class="dropzone-content" id="sideDropzoneContent">
+                <div class="drop-icon">🚶‍♀️</div>
+                <div class="drop-title">Side / Profile Photo (Optional)</div>
+                <div class="drop-hint">For precise 3D ellipse circumferences</div>
+              </div>
+              <img id="sidePreview" class="preview-img hidden" alt="Side Preview">
+              <button class="btn btn-sm btn-clear hidden" id="btnClearSide">✕ Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Calibration Settings -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📏 2. Reference Object Calibration</h3>
+            <p class="text-muted">Select the physical fiducial marker used in the image to derive real-world scale.</p>
+          </div>
+
+          <div class="reference-options">
+            <label class="ref-option active">
+              <input type="radio" name="refType" value="A4" checked>
+              <div class="ref-info">
+                <div class="ref-title">📄 Standard A4 Paper (ISO 216)</div>
+                <div class="ref-dimensions">21.0 cm width × 29.7 cm height</div>
+                <div class="ref-badge">Recommended for Full-Body Photos</div>
+              </div>
+            </label>
+
+            <label class="ref-option">
+              <input type="radio" name="refType" value="ID_CARD">
+              <div class="ref-info">
+                <div class="ref-title">💳 Standard ID / Credit Card (ISO/IEC 7810 ID-1)</div>
+                <div class="ref-dimensions">8.56 cm width × 5.398 cm height (Turn backwards for privacy)</div>
+                <div class="ref-badge">Rigid & Globally Standard</div>
+              </div>
+            </label>
+
+            <label class="ref-option">
+              <input type="radio" name="refType" value="CUSTOM">
+              <div class="ref-info">
+                <div class="ref-title">📐 Custom Reference Dimension</div>
+                <div class="custom-dim-inputs">
+                  <div class="input-group">
+                    <label>Width (cm):</label>
+                    <input type="number" id="customWidth" value="21.0" step="0.1" min="1">
+                  </div>
+                  <div class="input-group">
+                    <label>Height (cm):</label>
+                    <input type="number" id="customHeight" value="29.7" step="0.1" min="1">
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <div class="action-footer">
+            <button class="btn btn-primary btn-lg" id="btnRunAnalysis">
+              <span class="btn-spinner hidden" id="analysisSpinner"></span>
+              <span id="btnRunText">🚀 Run End-to-End Gemini Pipeline</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 2: Body Dimensions -->
+    <section class="step-section" id="step-2">
+      <div class="section-title-banner">
+        <span class="section-step-pill">Stage 2</span>
+        <h2>Extracted Body Dimensions & 3D Elliptical Analysis</h2>
+      </div>
+      <div class="grid grid-2">
+        
+        <!-- Left: SVG Interactive Mannequin -->
+        <div class="card mannequin-card">
+          <div class="card-header">
+            <h3>🧍 Extracted Anthropometric Keypoints</h3>
+            <span class="badge badge-success" id="bodyShapeBadge">Hourglass Shape</span>
+          </div>
+
+          <div class="mannequin-container">
+            <svg class="mannequin-svg" viewBox="0 0 320 520">
+              <!-- Grid background -->
+              <defs>
+                <pattern id="mannequinGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="320" height="520" fill="url(#mannequinGrid)"/>
+
+              <!-- Stylized Wireframe Silhouette -->
+              <g id="svgMannequin" stroke="#6366f1" stroke-width="2" fill="rgba(99, 102, 241, 0.08)">
+                <ellipse cx="160" cy="50" rx="20" ry="26"/>
+                <path d="M152,75 L168,75 L172,95 L148,95 Z"/>
+                <!-- Torso -->
+                <path d="M115,105 L205,105 L190,190 L130,190 Z"/>
+                <path d="M130,190 L190,190 L205,250 L115,250 Z"/>
+                <!-- Legs -->
+                <path d="M125,250 L140,490 L155,490 L150,250 Z"/>
+                <path d="M170,250 L165,490 L180,490 L195,250 Z"/>
+              </g>
+
+              <!-- Dimension Callout Lines & Circles -->
+              <!-- Shoulder -->
+              <line x1="110" y1="105" x2="210" y2="105" stroke="#f43f5e" stroke-width="2" stroke-dasharray="3 3"/>
+              <circle cx="110" cy="105" r="4" fill="#f43f5e"/>
+              <circle cx="210" cy="105" r="4" fill="#f43f5e"/>
+
+              <!-- Chest -->
+              <line x1="120" y1="145" x2="200" y2="145" stroke="#ec4899" stroke-width="2"/>
+              <circle cx="120" cy="145" r="4" fill="#ec4899"/>
+              <circle cx="200" cy="145" r="4" fill="#ec4899"/>
+
+              <!-- Waist -->
+              <line x1="130" y1="190" x2="190" y2="190" stroke="#8b5cf6" stroke-width="2"/>
+              <circle cx="130" cy="190" r="4" fill="#8b5cf6"/>
+              <circle cx="190" cy="190" r="4" fill="#8b5cf6"/>
+
+              <!-- Hips -->
+              <line x1="115" y1="250" x2="205" y2="250" stroke="#06b6d4" stroke-width="2"/>
+              <circle cx="115" cy="250" r="4" fill="#06b6d4"/>
+              <circle cx="205" cy="250" r="4" fill="#06b6d4"/>
+
+              <!-- Inseam -->
+              <line x1="160" y1="260" x2="160" y2="490" stroke="#10b981" stroke-width="2" stroke-dasharray="4 2"/>
+              <circle cx="160" cy="260" r="4" fill="#10b981"/>
+              <circle cx="160" cy="490" r="4" fill="#10b981"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right: Measurement Stat Cards -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📊 Metric Measurements (cm)</h3>
+            <div class="text-muted" id="confidenceScoreLabel">Confidence: 94%</div>
+          </div>
+
+          <div class="measurement-grid">
+            <div class="stat-box">
+              <div class="stat-label">Height</div>
+              <div class="stat-value" id="valHeight">168.0 <span class="unit">cm</span></div>
+              <div class="stat-sub">Ground to Cranium</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Across Shoulder</div>
+              <div class="stat-value" id="valShoulder">39.5 <span class="unit">cm</span></div>
+              <div class="stat-sub">Bi-acromial span</div>
+            </div>
+            <div class="stat-box highlight">
+              <div class="stat-label">Chest / Bust Circumference</div>
+              <div class="stat-value" id="valChest">94.0 <span class="unit">cm</span></div>
+              <div class="stat-sub">Elliptical 3D cross-section</div>
+            </div>
+            <div class="stat-box highlight">
+              <div class="stat-label">Natural Waist Circumference</div>
+              <div class="stat-value" id="valWaist">70.0 <span class="unit">cm</span></div>
+              <div class="stat-sub">Narrowest torso section</div>
+            </div>
+            <div class="stat-box highlight">
+              <div class="stat-label">Full Hip Circumference</div>
+              <div class="stat-value" id="valHip">98.0 <span class="unit">cm</span></div>
+              <div class="stat-sub">Widest gluteal point</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Inseam Leg Length</div>
+              <div class="stat-value" id="valInseam">78.5 <span class="unit">cm</span></div>
+              <div class="stat-sub">Crotch to inner ankle</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Torso Vertical Length</div>
+              <div class="stat-value" id="valTorso">42.0 <span class="unit">cm</span></div>
+              <div class="stat-sub">HPS to waist</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Arm Length</div>
+              <div class="stat-value" id="valArm">58.0 <span class="unit">cm</span></div>
+              <div class="stat-sub">Shoulder point to wrist</div>
+            </div>
+          </div>
+
+          <div class="formula-banner">
+            <div class="formula-icon">📐</div>
+            <div class="formula-text">
+              <strong>3D Circumference Computation:</strong> $C \approx \pi \left( 3(a+b) - \sqrt{(3a+b)(a+3b)} \right)$ calibrated against reference object scale.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 3: Seasonal Color Analysis -->
+    <section class="step-section" id="step-3">
+      <div class="section-title-banner">
+        <span class="section-step-pill">Stage 3</span>
+        <h2>Personal Seasonal Color Analysis & Swatches</h2>
+      </div>
+      <div class="grid grid-2">
+        
+        <!-- Left: Palette Cards -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🎨 12-Season Personal Color Profile</h3>
+            <span class="badge badge-accent" id="seasonBadge">Warm Autumn</span>
+          </div>
+
+          <div class="color-profile-summary">
+            <div class="meta-row">
+              <span class="meta-title">Skin Tone Category:</span>
+              <span class="meta-val" id="skinToneVal">Warm Medium with Golden Undertones</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-title">Complexion Undertone:</span>
+              <span class="meta-val" id="undertoneVal">Warm Golden</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-title">Visual Contrast Level:</span>
+              <span class="meta-val" id="contrastVal">Medium-High Contrast</span>
+            </div>
+            <p class="profile-desc" id="seasonDesc">
+              Rich, earthy, and warm undertones with golden highlights in hazel-brown eyes and warm brunette hair.
+            </p>
+          </div>
+
+          <div class="swatches-section">
+            <h4>Recommended Core Fabric Swatches:</h4>
+            <div class="swatch-list" id="bestColorSwatches">
+              <!-- Injected by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: What to Wear vs Avoid -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🎯 Color Pairing & Harmony Guidelines</h3>
+          </div>
+
+          <div class="guidelines-card">
+            <h4>✅ Flattering Harmony Notes:</h4>
+            <p class="text-muted">
+              Deep, muted warm hues accentuate healthy skin radiance without washing out or competing with facial features. High-pigment jewel and earthy tones create rich visual luxury.
+            </p>
+          </div>
+
+          <div class="avoid-section">
+            <h4>⚠️ Colors to Avoid & Why:</h4>
+            <div class="avoid-list" id="avoidColorsList">
+              <!-- Injected by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 4: Silhouette & Pattern Matching -->
+    <section class="step-section" id="step-4">
+      <div class="section-title-banner">
+        <span class="section-step-pill">Stage 4</span>
+        <h2>Silhouette, Cut & Pattern Recommendation</h2>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 id="silhouetteTitle">👗 Belted Fit-and-Flare Wrap Midi Dress</h3>
+            <p class="text-muted">Algorithmically optimized for Hourglass proportions and balanced waist-to-hip ratio.</p>
+          </div>
+          <span class="badge badge-primary">Ideal Silhouette Match</span>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="feature-card">
+            <div class="feat-icon">✨</div>
+            <h4>Key Architectural Cuts</h4>
+            <ul class="feature-bullets" id="stylingKeyFeatures">
+              <li>Surplice V-neckline to accentuate proportionate décolletage</li>
+              <li>Defined cinched waist with matching self-fabric sash belt</li>
+              <li>Gentle A-line skirt drape skimming naturally over high hips</li>
+              <li>Three-quarter tailored sleeves for balanced arm silhouette</li>
+            </ul>
+          </div>
+
+          <div class="feature-card">
+            <div class="feat-icon">🧵</div>
+            <h4>Recommended Textile & Drape</h4>
+            <p class="feature-text" id="recommendedFabrics">
+              Mid-weight Tencel Twill, Wool Crepe, or heavy Silk Charmeuse with slight stretch for body-skimming structure without rigidity.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feat-icon">🎨</div>
+            <h4>Pattern & Print Strategy</h4>
+            <p class="feature-text" id="patternAdvice">
+              Subtle tone-on-tone botanical jacquard or rich warm paisley prints; avoid boxy horizontal stripes that break visual curves.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 5: Manufacturing Tech Pack -->
+    <section class="step-section" id="step-5">
+      <div class="section-title-banner">
+        <span class="section-step-pill">Stage 5</span>
+        <h2>Factory Garment Tech Pack (Specification Sheet)</h2>
+      </div>
+      <div class="card">
+        <div class="card-header flex-between">
+          <div>
+            <h3>🏭 Factory Garment Specification Sheet (Tech Pack)</h3>
+            <p class="text-muted">Precision Point of Measure (POM) chart formatted for apparel pattern makers and factories.</p>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-secondary" id="btnExportCsv">📥 Export CSV</button>
+            <button class="btn btn-secondary" id="btnExportJson">📋 Export JSON</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨️ Print Spec</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="techpack-table" id="techpackTable">
+            <thead>
+              <tr>
+                <th>Point of Measure (POM)</th>
+                <th>Body Dimension (cm)</th>
+                <th>Design Ease (+cm)</th>
+                <th>Finished Garment Spec (cm)</th>
+                <th>Tolerance (±cm)</th>
+                <th>Construction Notes</th>
+              </tr>
+            </thead>
+            <tbody id="techpackBody">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="techpack-formula-note">
+          <strong>Production Formula:</strong> Finished Garment Spec = Measured Body Circumference + Wearing Ease Allowance. All seams assume standard 1.2 cm factory overlock seam margin.
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 6: Virtual Try-On Render -->
+    <section class="step-section" id="step-6">
+      <div class="section-title-banner">
+        <span class="section-step-pill">Stage 6</span>
+        <h2>High-Fashion Virtual Try-On & Lookbook Render</h2>
+      </div>
+      <div class="grid grid-2">
+        
+        <!-- Left: Rendered Visual Viewport -->
+        <div class="card render-card">
+          <div class="card-header flex-between">
+            <h3>👗 Garment Visualization on Human</h3>
+            <span class="badge badge-accent" id="renderEngineBadge">Studio Lookbook</span>
+          </div>
+
+          <div class="render-canvas-wrap" id="renderCanvasWrap">
+            <!-- Render SVG or Imagen output injected here -->
+          </div>
+
+          <div class="render-controls">
+            <button class="btn btn-primary" id="btnReRender">✨ Regenerate Visual Drape</button>
+          </div>
+        </div>
+
+        <!-- Right: Design & Prompt Inspector -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🔍 Fashion Prompt & Fabric Breakdown</h3>
+          </div>
+
+          <div class="prompt-box">
+            <div class="prompt-label">Active Editorial Generation Prompt:</div>
+            <textarea id="renderPromptInput" class="prompt-textarea" rows="5">A high-end editorial fashion lookbook photograph of a model with an Hourglass body profile, wearing an exquisitely tailored Belted Fit-and-Flare Wrap Midi Dress. The garment is crafted in rich Terracotta Rust (#C85A32) Tencel Twill fabric, featuring subtle tone-on-tone botanical jacquard embroidery. Photographed in an elegant studio with soft natural directional lighting, showcasing the exact drape, hemline, and waistline contour. Crisp 8k photo, clean aesthetic.</textarea>
+          </div>
+
+          <div class="spec-summary-card">
+            <h4>Garment Architecture Summary:</h4>
+            <div class="spec-row"><span>Silhouette:</span><strong id="summarySilhouette">Belted Fit-and-Flare Wrap Midi</strong></div>
+            <div class="spec-row"><span>Primary Hue:</span><strong id="summaryColor">Terracotta Rust (#C85A32)</strong></div>
+            <div class="spec-row"><span>Shoulder Width:</span><strong id="summaryShoulder">41.0 cm</strong></div>
+            <div class="spec-row"><span>Finished Bust:</span><strong id="summaryBust">98.0 cm</strong></div>
+            <div class="spec-row"><span>Finished Waist:</span><strong id="summaryWaist">73.0 cm</strong></div>
+            <div class="spec-row"><span>Total Length:</span><strong id="summaryLength">112.0 cm</strong></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- API Key Modal -->
+  <div class="modal hidden" id="apiKeyModal">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🔑 Gemini API Key Configuration</h3>
+        <button class="btn-close" id="btnCloseModal">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">
+          Enter your Gemini API key to enable live Gemini Vision multimodal anthropometry and Imagen 3 garment rendering.
+        </p>
+        <div class="input-group">
+          <label for="apiKeyInput">Gemini API Key:</label>
+          <input type="password" id="apiKeyInput" placeholder="AIzaSy...">
+        </div>
+        <div class="modal-note">
+          Your key is saved locally in your browser session and only sent to your local server.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btnCancelModal">Cancel</button>
+        <button class="btn btn-primary" id="btnSaveApiKey">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

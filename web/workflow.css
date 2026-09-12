@@ -1,0 +1,849 @@
+/* AI-to-Garment Workflow Presentation Wireframe Styles
+   Adheres to Math Dress design standards (DESIGN.md):
+   #111 background, #fff ink, #757575 muted, #2a2a2a lines, Poppins 400 uppercase. */
+
+:root {
+  --wf-max-width: 1400px;
+  --wf-pad-h: clamp(20px, 4vw, 48px);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 64px;
+}
+
+body {
+  display: block;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+}
+
+/* Masthead navigation */
+.wf-masthead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--wf-pad-h);
+  background: rgba(17, 17, 17, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.wf-logo {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.wf-logo h1 {
+  margin: 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.16rem;
+  color: var(--ink);
+}
+
+.wf-logo .wf-badge {
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.1rem;
+}
+
+.wf-nav {
+  display: flex;
+  gap: 22px;
+}
+
+.wf-nav a {
+  font-size: 0.72rem;
+  color: var(--muted);
+  transition: color 0.15s ease;
+}
+
+.wf-nav a:hover,
+.wf-nav a.active {
+  color: var(--ink);
+}
+
+/* Global Section layout */
+.wf-container {
+  max-width: var(--wf-max-width);
+  margin: 0 auto;
+  padding: 0 var(--wf-pad-h);
+}
+
+.wf-section {
+  padding: 72px 0 88px;
+  border-bottom: 1px solid var(--line);
+}
+
+.wf-section-header {
+  margin-bottom: 40px;
+}
+
+.wf-step-tag {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wf-status-pill {
+  font-size: 0.62rem;
+  border: 1px solid var(--line);
+  padding: 2px 8px;
+  color: var(--muted);
+}
+
+.wf-status-pill.active {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.wf-section-title {
+  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+  line-height: 1.2;
+  margin: 0 0 16px;
+  letter-spacing: 0.04rem;
+  color: var(--ink);
+}
+
+.wf-section-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  max-width: 680px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* 00 Hero & Intro */
+.wf-hero {
+  padding-top: 96px;
+  padding-bottom: 80px;
+}
+
+.wf-hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.wf-hero-headline {
+  font-size: clamp(2rem, 4.5vw, 3.8rem);
+  line-height: 1.05;
+  margin: 0 0 24px;
+  letter-spacing: -0.02rem;
+}
+
+.wf-hero-copy {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 2;
+  margin-bottom: 36px;
+}
+
+.wf-hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.wf-meta-item .wf-meta-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.wf-meta-item .wf-meta-val {
+  font-size: 0.8rem;
+  color: var(--ink);
+}
+
+/* Pipeline Flow Diagram */
+.wf-pipeline {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  margin-top: 48px;
+  border: 1px solid var(--line);
+}
+
+.wf-pipeline-step {
+  background: var(--bg);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  transition: background 0.2s ease;
+}
+
+.wf-pipeline-step:hover {
+  background: #161616;
+}
+
+.wf-step-num {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.wf-step-name {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.wf-step-detail {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Step 01: Image & Reference Object Upload */
+.wf-capture-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 36px;
+}
+
+.wf-upload-area {
+  border: 1px dashed var(--line);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 480px;
+  position: relative;
+  background: #141414;
+}
+
+.wf-upload-stage {
+  width: 100%;
+  height: 420px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-scan-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.wf-ref-marker {
+  position: absolute;
+  right: 18%;
+  bottom: 15%;
+  border: 1px solid var(--ink);
+  padding: 10px 14px;
+  background: rgba(17, 17, 17, 0.85);
+  font-size: 0.65rem;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.wf-landmark-hud {
+  position: absolute;
+  left: 12%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  pointer-events: none;
+  font-size: 0.68rem;
+}
+
+.wf-landmark-tag {
+  color: var(--muted);
+  background: rgba(17, 17, 17, 0.9);
+  padding: 2px 6px;
+  border-left: 1px solid var(--ink);
+}
+
+.wf-scan-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.wf-card {
+  border: 1px solid var(--line);
+  padding: 24px;
+  background: #131313;
+}
+
+.wf-card h3 {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.wf-preset-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.wf-btn {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  padding: 10px 14px;
+  font-size: 0.72rem;
+  text-align: center;
+  cursor: pointer;
+  letter-spacing: 0.08rem;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+}
+
+.wf-btn:hover {
+  border-color: var(--ink);
+}
+
+.wf-btn.active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.wf-btn-primary {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 14px 20px;
+  font-size: 0.76rem;
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  cursor: pointer;
+  letter-spacing: 0.1rem;
+}
+
+.wf-btn-primary:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.wf-measurements-readout {
+  display: grid;
+  gap: 12px;
+}
+
+.wf-measure-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.wf-measure-row .label {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.wf-measure-row .val {
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wf-measure-row .conf {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+/* Step 02: Pattern Drafter Workbench */
+.wf-drafter-workbench {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  min-height: 680px;
+  border: 1px solid var(--line);
+  background: #111;
+  position: relative;
+}
+
+.wf-stage-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+
+.wf-stage-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: #141414;
+}
+
+.wf-stage-toolbar .title {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.wf-stage-toggles {
+  display: flex;
+  gap: 16px;
+}
+
+.wf-stage-toggles button {
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.wf-stage-toggles button[aria-pressed="true"] {
+  color: var(--ink);
+}
+
+.wf-pattern-sheet {
+  flex: 1;
+  position: relative;
+  min-height: 540px;
+  display: grid;
+  overflow: hidden;
+  background: var(--sheet);
+}
+
+.wf-pattern-sheet svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.wf-stage-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #141414;
+}
+
+.wf-stage-footer .info {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.wf-controls-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow-y: auto;
+  max-height: 720px;
+}
+
+.wf-control-group h3 {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0 0 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+}
+
+.wf-control-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 10px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.wf-control-item label {
+  font-size: 0.72rem;
+  color: var(--ink);
+}
+
+.wf-control-item .wf-val {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.wf-control-item input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wf-control-item input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--line);
+}
+
+.wf-control-item input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  margin-top: -4px;
+  background: var(--ink);
+  border-radius: 50%;
+}
+
+.wf-select {
+  grid-column: 1 / -1;
+  background: #181818;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.72rem;
+  padding: 8px 12px;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.wf-select:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+
+.wf-derived-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  font-size: 0.68rem;
+  padding: 12px;
+  background: #141414;
+  border: 1px solid var(--line);
+}
+
+.wf-stat-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.wf-stat-row .k {
+  color: var(--muted);
+}
+
+.wf-stat-row .v {
+  color: var(--ink);
+}
+
+.wf-export-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Step 03: CLO 3D Toile Simulation */
+.wf-clo-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 36px;
+}
+
+.wf-toile-viewer {
+  border: 1px solid var(--line);
+  background: #141414;
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wf-toile-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wf-view-modes {
+  display: flex;
+  gap: 8px;
+}
+
+.wf-view-btn {
+  font-size: 0.68rem;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.wf-view-btn.active {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.wf-toile-canvas {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 30px;
+}
+
+.wf-toile-canvas svg {
+  max-height: 440px;
+  width: 100%;
+}
+
+.wf-toile-meta {
+  padding: 14px 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.wf-clo-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wf-fit-matrix {
+  border: 1px solid var(--line);
+  background: #131313;
+}
+
+.wf-matrix-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.72rem;
+}
+
+.wf-matrix-row:last-child {
+  border-bottom: none;
+}
+
+.wf-matrix-row.head {
+  color: var(--muted);
+  background: #181818;
+  font-size: 0.66rem;
+}
+
+.wf-status-ok {
+  color: var(--ink);
+}
+
+/* Step 04: Generative Dress Try-On with Gemini */
+.wf-gen-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+}
+
+.wf-comparison-viewer {
+  border: 1px solid var(--line);
+  background: #141414;
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wf-comparison-split {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 440px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.wf-compare-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.wf-compare-layer.toile {
+  background: #141414;
+}
+
+.wf-compare-layer.render {
+  background: #1b1b1b;
+  width: 50%;
+  border-right: 2px solid var(--ink);
+  z-index: 2;
+}
+
+.wf-compare-layer svg,
+.wf-compare-layer img {
+  max-height: 420px;
+  width: auto;
+}
+
+.wf-split-handle {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ink);
+  z-index: 10;
+  cursor: ew-resize;
+  transform: translateX(-50%);
+}
+
+.wf-split-handle::after {
+  content: "⇹";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--ink);
+  border-radius: 50%;
+}
+
+.wf-comparison-bar {
+  padding: 12px 20px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: #121212;
+  z-index: 11;
+}
+
+.wf-gen-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wf-fabric-swatches {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.wf-swatch-btn {
+  border: 1px solid var(--line);
+  background: #161616;
+  color: var(--ink);
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.72rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wf-swatch-btn span {
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+.wf-swatch-btn.active {
+  border-color: var(--ink);
+  background: #202020;
+}
+
+.wf-prompt-box {
+  background: #0d0d0d;
+  border: 1px solid var(--line);
+  padding: 16px;
+  font-family: monospace;
+  font-size: 0.72rem;
+  line-height: 1.7;
+  color: #b0b0b0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 160px;
+  overflow-y: auto;
+  text-transform: none;
+}
+
+/* Footer */
+.wf-footer {
+  padding: 64px 0 96px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.72rem;
+  border-top: 1px solid var(--line);
+}
+
+.wf-footer a {
+  color: var(--ink);
+}
+
+/* Responsive adjustments */
+@media (max-width: 980px) {
+  .wf-hero-grid,
+  .wf-capture-grid,
+  .wf-drafter-workbench,
+  .wf-clo-grid,
+  .wf-gen-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wf-stage-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .wf-pipeline {
+    grid-template-columns: 1fr;
+  }
+}
