@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Math Dress — Gemini Fitting Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="gemini-fitting.css?v=1" />
+</head>
+<body>
+
+  <!-- Masthead -->
+  <header class="gfit-masthead">
+    <div class="gfit-logo">
+      <a href="index.html"><h1>Math Dress</h1></a>
+      <span class="badge">/ Gemini Fitting Generator</span>
+    </div>
+    <div class="gfit-nav">
+      <span class="gfit-key-indicator" id="apiKeyIndicator">Simulation / Demo Mode</span>
+      <a href="workflow.html">Full Workflow ↗</a>
+      <a href="index.html">Catalog ↗</a>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Interface -->
+  <main class="gfit-layout">
+    <!-- Left Column: Inputs & Controls -->
+    <aside class="gfit-controls-panel">
+      <!-- Input 1: Picture of Real Human -->
+      <section>
+        <div class="gfit-section-title">
+          <span>Input 1: Real Human Photo</span>
+          <span style="font-size: 0.62rem; color: var(--muted);">Subject Identity & Form</span>
+        </div>
+        <div class="gfit-dropzone" id="humanDropzone">
+          <input type="file" id="humanFileInput" accept="image/*" />
+          <div class="gfit-drop-prompt">
+            <span>Drop photograph here or click to browse</span>
+            <div style="font-size: 0.58rem; color: #555; margin-top: 2px;">JPG, PNG, WEBP</div>
+          </div>
+          <img id="humanThumb" class="gfit-drop-thumb" alt="Input 1 Human Thumbnail" />
+        </div>
+        <div class="gfit-preset-strip">
+          <button type="button" class="gfit-preset-btn gfit-human-preset active" data-preset="user_front">Photo (Front)</button>
+          <button type="button" class="gfit-preset-btn gfit-human-preset" data-preset="user_side">Photo (Side)</button>
+          <button type="button" class="gfit-preset-btn gfit-human-preset" data-preset="user_back">Photo (Back)</button>
+        </div>
+      </section>
+
+      <!-- Input 2: Picture of CLO 3D Renders -->
+      <section>
+        <div class="gfit-section-title">
+          <span>Input 2: CLO 3D Renders</span>
+          <span style="font-size: 0.62rem; color: var(--muted);">Garment Style & Physical Fit</span>
+        </div>
+        <div class="gfit-dropzone" id="cloDropzone">
+          <input type="file" id="cloFileInput" accept="image/*" />
+          <div class="gfit-drop-prompt">
+            <span>Drop CLO 3D render here or click to browse</span>
+            <div style="font-size: 0.58rem; color: #555; margin-top: 2px;">Draped Muslin Toile, DXF Fit</div>
+          </div>
+          <img id="cloThumb" class="gfit-drop-thumb" alt="Input 2 CLO Thumbnail" />
+        </div>
+        <div class="gfit-preset-strip">
+          <button type="button" class="gfit-preset-btn gfit-clo-preset active" data-preset="user_front">CLO (Front)</button>
+          <button type="button" class="gfit-preset-btn gfit-clo-preset" data-preset="user_side">CLO (Side)</button>
+          <button type="button" class="gfit-preset-btn gfit-clo-preset" data-preset="front">Muslin Toile</button>
+        </div>
+      </section>
+
+      <!-- Agentic Prompt -->
+      <section>
+        <div class="gfit-section-title">
+          <span>Agentic Prompt</span>
+          <span style="font-size: 0.62rem; color: var(--muted);">Multimodal Conditioning</span>
+        </div>
+        <textarea id="gfitPrompt" class="gfit-prompt-textarea" rows="4"></textarea>
+      </section>
+
+      <!-- API Key Settings -->
+      <section>
+        <div class="gfit-section-title">
+          <span>Gemini API Key</span>
+          <span style="font-size: 0.62rem; color: var(--muted);">Optional / Demo Ready</span>
+        </div>
+        <input type="password" id="gfitApiKey" class="gfit-api-key-input" placeholder="Enter GEMINI_API_KEY (stored locally)" />
+        <p style="font-size: 0.62rem; color: var(--muted); margin: 6px 0 0; line-height: 1.5;">
+          Leave blank to test immediately with high-fidelity conditioning simulation.
+        </p>
+      </section>
+
+      <!-- Primary Action -->
+      <button type="button" id="btnGenerateFitting" class="gfit-btn-primary">
+        Generate Fitting Picture ✦
+      </button>
+    </aside>
+
+    <!-- Right Column: Visual Stage & Results -->
+    <section class="gfit-stage-panel">
+      <!-- Toolbar -->
+      <div class="gfit-stage-header">
+        <div class="gfit-view-mode-tabs">
+          <button type="button" class="gfit-tab-btn active" data-view="side-by-side">Side-by-Side View</button>
+          <button type="button" class="gfit-tab-btn" data-view="split-slider">Split Comparison Slider</button>
+        </div>
+        <span style="font-size: 0.68rem; color: var(--muted);">White Studio Cyclorama · Natural Soft Lighting</span>
+      </div>
+
+      <!-- Viewport Stage -->
+      <div class="gfit-stage-viewport">
+        <!-- View 1: Side by Side (Input 1 + Input 2 -> Generated Result) -->
+        <div class="gfit-side-by-side" id="sideBySideView">
+          <div class="gfit-stage-card">
+            <span class="card-label">01 / Input 1: Human Photo</span>
+            <div class="card-content">
+              <img id="cardHumanImg" alt="Input 1 Human View" />
+            </div>
+          </div>
+          <div class="gfit-stage-card">
+            <span class="card-label">02 / Input 2: CLO 3D Render</span>
+            <div class="card-content">
+              <img id="cardCloImg" alt="Input 2 CLO View" />
+            </div>
+          </div>
+          <div class="gfit-stage-card">
+            <span class="card-label">03 / Gemini Fitting Output</span>
+            <div class="card-content">
+              <img id="cardResultImg" alt="Generated Fitting Output" />
+            </div>
+          </div>
+        </div>
+
+        <!-- View 2: Split Comparison Slider (CLO Toile ↔ Generated Fitting) -->
+        <div class="gfit-split-slider" id="splitSliderView" style="display: none;">
+          <div class="gfit-split-slider" id="splitSliderContainer" style="width: 100%; height: 100%; border: none;">
+            <!-- Background Layer: CLO Toile -->
+            <div class="gfit-split-layer clo-toile">
+              <img id="splitCloImg" alt="CLO Toile Layer" />
+            </div>
+            <!-- Foreground Layer: Gemini Fitting Render -->
+            <div class="gfit-split-layer gen-fitting" id="splitGenLayer">
+              <img id="splitResultImg" alt="Generated Fitting Layer" />
+            </div>
+            <!-- Interactive Split Handle -->
+            <div class="gfit-split-handle" id="splitHandle"></div>
+          </div>
+        </div>
+
+        <!-- Loading HUD -->
+        <div class="gfit-loading-hud" id="loadingHud" hidden>
+          <div class="gfit-spinner"></div>
+          <div class="gfit-loading-text">Synthesizing Fitting Picture...</div>
+          <div class="gfit-loading-sub">Conditioning human identity with CLO 3D dress fit</div>
+        </div>
+      </div>
+
+      <!-- Stage Footer -->
+      <div class="gfit-stage-footer">
+        <span id="metaStatus">Ready · Input 1 (Human) × Input 2 (CLO Render)</span>
+        <button type="button" class="gfit-btn-secondary" id="btnDownloadFitting">
+          Download Fitting Picture ⤓
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="gemini-fitting.js?v=1"></script>
+</body>
+</html>
