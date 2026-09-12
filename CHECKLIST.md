@@ -49,10 +49,12 @@ flags remain per case. See `Experiments/step-04/RESULTS.md` and the separate
 - [x] Map numerical constraints separately from the drafting sequence.
 - [x] Sample five coupled-control slices on the reference body.
 - [x] Preserve failed inputs, shaping descriptors, seam differences and refined transition brackets.
-- [ ] Resolve construction failures and approve silhouette criteria before defining normalized safe intervals.
+- [x] Repair sampled construction failures or replace them with explicit geometric rejections.
+- [x] Approve fitted and relaxed silhouette families with conditional design limits.
+- [ ] Approve an upper dress-length limit and physical fit/seam decisions before exposing every control as 0–1.
 
-See `Experiments/conditional-ranges/RESULTS.md` and journal `#ranges`.
-Passing sample runs remain provisional; no continuous fit-safe interval is claimed.
+See `Experiments/conditional-ranges/RESULTS-V2.md` and journal `#ranges`.
+Policy intervals are conditional on the complete input context; physical fit remains unverified.
 
 ## 5. Measurement profiles
 

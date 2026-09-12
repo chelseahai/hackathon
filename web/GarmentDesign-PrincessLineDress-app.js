@@ -372,6 +372,10 @@
   }
 
   function renderStats(draft) {
+    var intent = window.SilhouettePolicy.evaluate(draft.params, null, "pass");
+    var family = intent.design_pass
+      ? intent.family.charAt(0).toUpperCase() + intent.family.slice(1) + " · within v1"
+      : "Outside v1";
     statsEl.innerHTML =
       stat("Back waist", fmt(draft.backWaist)) +
       stat("Front waist", fmt(draft.frontWaist)) +
@@ -379,10 +383,15 @@
       stat("Front hip", fmt(draft.frontHip)) +
       stat("Back dart", fmt(draft.backDart)) +
       stat("Front dart", fmt(draft.frontDart)) +
-      stat("Side dart", fmt(draft.sideDart));
-    if (draft.notes.length) {
+      stat("Side dart", fmt(draft.sideDart)) +
+      stat("Silhouette", family);
+    var notes = draft.notes.slice();
+    if (!intent.design_pass) {
+      notes.push("Outside the current silhouette policy: " + intent.reasons.join("; ") + ".");
+    }
+    if (notes.length) {
       notesEl.hidden = false;
-      notesEl.textContent = draft.notes.join(" ");
+      notesEl.textContent = notes.join(" ");
     } else {
       notesEl.hidden = true;
       notesEl.textContent = "";

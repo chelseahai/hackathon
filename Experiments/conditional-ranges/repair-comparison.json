@@ -1,0 +1,235 @@
+{
+  "matched_original_inputs": 215,
+  "transitions": [
+    {
+      "id": "r0062",
+      "before": "failed",
+      "after": "rejected",
+      "before_failures": [
+        "ZeroDivisionError: float division by zero"
+      ],
+      "after_failures": [
+        "ValueError: Dress length must exceed hip depth plus side hem rise; the raised side hem must stay below the hip"
+      ]
+    },
+    {
+      "id": "r0079",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0087",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0095",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0103",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Centre back: cut_covers_stitch",
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0111",
+      "before": "failed",
+      "after": "rejected",
+      "before_failures": [
+        "ValueError: side: landmarks are not ordered along the seam"
+      ],
+      "after_failures": [
+        "ValueError: Unsupported design: Side back side marks must be ordered underarm, waist, hip, hem"
+      ]
+    },
+    {
+      "id": "r0112",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0113",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0114",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0115",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0116",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0117",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0118",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0119",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0120",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0121",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0122",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0124",
+      "before": "failed",
+      "after": "pass",
+      "before_failures": [
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: cut_covers_stitch"
+      ],
+      "after_failures": []
+    },
+    {
+      "id": "r0125",
+      "before": "failed",
+      "after": "rejected",
+      "before_failures": [
+        "Centre back: cut_covers_stitch",
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: stitch_valid; cut_covers_stitch"
+      ],
+      "after_failures": [
+        "ValueError: Unsupported design: Centre front stitch outline intersects itself or is degenerate"
+      ]
+    },
+    {
+      "id": "r0128",
+      "before": "failed",
+      "after": "rejected",
+      "before_failures": [
+        "Centre back: cut_covers_stitch",
+        "Side back: cut_covers_stitch",
+        "Side front: cut_covers_stitch",
+        "Centre front: stitch_valid; cut_covers_stitch"
+      ],
+      "after_failures": [
+        "ValueError: Unsupported design: Centre front stitch outline intersects itself or is degenerate"
+      ]
+    }
+  ],
+  "summary": {
+    "failed_to_pass": 16,
+    "failed_to_rejected": 4
+  },
+  "full_replay": {
+    "pass_to_pass": 186,
+    "failed_to_pass": 32,
+    "failed_to_rejected": 9,
+    "rejected_to_rejected": 36,
+    "evaluated_inputs": 263,
+    "unhandled_failures": 0
+  }
+}

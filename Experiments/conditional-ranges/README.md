@@ -24,6 +24,20 @@ alongside the sampler results; the journal's audit link uses
 audit report there for local preview. The sampling tier deliberately does not label
 its screening as the full export/physical validation suite.
 
+## Repaired study and policy
+
+The second run uses the repaired cutting-outline construction and explicit
+guards described in `CONSTRUCTION-REPAIR.md`. Its complete browser journal data
+is `web/experiments/ranges-v2.json`; the first run remains in `ranges.json` for
+comparison. `RESULTS-V2.md` records the repaired outcome.
+
+`silhouette-policy.json` is the approved design-intent source. The matching
+`silhouette_policy.py` and `web/silhouette-policy.js` evaluators calculate the
+fitted/relaxed family, the 45-degree lower-chord constraint, and conditional
+physical intervals before normalization. `test_repair.py` covers the geometry
+repair, policy boundary and normalization contract. None of these files claims
+physical-fit certification.
+
 ## Design and evidence
 
 - Reference body: bust84, waist68, hip90, back length38 cm. All other fixed

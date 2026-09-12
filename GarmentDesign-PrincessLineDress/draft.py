@@ -151,7 +151,21 @@ def _trim_offset_loops(points: list[Vec2]) -> list[Vec2]:
 
 def offset_closed(points: list[Vec2], dist: float) -> list[Vec2]:
     """Dress allowance: original miter offset with local crossing loops trimmed."""
-    raw = _raw_offset_closed(points, dist)
+    ring = _dedupe_closed(points)
+    if not dist or len(ring) < 3:
+        return list(ring)
+    ccw = _signed_area(ring) > 0
+    raw = []
+    for i, curr in enumerate(ring):
+        n1 = _bodice._edge_outward(ring[i-1], curr, ccw)
+        n2 = _bodice._edge_outward(curr, ring[(i+1) % len(ring)], ccw)
+        den = 1 + n1.x*n2.x + n1.y*n2.y
+        if abs(den) < 0.05 or abs(dist / den) > abs(dist)*4:
+            # A clipped single miter can cut through the stitch contour.
+            # Bevel with BOTH shifted edge endpoints, then trim concave loops.
+            raw.extend([curr+n1*dist, curr+n2*dist])
+        else:
+            raw.append(curr + (n1+n2)*(dist/den))
     return _trim_offset_loops(raw) if dist else raw
 
 
@@ -663,6 +677,48 @@ def _seams_ccw(seams: list[Seam]) -> tuple[list[Seam], list[Vec2]]:
     return seams, ensure_ccw(outline)
 
 
+def _simple_stitch_ring(points: list[Vec2]) -> bool:
+    """Reject crossings/touches between non-neighboring sampled stitch edges."""
+    ring = _dedupe_closed(points)
+    if len(ring) < 3 or abs(_signed_area(ring)) < 1e-10:
+        return False
+    n = len(ring)
+    for i, a in enumerate(ring):
+        b = ring[(i+1) % n]
+        for j in range(i+2, n):
+            if i == 0 and j == n-1:
+                continue
+            c, d = ring[j], ring[(j+1) % n]
+            if max(a.x,b.x) < min(c.x,d.x) or max(c.x,d.x) < min(a.x,b.x) or max(a.y,b.y) < min(c.y,d.y) or max(c.y,d.y) < min(a.y,b.y):
+                continue
+            rx, ry, sx, sy = b.x-a.x, b.y-a.y, d.x-c.x, d.y-c.y
+            den = rx*sy-ry*sx
+            qx, qy = c.x-a.x, c.y-a.y
+            if abs(den) < 1e-12:
+                if abs(qx*ry-qy*rx) < 1e-12:
+                    return False
+                continue
+            t, u = (qx*sy-qy*sx)/den, (qx*ry-qy*rx)/den
+            if 0 <= t <= 1 and 0 <= u <= 1:
+                return False
+    return True
+
+
+def _seam_position(points: list[Vec2], target: Vec2) -> float:
+    walked = 0.0
+    best = (float('inf'), 0.0)
+    for a, b in zip(points, points[1:]):
+        dx, dy = b.x-a.x, b.y-a.y
+        square = dx*dx+dy*dy
+        if square == 0:
+            continue
+        t = max(0.0, min(1.0, ((target.x-a.x)*dx+(target.y-a.y)*dy)/square))
+        projected = lerp(a,b,t)
+        best = min(best, ((target-projected).length(), walked+t*sqrt(square)))
+        walked += sqrt(square)
+    return best[1]
+
+
 def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     p = params or DressParams()
     notes: list[str] = []
@@ -680,8 +736,10 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
 
     if p.bust <= 0 or p.waist <= 0 or p.hip <= 0:
         raise ValueError("bust, waist, and hip must be positive")
-    if p.dress_length <= p.hip_depth:
-        raise ValueError("dress length must be greater than hip depth")
+    if not isfinite(p.side_hem_raise) or p.side_hem_raise < 0:
+        raise ValueError("Side hem rise must be finite and nonnegative")
+    if p.dress_length <= p.hip_depth + p.side_hem_raise:
+        raise ValueError("Dress length must exceed hip depth plus side hem rise; the raised side hem must stay below the hip")
     if p.waist >= p.hip:
         raise ValueError("waist must be smaller than hip")
 
@@ -1214,6 +1272,8 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
     for panel in panels:
         if len(panel.outline) < 4:
             raise ValueError(f"{panel.name} did not form a closed panel")
+        if not _simple_stitch_ring(panel.outline):
+            raise ValueError(f"Unsupported design: {panel.name} stitch outline intersects itself or is degenerate")
         pair = "back_princess" if panel.name in ("Centre back", "Side back") else "front_princess"
         if len(panel.notches) != 3:
             raise ValueError(f"{panel.name} is missing a princess sewing mark")
@@ -1231,6 +1291,12 @@ def draft_princess_dress(params: DressParams | None = None) -> DressDraft:
                     raise ValueError(f"{panel.name} has no unique {level} side mark")
                 panel.notches.append(unique[0])
                 panel.notch_ids.append(f"side.{level}")
+            ordered_side = side.points if side.points[0].y > side.points[-1].y else list(reversed(side.points))
+            marks = dict(zip(panel.notch_ids, panel.notches))
+            waist_position = _seam_position(ordered_side, marks['side.waist'])
+            hip_position = _seam_position(ordered_side, marks['side.hip'])
+            if not 0 < waist_position < hip_position < polyline_length(ordered_side):
+                raise ValueError(f"Unsupported design: {panel.name} side marks must be ordered underarm, waist, hip, hem")
 
     front_side_len = polyline_length(front_side_r)
     if abs(rot_ang) > 1e-6:

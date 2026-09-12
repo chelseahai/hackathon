@@ -1,0 +1,14 @@
+{
+  "version": "silhouette-intent-v1",
+  "status": "user-approved design policy",
+  "approved_date": "2026-09-11",
+  "fitted_min_retained_shaping": 0.75,
+  "maximum_lower_chord_angle_degrees": 45,
+  "families": ["fitted", "relaxed"],
+  "scope": "Design intent only. Geometry checks, sewing decisions and physical fitting remain separate.",
+  "retention_definition": "Back waist takeout divided by back takeout at zero waist ease, with the same body and hip ease.",
+  "angle_definition": "Largest outward hip-to-hem chord angle across the two side edges and four princess edges, measured from vertical construction geometry before front dart rotation.",
+  "fitted_boundary_inclusive": true,
+  "relaxed_positive_shaping_required": true,
+  "source": "User approved separate fitted/relaxed families, 75% retained shaping and a 45 degree maximum flare chord."
+}

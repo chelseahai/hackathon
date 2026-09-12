@@ -229,14 +229,11 @@
       var n1 = edgeOutward(prev, curr, ccw);
       var n2 = edgeOutward(curr, next, ccw);
       var den = 1 + n1.x * n2.x + n1.y * n2.y;
-      if (Math.abs(den) < 0.05) {
-        out.push(add(curr, mul(n1, dist)));
-        continue;
+      if (Math.abs(den) < 0.05 || Math.abs(dist / den) > Math.abs(dist) * 4) {
+        out.push(add(curr, mul(n1, dist)), add(curr, mul(n2, dist)));
+      } else {
+        out.push(add(curr, mul(add(n1, n2), dist / den)));
       }
-      var miter = dist / den;
-      var limit = Math.abs(dist) * 4;
-      if (Math.abs(miter) > limit) miter = miter < 0 ? -limit : limit;
-      out.push(add(curr, V((n1.x + n2.x) * miter, (n1.y + n2.y) * miter)));
     }
     return trimOffsetLoops(out);
   }
@@ -723,6 +720,28 @@
     return poly.slice(1).reverse();
   }
 
+  function simpleStitchRing(points) {
+    var ring=dedupeClosed(points),n=ring.length;
+    if(n<3 || Math.abs(signedArea(ring))<1e-10) return false;
+    for(var i=0;i<n;i++){var a=ring[i],b=ring[(i+1)%n];
+      for(var j=i+2;j<n;j++){if(i===0&&j===n-1)continue;
+        var c=ring[j],d=ring[(j+1)%n];
+        if(Math.max(a.x,b.x)<Math.min(c.x,d.x)||Math.max(c.x,d.x)<Math.min(a.x,b.x)||Math.max(a.y,b.y)<Math.min(c.y,d.y)||Math.max(c.y,d.y)<Math.min(a.y,b.y))continue;
+        var rx=b.x-a.x,ry=b.y-a.y,sx=d.x-c.x,sy=d.y-c.y,den=rx*sy-ry*sx,qx=c.x-a.x,qy=c.y-a.y;
+        if(Math.abs(den)<1e-12){if(Math.abs(qx*ry-qy*rx)<1e-12)return false;continue;}
+        var t=(qx*sy-qy*sx)/den,u=(qx*ry-qy*rx)/den;
+        if(t>=0&&t<=1&&u>=0&&u<=1)return false;
+      }
+    }return true;
+  }
+  function seamPosition(points,target){
+    var walked=0,best=Infinity,position=0;
+    for(var i=0;i<points.length-1;i++){var a=points[i],b=points[i+1],dx=b.x-a.x,dy=b.y-a.y,square=dx*dx+dy*dy;
+      if(!square)continue;var t=Math.max(0,Math.min(1,((target.x-a.x)*dx+(target.y-a.y)*dy)/square)),q=lerp(a,b,t),distance=length(sub(target,q));
+      var at=walked+t*Math.sqrt(square);if(distance<best||(distance===best&&at<position)){best=distance;position=at;}walked+=Math.sqrt(square);
+    }return position;
+  }
+
   function draftPrincessDress(input) {
     var p = Object.assign({}, DEFAULT_PARAMS, input || {});
     var notes = [];
@@ -734,8 +753,9 @@
     if (!(p.bust > 0) || !(p.waist > 0) || !(p.hip > 0)) {
       return { error: "Bust, waist, and hip must be positive." };
     }
-    if (!(p.dressLength > p.hipDepth)) {
-      return { error: "Dress length must be greater than hip depth (" + p.hipDepth.toFixed(2) + " cm)." };
+    if (!Number.isFinite(p.sideHemRaise) || p.sideHemRaise < 0) return {error: "Side hem rise must be finite and nonnegative"};
+    if (!(p.dressLength > p.hipDepth + p.sideHemRaise)) {
+      return { error: "Dress length must exceed hip depth plus side hem rise; the raised side hem must stay below the hip" };
     }
     if (!(p.waist < p.hip)) {
       return { error: "Waist must be smaller than hip." };
@@ -1234,6 +1254,7 @@
         return { error: panels[k].name + " did not form a closed panel." };
       }
       var panel = panels[k];
+      if(!simpleStitchRing(panel.outline))return {error:"Unsupported design: "+panel.name+" stitch outline intersects itself or is degenerate"};
       var pair = panel.name === "Centre back" || panel.name === "Side back" ? "back_princess" : "front_princess";
       if (panel.notches.length !== 3) return {error: panel.name + " is missing a princess sewing mark"};
       panel.notchIds = [pair+".upper",pair+".waist",pair+".hip"];
@@ -1250,6 +1271,9 @@
           panel.notches.push(unique[0]);
           panel.notchIds.push("side."+level[0]);
         }
+        var orderedSide=side.points[0].y>side.points[side.points.length-1].y?side.points:side.points.slice().reverse();
+        var wp=seamPosition(orderedSide,panel.notches[panel.notchIds.indexOf('side.waist')]),hp=seamPosition(orderedSide,panel.notches[panel.notchIds.indexOf('side.hip')]);
+        if(!(0<wp&&wp<hp&&hp<polylineLength(orderedSide)))return {error:"Unsupported design: "+panel.name+" side marks must be ordered underarm, waist, hip, hem"};
       }
     }
 
