@@ -45,9 +45,9 @@
       const note=$('scan-result-note');note.hidden=false;note.textContent=(demo?'Demo values, not measurements from your photos. ':'Gemini estimates. Review and correct the values before drafting. ')+(hasBack?'':'Back length could not be measured; your current value has been kept. ')+(result.data.notes||'');
       $('measurement-error').hidden=true;status.textContent='Measurements ready for review. Choose “Use these measurements” to update the construction and pattern.';
       window.dispatchEvent(new Event('mathdress:measurement-review'));
-    }catch(e){if(controller===active){showError(e.name==='AbortError'?'The request timed out. Please try again.':e.message.includes('JSON')?'The measurement server is unavailable. Start the MathDress server and reload.':e.message);status.textContent='Measurements were not applied.';}}
+    }catch(e){if(controller===active){showError(e.name==='AbortError'?'The request timed out. Please try again.':e.message.includes('JSON')?'The measurement server is unavailable. Start the DRESS ME server and reload.':e.message);status.textContent='Measurements were not applied.';}}
     finally{clearTimeout(timeout);if(controller===active){controller=null;busy(false);}}
   }
   $('scan-analyze').addEventListener('click',()=>request());$('scan-load-demo').addEventListener('click',()=>request(true));
-  fetch('/api/measurements/health').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{$('scan-connection-status').textContent=data.hasEnvKey?'Server key available. You can analyze photos.':'Server ready. Enter a Gemini API key for photo measurement, or use demo data.';}).catch(()=>{$('scan-connection-status').textContent='Measurement server offline. Open this page through the MathDress Node server.';});
+  fetch('/api/measurements/health').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{$('scan-connection-status').textContent=data.hasEnvKey?'Server key available. You can analyze photos.':'Server ready. Enter a Gemini API key for photo measurement, or use demo data.';}).catch(()=>{$('scan-connection-status').textContent='Measurement server offline. Open this page through the DRESS ME Node server.';});
 })();
